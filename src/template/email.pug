@@ -1,0 +1,15 @@
+doctype html
+html(lang="en")
+    head
+        title 邮箱认证
+    body
+
+        div(class='biu-nav-email' style='max-width: 600px;min-width: 300px;margin: 40px auto;box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);font-size: 16px;padding: 20px;background-image: linear-gradient(to right, #9646de 0%, #cb03e4 100%);border-radius: 5px;color: #fff;')
+            h3(style="margin-bottom: 40px;") Hi! 亲爱的用户：#{username}
+            p(style="padding-left: 20px;") 该邮件用于验证你在 乐享网 中设置邮箱的正确性，请在24小时内完成验证。
+            p(style="padding-left: 20px;")
+                span 点击链接进行认证:
+                a(href=`${url}` style="color:#1890ff;margin-left: .5rem;" target="_blank" rel="noopener noreferrer") #{url}
+            p(style="margin-top: 40px;text-align: right;") #{sign}
+            p(style="text-align: right;") #{date}
+        </div>
