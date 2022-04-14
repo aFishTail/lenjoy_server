@@ -32,7 +32,7 @@ export class User {
 
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @ApiProperty({ description: '用户名' })
   @Column({ length: 500 })

@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Topic } from './entities/topic.entity';
 import { CategoryService } from 'src/modules/category/category.service';
-import { QueryTopicDto } from './dto/query-topic.dto';
+import { QueryTopicDto, QueryTopicListDto } from './dto/query-topic.dto';
 
 @Injectable()
 export class TopicService {
@@ -33,7 +33,7 @@ export class TopicService {
     const data = await qb.getMany();
     return data;
   }
-  async getList(payload: QueryTopicDto) {
+  async getList(payload: QueryTopicListDto) {
     const { pageNum, pageSize, userId, title, startTime, endTime, categoryId } =
       payload;
     const qb = this.topicRepository

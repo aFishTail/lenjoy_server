@@ -1,6 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  UpdateUserBasicDto,
+  UpdateUserDto,
+  UpdateUserPasswordDto,
+} from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -41,7 +50,11 @@ export class UserService {
    * @param id
    */
   async findById(id): Promise<User> {
-    return this.userRepository.findOne(id);
+    const user = await this.userRepository.findOne(id);
+    if (!user) {
+      throw new HttpException('未查询到该用户', HttpStatus.BAD_REQUEST);
+    }
+    return user;
   }
 
   async findAll(queryParam): Promise<any> {
@@ -114,9 +127,21 @@ export class UserService {
     return newUser;
   }
 
-  async updatePassword(id, user): Promise<User> {
+  async updateBasic(user: UpdateUserBasicDto & { id: string }) {
+    const { id } = user;
+    const olduser = await this.userRepository.findOne(id);
+    if (!olduser) {
+      throw new BadRequestException('用户不存在');
+    }
+    const newUser = this.userRepository.merge(olduser, user);
+    await this.userRepository.save(newUser);
+    return null;
+  }
+
+  async updatePassword(p: UpdateUserPasswordDto): Promise<User> {
+    const { id } = p;
     const existUser = await this.userRepository.findOne(id);
-    const { oldPassword, newPassword } = user;
+    const { oldPassword, newPassword } = p;
     if (
       !existUser ||
       !(await User.comparePassword(oldPassword, existUser.password))
@@ -131,8 +156,7 @@ export class UserService {
     const newUser = this.userRepository.merge(existUser, {
       password: hashNewPassword,
     });
-    const d = await this.userRepository.save(newUser);
-    return d;
+    return await this.userRepository.save(newUser);
   }
   async setEmail(userId: string, email: string) {
     const existUserByEmail = await this.userRepository.findOne({

@@ -1,16 +1,10 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType, IntersectionType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsUUID } from 'class-validator';
 import { CreateTopicDto } from './create-resource.dto';
 
-export class UpdateTopicDto {
-  @ApiProperty({ description: 'id' })
+export class UpdateTopicDto extends PartialType(CreateTopicDto) {
+  @ApiProperty()
+  @IsUUID()
   id: string;
-  @ApiProperty({ description: '分类id' })
-  categoryId?: string;
-
-  @ApiProperty({ description: '标题' })
-  title?: string;
-
-  @ApiProperty({ description: '内容' })
-  content?: string;
 }

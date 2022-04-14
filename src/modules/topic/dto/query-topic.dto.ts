@@ -1,3 +1,4 @@
+import { IntersectionType } from '@nestjs/mapped-types';
 import {
   IsEmpty,
   IsNotEmpty,
@@ -6,35 +7,37 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
+import { QueryPagerInputDto } from 'src/common/base.dto';
 import { Topic } from '../entities/topic.entity';
 
-interface Pager {
-  pageSize: number;
-  pageNum: number;
-}
-export class QueryTopicDto implements Pager {
-  //   @IsString()
-  //   @IsEmpty()
-  //TODO: 校验参数可传可不传
+export class QueryTopicDto {
   @IsOptional()
+  @IsString()
   userId: string;
 
+  @IsString()
+  @IsOptional()
   categoryId: string;
 
-  @IsNumber()
-  pageNum: number;
-
-  @IsNumber()
-  pageSize: number;
-
+  @IsString()
+  @IsOptional()
   title: string;
 
+  @IsString()
+  @IsOptional()
   startTime: string;
+
+  @IsString()
+  @IsOptional()
   endTime: string;
 }
+
+export class QueryTopicListDto extends IntersectionType(
+  QueryPagerInputDto,
+  QueryTopicDto,
+) {}
 
 export class QueryTopicOutDto {
   records: Topic[];
   total: number;
 }
-

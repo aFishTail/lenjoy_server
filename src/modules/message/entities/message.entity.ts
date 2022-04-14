@@ -18,13 +18,13 @@ export class Message {
   @Column({ name: 'user_id', comment: '消息接收人' })
   userId: string;
 
-  @Column({ type: 'string', length: 50, comment: '消息标题' })
+  @Column({ length: 50, comment: '消息标题' })
   title: string;
 
-  @Column({ type: 'string', length: 100, comment: '消息内容' })
+  @Column({ length: 100, comment: '消息内容' })
   content: string;
 
-  @Column({ type: 'string', length: 100, comment: '引用内容' })
+  @Column({ length: 100, comment: '引用内容' })
   quoteContent: string;
 
   @Column({ type: 'int', comment: '0:未读， 1:已读' })
