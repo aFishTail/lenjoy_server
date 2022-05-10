@@ -10,7 +10,7 @@ import {
 @Entity()
 export class EmailCode {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column({ name: 'user_id' })
   userId: string;

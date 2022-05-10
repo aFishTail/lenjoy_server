@@ -1,5 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 // import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/modules/user/user.service';
 import { User } from 'src/modules/user/entities/user.entity';
@@ -22,7 +22,8 @@ export class AuthService {
   }
 
   async login(user: LoginInputDto) {
-    const data = await this.userService.login(user);
+    const { password, username } = user;
+    const data = await this.userService.login(username, password);
     const token = this.createToken({
       id: data.id,
       username: data.username,
@@ -32,9 +33,9 @@ export class AuthService {
     return Object.assign(data, { token });
   }
   async loginWithCaptcha(user: LoginInputDto) {
-    const { captchaId, captchaCode } = user;
+    const { captchaId, captchaCode, username, password } = user;
     await this.captchaService.validate(captchaId, captchaCode);
-    const data = await this.userService.login(user);
+    const data = await this.userService.login(username, password);
     const token = this.createToken({
       id: data.id,
       username: data.username,
@@ -45,10 +46,10 @@ export class AuthService {
   }
 
   async register(user: RegisterInputDto) {
-    const { captchaId, captchaCode } = user;
+    const { captchaId, captchaCode, username, password } = user;
     await this.captchaService.validate(captchaId, captchaCode);
     await this.userService.create(user);
-    return await this.userService.login(user);
+    return await this.userService.login(username, password);
   }
 
   async validateUser(payload: User) {

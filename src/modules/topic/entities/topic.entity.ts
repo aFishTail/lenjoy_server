@@ -29,8 +29,8 @@ export class Topic {
   content: string;
 
   @ApiProperty({ description: '是否推荐' })
-  @Column({ default: false })
-  recommand: boolean;
+  @Column({ default: 0 })
+  recommand: number;
 
   // Todo: 推荐时间？
   // recommandTime
@@ -40,12 +40,16 @@ export class Topic {
   viewCount: number;
 
   @ApiProperty({ description: '评论数量' })
-  @Column({ comment: '评论数量', default: 0 })
-  comment: number;
+  @Column({ comment: '评论数量', default: 0, name: 'comment_count' })
+  commentCount: number;
 
   @ApiProperty({ description: '点赞数量' })
   @Column({ comment: '点赞数量', name: 'like_count', default: 0 })
   likeCount: number;
+
+  @ApiProperty({ description: '收藏数量' })
+  @Column({ comment: '收藏数量', name: 'favorite_count', default: 0 })
+  favoriteCount: number;
 
   @ApiProperty({ description: '最后评论时间' })
   @Column({ type: 'datetime', name: 'last_comment_time', nullable: true })

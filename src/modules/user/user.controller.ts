@@ -1,11 +1,7 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
@@ -16,15 +12,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import {
   SetEmailDto,
   UpdateUserBasicDto,
-  UpdateUserDto,
   UpdateUserPasswordDto,
 } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { QueryUserInputDto, QueryUserOutDto } from './dto/query-user.dto';
+import { QueryUserInputDto } from './dto/query-user.dto';
 import { QueryDetailDto } from 'src/common/base.dto';
 import { Request } from 'express';
-import { v4 as uuidv4 } from 'uuid';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { VerifyEmailDto } from './dto/user-email.dto';

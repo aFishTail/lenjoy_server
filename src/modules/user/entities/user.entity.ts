@@ -7,13 +7,10 @@ import {
   BeforeInsert,
   OneToMany,
   ManyToOne,
-  Unique,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
 import { ApiProperty } from '@nestjs/swagger';
-import { Comment } from '../../comment/entities/comment.entity';
-import { type } from 'os';
 
 @Entity()
 export class User {
@@ -22,7 +19,7 @@ export class User {
    * @param password0 加密前密码
    * @param password1 加密后密码
    */
-  static async comparePassword(password0, password1) {
+  static comparePassword(password0, password1) {
     return bcrypt.compareSync(password0, password1);
   }
 

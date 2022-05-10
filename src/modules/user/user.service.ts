@@ -85,14 +85,13 @@ export class UserService {
     };
   }
 
-  async login(user): Promise<User> {
-    const { username, password } = user;
-    const existUser = this.userRepository.findOne({ where: { username } });
+  async login(username: string, password: string): Promise<User> {
+    const existUser = await this.userRepository.findOne({
+      where: { username },
+    });
 
-    if (
-      !existUser ||
-      !User.comparePassword(password, (await existUser).password)
-    ) {
+    const isPasswordValid = User.comparePassword(password, existUser.password);
+    if (!existUser || !isPasswordValid) {
       throw new HttpException('用户名或密码错误', HttpStatus.BAD_REQUEST);
     }
 
@@ -167,5 +166,8 @@ export class UserService {
     }
     await this.userRepository.update(userId, { email });
     return null;
+  }
+  async remove(userId: string) {
+    await this.userRepository.delete(userId);
   }
 }

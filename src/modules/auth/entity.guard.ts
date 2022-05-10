@@ -42,7 +42,6 @@ export class EntityAuthGuard implements CanActivate {
     const entityIdValue = request.body[entityId];
     const entity: Record<string, string> & { userId: string } =
       await getManager().findOne(model, entityIdValue);
-    // const hasRole = roles.some((role) => role === user.role);
     return entity && entity.userId === user.id;
   }
 }

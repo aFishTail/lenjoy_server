@@ -16,8 +16,12 @@ export class Category {
   id: string;
 
   @ApiProperty({ description: '名称' })
-  @Column()
+  @Column({ unique: true })
   name: string;
+
+  @ApiProperty({ description: 'label值' })
+  @Column()
+  label: string;
 
   @ApiProperty()
   // TODO: 能否获取到当前实例的名称
@@ -33,7 +37,7 @@ export class Category {
   sortNo: number;
 
   @ApiProperty({ description: '状态', default: 1 })
-  @Column({ comment: '状态', default: 1 })
+  @Column({ comment: '状态, 1: 正常，0: 停止使用', default: 1 })
   status: number;
 
   @OneToMany(() => Topic, (topic) => topic.category)

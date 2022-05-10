@@ -41,7 +41,7 @@ export class EmialService {
   }
 
   async verify(userId: string, code: string) {
-    const emailCode = await this.emialCodeRepository.findOne(code);
+    const emailCode = await this.emialCodeRepository.findOne({ id: code });
     if (!emailCode || emailCode.userId !== userId) {
       throw new HttpException('非法请求', HttpStatus.BAD_REQUEST);
     }

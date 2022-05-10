@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TopicModule } from './modules/topic/topic.module';
 import { CategoryModule } from './modules/category/category.module';
@@ -6,9 +6,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { ScoreModule } from './modules/score/score.module';
-import { FollowModule } from './modules/follow/follow.module';
 import { UserLikeModule } from './modules/user-like/user-like.module';
-import { FavoriteModule } from './modules/favorite/favorite.module';
 import { UserSignModule } from './modules/user-sign/user-sign.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Log4jsModule } from './logger';
@@ -19,33 +17,64 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { FileModule } from './modules/file/file.module';
 import { MessageModule } from './modules/message/message.module';
+import { UserFavoriteModule } from './modules/user-favorite/user-favorite.module';
 import * as path from 'path';
+import { FollowModule } from './modules/user-follow/follow.module';
+import { QueryUserMiddler } from './middleware/queryUser.middleware';
+import { TopicController } from './modules/topic/topic.controller';
+import { ScoreController } from './modules/score/score.controller';
+import { UserLike } from './modules/user-like/entities/user-like.entity';
+import { ThirdAccount, User } from './modules/user/entities/user.entity';
+import { Topic } from './modules/topic/entities/topic.entity';
+import { Category } from './modules/category/entities/category.entity';
+import { UserController } from './modules/user/user.controller';
+import { Comment } from './modules/comment/entities/comment.entity';
+import { Follow } from './modules/user-follow/entities/follow.entity';
+import { Score } from './modules/score/entities/score.entity';
+import { Message } from './modules/message/entities/message.entity';
+import { EmailCode } from './modules/email/entities/emailCode.entity';
+import { UserFavorite } from './modules/user-favorite/entities/user-favorite.entity';
+import configuration from 'config/configuration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: 'dev.env',
+      load: [configuration],
       isGlobal: true,
     }),
     TopicModule,
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        // type: 'mysql',
-        // host: '127.0.0.1',
-        // port: parseInt(configService.get('DATABASE_PORT')),
-        // username: configService.get('DATABASE_USER'),
-        // password: configService.get('DATABASE_PASSWORD'),
-        // database: configService.get('DATABASE_NAME'),
         type: 'mysql',
-        host: '127.0.0.1',
-        port: 3306,
-        username: 'root',
-        password: '123456',
-        database: 'lenjoy',
-        entities: ['dist/**/*.entity{.ts,.js}'],
+        host: configService.get<string>('mysql.host'),
+        port: configService.get<number>('mysql.port'),
+        username: configService.get<string>('mysql.username'),
+        password: configService.get<string>('mysql.password'),
+        database: configService.get<string>('mysql.database'),
+        entities: [
+          User,
+          ThirdAccount,
+          UserLike,
+          UserFavorite,
+          Topic,
+          Category,
+          UserController,
+          Comment,
+          Follow,
+          Score,
+          Message,
+          EmailCode,
+        ],
+        charset: 'utf8mb4',
+        timezone: '+08:00',
         synchronize: true,
         logging: true,
+        migrationsTableName: 'custom_migration_table',
+        migrations: ['migration/*.js'],
+        cli: {
+          migrationsDir: 'migration',
+        },
       }),
     }),
     CategoryModule,
@@ -55,7 +84,6 @@ import * as path from 'path';
     ScoreModule,
     FollowModule,
     UserLikeModule,
-    FavoriteModule,
     UserSignModule,
     Log4jsModule.forRoot(),
     CaptchaModule,
@@ -83,8 +111,13 @@ import * as path from 'path';
     }),
     FileModule,
     MessageModule,
+    UserFavoriteModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(QueryUserMiddler).forRoutes('*');
+  }
+}

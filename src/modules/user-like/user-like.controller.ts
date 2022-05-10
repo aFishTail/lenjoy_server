@@ -1,36 +1,42 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { UserLikeService } from './user-like.service';
-import { CreateUserLikeDto } from './dto/create-user-like.dto';
-import { UpdateUserLikeDto } from './dto/update-user-like.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UserLikeOperateDto } from './dto/user-like.dto';
+import { QueryUser } from 'src/decorators/user.decorator';
+import { ResponseDto } from 'src/common/base.dto';
 
 @ApiTags('用户点赞')
-@Controller('user-like')
+@Controller('userLike')
 export class UserLikeController {
   constructor(private readonly userLikeService: UserLikeService) {}
 
-  @Post()
-  create(@Body() createUserLikeDto: CreateUserLikeDto) {
-    return this.userLikeService.create(createUserLikeDto);
+  @ApiOperation({ summary: '点赞/取消点赞帖子' })
+  @ApiBody({ type: UserLikeOperateDto })
+  @ApiResponse({ type: ResponseDto })
+  @Post('/topic')
+  operateTopic(@Body() payload: UserLikeOperateDto, @QueryUser('id') userId) {
+    return this.userLikeService.operate(userId, {
+      ...payload,
+      entityType: 'topic',
+    });
   }
 
-  @Get()
-  findAll() {
-    return this.userLikeService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userLikeService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserLikeDto: UpdateUserLikeDto) {
-    return this.userLikeService.update(+id, updateUserLikeDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userLikeService.remove(+id);
+  @ApiOperation({ summary: '点赞/取消点赞评论' })
+  @ApiBody({ type: UserLikeOperateDto })
+  @ApiResponse({ status: 200, type: ResponseDto })
+  @Post('/comment')
+  operateComment(@Body() payload: UserLikeOperateDto, @QueryUser('id') userId) {
+    return this.userLikeService.operate(userId, {
+      ...payload,
+      entityType: 'comment',
+    });
   }
 }

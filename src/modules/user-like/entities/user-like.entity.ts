@@ -13,16 +13,16 @@ export class UserLike {
   id: string;
 
   @ApiProperty({ description: '用户id' })
-  @Column()
+  @Column({ name: 'user_id' })
   userId: string;
 
   @ApiProperty({ description: '实体类型' })
-  @Column()
+  @Column({ name: 'entity_type' })
   entityType: string;
 
   @ApiProperty({ description: '实体id' })
-  @Column()
-  entityId: number;
+  @Column({ type: 'varchar', name: 'entity_id' })
+  entityId: string;
 
   @ApiProperty({ description: '状态' })
   @Column()

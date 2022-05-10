@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CreateTopicDto } from './dto/create-resource.dto';
 import { UpdateTopicDto } from './dto/update-resource.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getConnection, getManager, Repository } from 'typeorm';
 import { Topic } from './entities/topic.entity';
 import { CategoryService } from 'src/modules/category/category.service';
 import { QueryTopicDto, QueryTopicListDto } from './dto/query-topic.dto';
+import { User } from '../user/entities/user.entity';
+import { UserLike } from '../user-like/entities/user-like.entity';
+import e from 'express';
+import { ScoreService } from '../score/score.service';
 
 @Injectable()
 export class TopicService {
@@ -13,17 +17,33 @@ export class TopicService {
     @InjectRepository(Topic)
     private readonly topicRepository: Repository<Topic>,
     private readonly categoryService: CategoryService,
+    private readonly scoreService: ScoreService,
   ) {}
-  async create(userId: string, resource: Partial<Topic>) {
-    const { category } = resource;
-    const existCategory = await this.categoryService.findById(category);
+  async create(
+    userId: string,
+    title: string,
+    content: string,
+    categoryId: string,
+  ) {
+    const existCategory = await this.categoryService.findById(categoryId);
     const newReource = await this.topicRepository.create({
-      ...resource,
+      title,
+      content,
       category: existCategory,
       userId,
     });
     await this.topicRepository.save(newReource);
     return newReource;
+  }
+  async postTopic(
+    userId: string,
+    title: string,
+    content: string,
+    categoryId: string,
+  ) {
+    const topic = await this.create(userId, title, content, categoryId);
+    this.scoreService.operate(userId, 1, topic.id, 'topic');
+    return null;
   }
 
   async findAll() {
@@ -33,19 +53,25 @@ export class TopicService {
     const data = await qb.getMany();
     return data;
   }
-  async getList(payload: QueryTopicListDto) {
-    const { pageNum, pageSize, userId, title, startTime, endTime, categoryId } =
+  async getList(userId: string, payload: QueryTopicListDto) {
+    const { pageNum, pageSize, title, startTime, endTime, categoryLabel } =
       payload;
     const qb = this.topicRepository
       .createQueryBuilder('topic')
       .leftJoinAndSelect('topic.category', 'category')
-      .take(pageSize)
-      .skip((pageNum - 1) * pageSize);
+      .leftJoinAndMapOne(
+        'topic.user',
+        'user',
+        'user',
+        'user.id = topic.user_id',
+      );
+
+    //TODO: 关联查询选取字段
     if (userId) {
       qb.where('topic.user_id= :userId', { userId });
     }
-    if (categoryId) {
-      qb.andWhere('topic.categoryId = :categoryId', { categoryId });
+    if (categoryLabel) {
+      qb.andWhere('topic.categoryLabel = :categoryLabel', { categoryLabel });
     }
     if (title) {
       qb.andWhere('topic.title LIKE :title', { title });
@@ -56,6 +82,7 @@ export class TopicService {
         endTime,
       });
     }
+    qb.take(pageSize).skip((pageNum - 1) * pageSize);
     const [records, total] = await qb.getManyAndCount();
     const data = {
       records,
@@ -63,16 +90,52 @@ export class TopicService {
     };
     return data;
   }
+  // 查询用户帖子列表
+  async userList(userId: string, payload: QueryTopicListDto) {
+    const { title, pageNum, pageSize } = payload;
+    const qb = this.topicRepository
+      .createQueryBuilder('topic')
+      .leftJoinAndSelect('topic.category', 'category')
+      .leftJoinAndMapOne(
+        'topic.user',
+        'user',
+        'user',
+        'user.id = topic.user_id',
+      )
+      .orderBy('topic.create_at', 'DESC');
+
+    if (title) {
+      qb.andWhere('topic.title LIKE :title', { title: `%${title}%` });
+    }
+    qb.limit(pageSize).offset((pageNum - 1) * pageSize);
+    const [records, total] = await qb.getManyAndCount();
+    const result = [];
+    for (let i = 0; i < records.length; i++) {
+      const n = { ...records[i], isLike: 0 };
+      const like = await getConnection()
+        .getRepository(UserLike)
+        .findOne({ userId });
+      if (like) {
+        n.isLike = like.status;
+      }
+      result.push(n);
+    }
+    const data = {
+      records: result,
+      total,
+    };
+    return data;
+  }
 
   async findOne(id: string) {
-    const topic = await this.topicRepository.findOne(id);
+    const topic = await this.topicRepository.findOne({ id });
     return topic;
     // if (!topic) {}
   }
 
   async update(updateTopicDto: UpdateTopicDto) {
     const { id, title, content, categoryId } = updateTopicDto;
-    const oldTopic = await this.topicRepository.findOne(id);
+    const oldTopic = await this.topicRepository.findOne({ id });
     const newTopic = {
       ...oldTopic,
       title,
@@ -86,7 +149,7 @@ export class TopicService {
   }
 
   async delete(id: string) {
-    const data = await this.topicRepository.findOne(id);
+    const data = await this.topicRepository.findOne({ id });
     this.topicRepository.remove(data);
     return null;
   }

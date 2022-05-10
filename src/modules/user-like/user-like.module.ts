@@ -3,6 +3,7 @@ import { UserLikeService } from './user-like.service';
 import { UserLikeController } from './user-like.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserLike } from './entities/user-like.entity';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserLike])],

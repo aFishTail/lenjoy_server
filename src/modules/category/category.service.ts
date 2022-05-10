@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 import { QueryCategoryInputDto } from './dto/query-category.dto';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class CategoryService {
@@ -34,8 +35,8 @@ export class CategoryService {
     const { name, startTime, endTime } = payload;
     const qb = this.categoryRepository
       .createQueryBuilder('category')
-      .orderBy('category.createAt', 'ASC');
-    qb.leftJoinAndSelect('category.topics', 'topic');
+      .orderBy('category.createAt', 'ASC')
+      .leftJoinAndSelect('category.topics', 'topic');
 
     if (name) {
       qb.andWhere('category.name LIKE :name', { name: `%${name}%` });
@@ -52,11 +53,13 @@ export class CategoryService {
   }
 
   async findOne(id: string) {
-    return await this.categoryRepository.findOne(id);
+    return await this.categoryRepository.findOne({ id });
   }
 
   async update(updateCategoryDto: UpdateCategoryDto) {
-    const oldData = await this.categoryRepository.findOne(updateCategoryDto.id);
+    const oldData = await this.categoryRepository.findOne({
+      id: updateCategoryDto.id,
+    });
     const newData = {
       ...oldData,
       ...updateCategoryDto,
@@ -66,7 +69,7 @@ export class CategoryService {
   }
 
   async delete(id: string) {
-    const data = await this.categoryRepository.findOne(id);
+    const data = await this.categoryRepository.findOne({ id });
     this.categoryRepository.remove(data);
   }
 

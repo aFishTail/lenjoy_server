@@ -17,7 +17,7 @@ export class QueryTopicDto {
 
   @IsString()
   @IsOptional()
-  categoryId: string;
+  categoryLabel: string;
 
   @IsString()
   @IsOptional()

@@ -27,6 +27,9 @@ export class Message {
   @Column({ length: 100, comment: '引用内容' })
   quoteContent: string;
 
+  @Column({ comment: '消息类型' })
+  type: number;
+
   @Column({ type: 'int', comment: '0:未读， 1:已读' })
   status: number;
 

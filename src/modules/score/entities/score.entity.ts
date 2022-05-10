@@ -18,19 +18,23 @@ export class Score {
 
   @ApiProperty({ description: '操作主体类型' })
   @Column({ name: 'source_type' })
-  sourceType: string;
+  entityType: string;
 
   @ApiProperty({ description: '操作主体id' })
   @Column({ name: 'source_id' })
-  sourceId: string;
+  entityId: string;
+
+  @ApiProperty({ description: '操作类型' })
+  @Column({ comment: '操作类型, 0: 减少， 1: 增加' })
+  type: number;
+
+  @ApiProperty({ description: '分数' })
+  @Column()
+  score: number;
 
   @ApiProperty({ description: '描述' })
   @Column()
   description: string;
-
-  @ApiProperty({ description: '操作类型' })
-  @Column('simple-enum', { enum: ['increase', 'decrease'] })
-  operation: string;
 
   @CreateDateColumn({
     type: 'datetime',

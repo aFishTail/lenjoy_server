@@ -1,27 +1,16 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
-  Req,
   UseGuards,
-  UsePipes,
   BadRequestException,
 } from '@nestjs/common';
 import { TopicService } from './topic.service';
 import { CreateTopicDto } from './dto/create-resource.dto';
 import { UpdateTopicDto } from './dto/update-resource.dto';
-import { Request } from 'express';
-import {
-  QueryTopicDto,
-  QueryTopicListDto,
-  QueryTopicOutDto,
-} from './dto/query-topic.dto';
+import { QueryTopicListDto } from './dto/query-topic.dto';
 import { Topic } from './entities/topic.entity';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryDetailDto } from 'src/common/base.dto';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -32,21 +21,25 @@ import { EntityAuth, EntityAuthGuard } from '../auth/entity.guard';
 export class TopicController {
   constructor(private readonly topicService: TopicService) {}
 
-  @ApiResponse({ status: 201, description: '发布帖子' })
+  @ApiOperation({ summary: '发布帖子' })
+  @ApiResponse({ status: 201 })
   @UseGuards(JwtAuthGuard)
   @Post('/create')
-  create(@Body() createResourceDto: CreateTopicDto, @QueryUser('id') userId) {
-    return this.topicService.create(userId, createResourceDto);
+  create(@Body() payload: CreateTopicDto, @QueryUser('id') userId) {
+    const { title, content, categoryId } = payload;
+    return this.topicService.postTopic(userId, title, content, categoryId);
   }
 
-  @ApiResponse({ status: 201, description: '查看帖子列表' })
+  @ApiOperation({ summary: '查看帖子列表' })
+  @ApiResponse({ status: 201 })
   @Post('/list')
   @ApiResponse({ type: [Topic] })
-  findAll(@Body() payload: QueryTopicListDto) {
-    return this.topicService.getList(payload);
+  findAll(@QueryUser('id') userId, @Body() payload: QueryTopicListDto) {
+    return this.topicService.userList(userId, payload);
   }
 
-  @ApiResponse({ status: 201, description: '查看帖子详情' })
+  @ApiOperation({ summary: '查看帖子详情' })
+  @ApiResponse({ status: 201 })
   @Post('/detail')
   async getDetail(@Body() param: QueryDetailDto, @QueryUser('id') userId) {
     const { id } = param;
@@ -58,16 +51,18 @@ export class TopicController {
     await this.topicService.IncrViewCount(id);
     return topic;
   }
-  // TODO: 需要发帖人本人才可以修改
-  @ApiResponse({ status: 201, description: '编辑帖子' })
+
+  @ApiOperation({ summary: '编辑帖子' })
+  @ApiResponse({ status: 201 })
+  @EntityAuth(Topic, 'id')
   @UseGuards(JwtAuthGuard)
   @Post('/update')
   update(@Body() payload: UpdateTopicDto) {
     return this.topicService.update(payload);
   }
 
-  // TODO: 需要发帖人本人才可以删除
-  @ApiResponse({ status: 201, description: '删除帖子' })
+  @ApiOperation({ summary: '删除帖子' })
+  @ApiResponse({ status: 201 })
   @EntityAuth(Topic, 'id')
   @UseGuards(JwtAuthGuard, EntityAuthGuard)
   @Post('/delete')
@@ -83,16 +78,15 @@ export class AdminTopicController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/create')
-  create(@Body() createResourceDto: CreateTopicDto, @Req() request: Request) {
-    console.log('req', request);
-    const { user } = request as any;
-    return this.topicService.create(user.id, createResourceDto);
+  create(@Body() payload: CreateTopicDto, @QueryUser('id') userId) {
+    const { title, content, categoryId } = payload;
+    return this.topicService.create(userId, title, content, categoryId);
   }
 
   @Post('/list')
   @ApiResponse({ type: [Topic] })
-  findAll(@Body() payload: QueryTopicListDto) {
-    return this.topicService.getList(payload);
+  findAll(@QueryUser('id') userId, @Body() payload: QueryTopicListDto) {
+    return this.topicService.getList(userId, payload);
   }
 
   @Post('/detail')

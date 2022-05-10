@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/modules/auth/jwt.strategy';
@@ -14,6 +14,7 @@ const jwtModule = JwtModule.register({
   signOptions: { expiresIn: '4h' },
 });
 
+@Global()
 @Module({
   imports: [UserModule, passModule, jwtModule, CacheModule, CaptchaModule],
   providers: [AuthService, JwtStrategy],

@@ -19,7 +19,18 @@
 4. 根据uuid, code 检验验证码是否正确
 
 ### 图片上传及静态文件服务
+
 参考[写给初用Nestj做项目的你(三篇: 编写api & 图片上传)](https://segmentfault.com/a/1190000040201949)
 
 ### 消息
 
+### swagger
+
+#### 嵌套的dto对象展示
+
+```ts
+export class UserLikeOperateOutDto extends ResponseDto {
+  @ApiProperty({ type: UserLikeOperateDto })
+  data: unknown;
+}
+```

@@ -18,17 +18,19 @@ export class QueryPagerOutDto<T> {
   total: number;
 }
 
-export class ResponseDto<T> {
+export class ResponseDto {
   @ApiProperty()
-  data: T;
-  @ApiProperty()
+  data: unknown;
+
+  @ApiProperty({ example: '' })
   message: string;
-  @ApiProperty()
-  code: 200 | 500 | 401;
+
+  @ApiProperty({ description: '请求码', example: 201 })
+  code: number;
 }
 
 export class QueryDetailDto {
-  @ApiProperty()
+  @ApiProperty({ description: '主键id' })
   @IsUUID()
   id: string;
 }
