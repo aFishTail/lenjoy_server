@@ -1,16 +1,13 @@
 import { Module } from '@nestjs/common';
 import { CacheService } from './cache.service';
 import { RedisModule } from 'nestjs-redis';
+import { ConfigService } from '@nestjs/config';
 
-const options = {
-  port: 6379,
-  host: '127.0.0.1',
-  password: '',
-  db: 0,
-};
 
 @Module({
-  imports: [RedisModule.register(options)],
+  imports: [RedisModule.forRootAsync({
+    useFactory: (configService: ConfigService) => configService.get('redis');
+  })],
   // controllers: [CacheController],
   providers: [CacheService],
   exports: [CacheService],
