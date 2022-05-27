@@ -122,10 +122,6 @@ export class User {
    */
   @BeforeInsert()
   beforeHandler() {
-    // if (!this.nickname) {
-    //   this.nickname = this.username;
-    // }
-
     this.password = bcrypt.hashSync(this.password, 10);
   }
 }

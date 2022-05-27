@@ -6,7 +6,6 @@ import { getConnection, getManager, Repository } from 'typeorm';
 import { Topic } from './entities/topic.entity';
 import { CategoryService } from 'src/modules/category/category.service';
 import { QueryTopicDto, QueryTopicListDto } from './dto/query-topic.dto';
-import { User } from '../user/entities/user.entity';
 import { UserLike } from '../user-like/entities/user-like.entity';
 import e from 'express';
 import { ScoreService } from '../score/score.service';
@@ -53,6 +52,7 @@ export class TopicService {
     const data = await qb.getMany();
     return data;
   }
+
   async getList(userId: string, payload: QueryTopicListDto) {
     const { pageNum, pageSize, title, startTime, endTime, categoryLabel } =
       payload;
@@ -74,7 +74,7 @@ export class TopicService {
       qb.andWhere('topic.categoryLabel = :categoryLabel', { categoryLabel });
     }
     if (title) {
-      qb.andWhere('topic.title LIKE :title', { title });
+      qb.andWhere('topic.title LIKE :title', { title: `%${title}%` });
     }
     if (startTime && endTime) {
       qb.andWhere('topic.create_at BETWEEN :startTime AND :endTime', {
@@ -92,7 +92,7 @@ export class TopicService {
   }
   // 查询用户帖子列表
   async userList(userId: string, payload: QueryTopicListDto) {
-    const { title, pageNum, pageSize } = payload;
+    const { title, pageNum, pageSize, categoryLabel } = payload;
     const qb = this.topicRepository
       .createQueryBuilder('topic')
       .leftJoinAndSelect('topic.category', 'category')
@@ -107,6 +107,9 @@ export class TopicService {
     if (title) {
       qb.andWhere('topic.title LIKE :title', { title: `%${title}%` });
     }
+    if (categoryLabel) {
+      qb.andWhere('category.label = :label', { label: categoryLabel });
+    }
     qb.limit(pageSize).offset((pageNum - 1) * pageSize);
     const [records, total] = await qb.getManyAndCount();
     const result = [];
@@ -114,7 +117,7 @@ export class TopicService {
       const n = { ...records[i], isLike: 0 };
       const like = await getConnection()
         .getRepository(UserLike)
-        .findOne({ userId });
+        .findOne({ userId, entityId: n.id });
       if (like) {
         n.isLike = like.status;
       }
@@ -133,8 +136,8 @@ export class TopicService {
     // if (!topic) {}
   }
 
-  async update(updateTopicDto: UpdateTopicDto) {
-    const { id, title, content, categoryId } = updateTopicDto;
+  async update(p: UpdateTopicDto) {
+    const { id, title, content, categoryId } = p;
     const oldTopic = await this.topicRepository.findOne({ id });
     const newTopic = {
       ...oldTopic,
@@ -145,17 +148,17 @@ export class TopicService {
       newTopic.category = await this.categoryService.findById(categoryId);
     }
     const updatedTopic = this.topicRepository.merge(oldTopic, newTopic);
-    return this.topicRepository.save(updatedTopic);
+    return await this.topicRepository.save(updatedTopic);
   }
 
   async delete(id: string) {
     const data = await this.topicRepository.findOne({ id });
-    this.topicRepository.remove(data);
+    await this.topicRepository.remove(data);
     return null;
   }
 
   async IncrViewCount(id: string) {
-    this.topicRepository
+    await this.topicRepository
       .createQueryBuilder()
       .update(Topic)
       .set({

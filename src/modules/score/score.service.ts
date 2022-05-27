@@ -10,6 +10,8 @@ export class ScoreService {
   constructor(
     @InjectRepository(Score)
     private readonly scoreRepository: Repository<Score>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
   async operate(
     userId: string,
@@ -18,18 +20,22 @@ export class ScoreService {
     entityType: string,
   ) {
     const { score, desc } = getOpScoreAndDesc(type, entityType);
-    await getManager().transaction(async (mannger) => {
-      await mannger.getRepository(Score).create({
+    await getManager().transaction(async (manager) => {
+      const scoreEntity = await manager.getRepository(Score).create({
         userId,
         entityId,
         entityType,
         score,
+        type,
         description: desc,
       });
-      await mannger
+      await manager.getRepository(Score).save(scoreEntity);
+      await manager
         .createQueryBuilder()
         .update(User)
-        .set({ score: () => `score ${type ? '+' : '-'} ${score}` });
+        .where({ id: userId })
+        .set({ score: () => `score ${type ? '+' : '-'} ${score}` })
+        .execute();
     });
     return null;
   }
@@ -39,6 +45,33 @@ export class ScoreService {
       where: { userId },
     });
     return { records, total };
+  }
+  async rank() {
+    const data = await this.userRepository.find({
+      select: [
+        'id',
+        'username',
+        'score',
+        'avatar',
+        'topicCount',
+        'commentCount',
+      ],
+      order: {
+        score: 'DESC',
+      },
+      take: 10,
+    });
+    return data.map((e) => {
+      const { id, username, score, avatar, topicCount, commentCount } = e;
+      return {
+        userId: id,
+        username,
+        avatar,
+        topicCount,
+        commentCount,
+        score,
+      };
+    });
   }
 }
 

@@ -27,4 +27,8 @@ export class ScoreController {
   list(@QueryUser('id') userId) {
     return this.scoreService.list(userId);
   }
+  @Post('/rank')
+  rank() {
+    return this.scoreService.rank();
+  }
 }

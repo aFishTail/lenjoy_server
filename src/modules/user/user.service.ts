@@ -41,7 +41,7 @@ export class UserService {
       user.nickname = username;
     }
     const newUser = await this.userRepository.create(user);
-    await this.userRepository.save(user);
+    await this.userRepository.save(newUser);
     return newUser;
   }
 
@@ -68,7 +68,9 @@ export class UserService {
       qb.andWhere('user.status=:status').setParameter('status', status);
     }
     if (username) {
-      qb.andWhere(`user.username LIKE :username`, { username });
+      qb.andWhere(`user.username LIKE :username`, {
+        username: `%${username}%`,
+      });
     }
     // if (otherParams) {
     //   Object.keys(otherParams).forEach((key) => {
