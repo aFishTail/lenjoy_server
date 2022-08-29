@@ -5,7 +5,6 @@ import {
   UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
-  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,9 +15,8 @@ import {
 } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { QueryUserInputDto } from './dto/query-user.dto';
-import { QueryDetailDto } from 'src/common/base.dto';
-import { Request } from 'express';
+import { QueryUserDetailOutDto, QueryUserInputDto } from './dto/query-user.dto';
+import { QueryTopicDetailInputDto } from 'src/common/base.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { VerifyEmailDto } from './dto/user-email.dto';
@@ -33,7 +31,7 @@ export class UserController {
   ) {}
 
   @ApiOperation({ summary: '用户编辑基础信息' })
-  @ApiBody({ type: User })
+  @ApiBody({ type: UpdateUserBasicDto })
   @UseGuards(JwtAuthGuard)
   @Post('update/basic')
   updateBasic(@Body() param: UpdateUserBasicDto, @QueryUser('id') id) {
@@ -41,10 +39,10 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '查看用户详情' })
-  @ApiBody({ type: QueryDetailDto })
-  @ApiResponse({ type: User })
+  @ApiBody({ type: QueryTopicDetailInputDto })
+  @ApiResponse({ type: QueryUserDetailOutDto })
   @Post('detail')
-  detail(@Body() param: QueryDetailDto) {
+  detail(@Body() param: QueryTopicDetailInputDto) {
     return this.userService.findById(param.id);
   }
 
@@ -55,11 +53,11 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '设置邮箱' })
+  @ApiBody({ type: SetEmailDto })
   @UseGuards(JwtAuthGuard)
   @Post('setEmail')
-  async setEmail(@Body() payload: SetEmailDto, @Req() req: Request) {
-    const { user } = req as any;
-    return await this.userService.setEmail(user.id, payload.email);
+  async setEmail(@Body() payload: SetEmailDto, @QueryUser('id') userId) {
+    return await this.userService.setEmail(userId, payload.email);
   }
 
   /**
@@ -69,9 +67,8 @@ export class UserController {
    */
   @ApiOperation({ summary: '验证邮箱' })
   @Post('/verifyEmail')
-  async verifyEmail(@Body() payload: VerifyEmailDto, @Req() req: Request) {
-    const { user } = req as any;
-    return await this.emailService.verify(user.id, payload.code);
+  async verifyEmail(@Body() payload: VerifyEmailDto, @QueryUser('id') userId) {
+    return await this.emailService.verify(userId, payload.code);
   }
 }
 
@@ -100,10 +97,10 @@ export class AdminUserController {
   }
 
   @ApiOperation({ summary: '查看用户详情' })
-  @ApiBody({ type: QueryDetailDto })
+  @ApiBody({ type: QueryTopicDetailInputDto })
   @ApiResponse({ type: User })
   @Post('detail')
-  detail(@Body() param: QueryDetailDto) {
+  detail(@Body() param: QueryTopicDetailInputDto) {
     return this.userService.findById(param.id);
   }
 }

@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTopicDto } from './dto/create-resource.dto';
-import { UpdateTopicDto } from './dto/update-resource.dto';
+import { UpdateTopicDto } from './dto/update-topic.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getConnection, getManager, Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { Topic } from './entities/topic.entity';
 import { CategoryService } from 'src/modules/category/category.service';
-import { QueryTopicDto, QueryTopicListDto } from './dto/query-topic.dto';
+import { QueryTopicListDto } from './dto/query-topic.dto';
 import { UserLike } from '../user-like/entities/user-like.entity';
-import e from 'express';
 import { ScoreService } from '../score/score.service';
 
 @Injectable()
@@ -22,12 +20,14 @@ export class TopicService {
     userId: string,
     title: string,
     content: string,
+    summary: string,
     categoryId: string,
   ) {
     const existCategory = await this.categoryService.findById(categoryId);
     const newReource = await this.topicRepository.create({
       title,
       content,
+      summary,
       category: existCategory,
       userId,
     });
@@ -38,9 +38,16 @@ export class TopicService {
     userId: string,
     title: string,
     content: string,
+    summary: string,
     categoryId: string,
   ) {
-    const topic = await this.create(userId, title, content, categoryId);
+    const topic = await this.create(
+      userId,
+      title,
+      content,
+      summary,
+      categoryId,
+    );
     this.scoreService.operate(userId, 1, topic.id, 'topic');
     return null;
   }
@@ -131,9 +138,18 @@ export class TopicService {
   }
 
   async findOne(id: string) {
-    const topic = await this.topicRepository.findOne({ id });
+    // const topic = await this.topicRepository.findOne({ id });
+    const qb = this.topicRepository
+      .createQueryBuilder('topic')
+      .leftJoinAndMapOne(
+        'topic.user',
+        'user',
+        'user',
+        'user.id = topic.user_id',
+      )
+      .where({ id });
+    const topic = await qb.getOne();
     return topic;
-    // if (!topic) {}
   }
 
   async update(p: UpdateTopicDto) {

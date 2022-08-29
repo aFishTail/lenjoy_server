@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsUUID } from 'class-validator';
+import { Topic } from 'src/modules/topic/entities/topic.entity';
 
 export class QueryPagerInputDto {
   @ApiProperty()
@@ -19,7 +20,7 @@ export class QueryPagerOutDto<T> {
 }
 
 export class ResponseDto {
-  @ApiProperty()
+  @ApiProperty({ default: null })
   data: unknown;
 
   @ApiProperty({ example: '' })
@@ -29,8 +30,17 @@ export class ResponseDto {
   code: number;
 }
 
-export class QueryDetailDto {
+export class QueryTopicDetailInputDto {
   @ApiProperty({ description: '主键id' })
   @IsUUID()
   id: string;
+}
+export class PrimaryKeyDto {
+  @ApiProperty({ description: '主键id' })
+  @IsUUID()
+  id: string;
+}
+export class QueryTopicDetailOutDto extends ResponseDto {
+  @ApiProperty({ type: Topic })
+  data: unknown;
 }

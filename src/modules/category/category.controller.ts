@@ -1,6 +1,6 @@
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { QueryDetailDto } from 'src/common/base.dto';
+import { QueryTopicDetailInputDto } from 'src/common/base.dto';
 import { Roles, RolesGuard } from '../auth/roles.guard';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -19,6 +19,12 @@ export class CategoryController {
   @ApiResponse({ type: Category })
   findAll(@Body() payload: QueryCategoryInputDto) {
     return this.categoryService.findAll(payload);
+  }
+
+  @ApiOperation({ summary: '新增' })
+  @Post('/create')
+  create(@Body() createCategoryDto: CreateCategoryDto) {
+    return this.categoryService.create(createCategoryDto);
   }
 }
 
@@ -46,7 +52,7 @@ export class AdminCategoryController {
   @ApiOperation({ summary: '查询详情' })
   @Roles('admin')
   @Post('/detail')
-  findOne(@Body() payload: QueryDetailDto) {
+  findOne(@Body() payload: QueryTopicDetailInputDto) {
     return this.categoryService.findOne(payload.id);
   }
 

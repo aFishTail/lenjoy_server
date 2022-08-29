@@ -1,6 +1,6 @@
-import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty, IntersectionType } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
-import { QueryPagerInputDto } from 'src/common/base.dto';
+import { QueryPagerInputDto, ResponseDto } from 'src/common/base.dto';
 import { User } from '../entities/user.entity';
 
 export class QueryUserInputDto extends QueryPagerInputDto {
@@ -15,12 +15,6 @@ export class QueryUserInputDto extends QueryPagerInputDto {
   @ApiProperty()
   @IsString()
   endTime: string;
-
-  //   @IsNumber()
-  //   pageNum: number;
-
-  //   @IsNumber()
-  //   pageSize: number;
 }
 
 // export class QueryUserOutDto extends QueryPagerOutDto<User> {}
@@ -35,4 +29,9 @@ export class QueryUserOutDto {
   records: User[];
   @ApiProperty()
   total: number;
+}
+
+export class QueryUserDetailOutDto extends ResponseDto {
+  @ApiProperty({ type: User })
+  data: unknown;
 }

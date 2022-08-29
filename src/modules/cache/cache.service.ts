@@ -9,6 +9,7 @@ export class CacheService {
     this.getClient();
   }
   async getClient() {
+    console.log(this.redisService)
     this.client = await this.redisService.getClient();
   }
 

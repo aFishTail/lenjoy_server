@@ -69,7 +69,7 @@ import configuration from 'config/configuration';
         charset: 'utf8mb4',
         timezone: '+08:00',
         synchronize: true,
-        logging: true,
+        logging: false,
         migrationsTableName: 'custom_migration_table',
         migrations: ['migration/*.js'],
         cli: {

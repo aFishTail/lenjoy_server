@@ -6,12 +6,17 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { TopicService } from './topic.service';
-import { CreateTopicDto } from './dto/create-resource.dto';
-import { UpdateTopicDto } from './dto/update-resource.dto';
-import { QueryTopicListDto } from './dto/query-topic.dto';
+import { CreateTopicDto } from './dto/create-topic.dto';
+import { UpdateTopicDto } from './dto/update-topic.dto';
+import { QueryTopicListDto, QueryTopicListOutDto } from './dto/query-topic.dto';
 import { Topic } from './entities/topic.entity';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { QueryDetailDto } from 'src/common/base.dto';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  PrimaryKeyDto,
+  QueryTopicDetailInputDto,
+  QueryTopicDetailOutDto,
+  ResponseDto,
+} from 'src/common/base.dto';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { EntityAuth, EntityAuthGuard } from '../auth/entity.guard';
@@ -22,27 +27,36 @@ export class TopicController {
   constructor(private readonly topicService: TopicService) {}
 
   @ApiOperation({ summary: '发布帖子' })
-  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: 201, type: ResponseDto })
   @UseGuards(JwtAuthGuard)
   @Post('/create')
   create(@Body() payload: CreateTopicDto, @QueryUser('id') userId) {
-    const { title, content, categoryId } = payload;
-    return this.topicService.postTopic(userId, title, content, categoryId);
+    const { title, content, summary, categoryId } = payload;
+    return this.topicService.postTopic(
+      userId,
+      title,
+      content,
+      summary,
+      categoryId,
+    );
   }
 
   @ApiOperation({ summary: '查看帖子列表' })
-  @ApiResponse({ status: 201 })
+  @ApiBody({ type: QueryTopicListDto })
+  @ApiResponse({ status: 201, type: QueryTopicListOutDto })
   @Post('/list')
-  @ApiResponse({ type: [Topic] })
   findAll(@QueryUser('id') userId, @Body() payload: QueryTopicListDto) {
     return this.topicService.userList(userId, payload);
   }
 
   @ApiOperation({ summary: '查看帖子详情' })
-  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: 201, type: QueryTopicDetailOutDto })
   @Post('/detail')
-  async getDetail(@Body() param: QueryDetailDto, @QueryUser('id') userId) {
-    const { id } = param;
+  async getDetail(
+    @Body() payload: QueryTopicDetailInputDto,
+    @QueryUser('id') userId,
+  ) {
+    const { id } = payload;
     console.log('userId', userId);
     const topic = await this.topicService.findOne(id);
     if (!topic) {
@@ -53,7 +67,7 @@ export class TopicController {
   }
 
   @ApiOperation({ summary: '编辑帖子' })
-  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: 201, type: ResponseDto })
   @EntityAuth(Topic, 'id')
   @UseGuards(JwtAuthGuard)
   @Post('/update')
@@ -62,11 +76,11 @@ export class TopicController {
   }
 
   @ApiOperation({ summary: '删除帖子' })
-  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: 201, type: ResponseDto })
   @EntityAuth(Topic, 'id')
   @UseGuards(JwtAuthGuard, EntityAuthGuard)
   @Post('/delete')
-  remove(@Body() payload: { id: string }) {
+  remove(@Body() payload: PrimaryKeyDto) {
     return this.topicService.delete(payload.id);
   }
 }
@@ -79,8 +93,14 @@ export class AdminTopicController {
   @UseGuards(JwtAuthGuard)
   @Post('/create')
   create(@Body() payload: CreateTopicDto, @QueryUser('id') userId) {
-    const { title, content, categoryId } = payload;
-    return this.topicService.create(userId, title, content, categoryId);
+    const { title, content, summary, categoryId } = payload;
+    return this.topicService.create(
+      userId,
+      title,
+      content,
+      summary,
+      categoryId,
+    );
   }
 
   @Post('/list')
@@ -90,7 +110,7 @@ export class AdminTopicController {
   }
 
   @Post('/detail')
-  async getDetail(@Body() param: QueryDetailDto, @QueryUser('id') userId) {
+  async detail(@Body() param: PrimaryKeyDto, @QueryUser('id') userId) {
     const { id } = param;
     console.log('userId', userId);
     const topic = await this.topicService.findOne(id);

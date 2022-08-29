@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User {
@@ -35,7 +35,7 @@ export class User {
   @Column({ length: 500 })
   username: string;
 
-  @ApiProperty()
+  @ApiHideProperty()
   @Exclude()
   @Column({ length: 500 })
   password: string;

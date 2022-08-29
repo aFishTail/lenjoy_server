@@ -11,21 +11,25 @@ import {
 } from 'typeorm';
 import { Category } from 'src/modules/category/entities/category.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { type } from 'os';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Comment } from 'src/modules/comment/entities/comment.entity';
 
 @Entity()
 export class Topic {
+  @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty({ description: '标题' })
-  @Column()
+  @Column({ length: 50 })
   title: string;
 
+  @ApiProperty({ description: '摘要' })
+  @Column({ length: 255 })
+  summary: string;
+
   @ApiProperty({ description: '内容' })
-  @Column()
+  @Column({ type: 'text' })
   content: string;
 
   @ApiProperty({ description: '是否推荐' })
@@ -67,15 +71,18 @@ export class Topic {
   @Column({ length: 500, nullable: true })
   ip: string;
 
+  @ApiProperty({ type: Category, isArray: true })
   @ManyToOne(() => Category, (category) => category.topics, {
     cascade: true,
   })
   @JoinColumn()
   category: Category;
 
+  @ApiProperty()
   @Column({ name: 'user_id' })
   userId: string;
 
+  @ApiProperty()
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
@@ -83,6 +90,7 @@ export class Topic {
   })
   createAt: Date;
 
+  @ApiProperty()
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
