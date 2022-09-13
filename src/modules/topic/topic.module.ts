@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TopicService } from './topic.service';
-import { TopicController } from './topic.controller';
+import { AdminTopicController, TopicController } from './topic.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Topic } from './entities/topic.entity';
 import { CategoryModule } from 'src/modules/category/category.module';
@@ -14,7 +14,7 @@ import { ScoreModule } from '../score/score.module';
     AuthModule,
     ScoreModule,
   ],
-  controllers: [TopicController],
+  controllers: [TopicController, AdminTopicController],
   providers: [TopicService],
 })
 export class TopicModule {}

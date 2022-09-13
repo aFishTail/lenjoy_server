@@ -8,18 +8,21 @@ import {
 import { TopicService } from './topic.service';
 import { CreateTopicDto } from './dto/create-topic.dto';
 import { UpdateTopicDto } from './dto/update-topic.dto';
-import { QueryTopicListDto, QueryTopicListOutDto } from './dto/query-topic.dto';
+import {
+  QueryTopicListInputDto,
+  QueryTopicListOutDto,
+} from './dto/query-topic.dto';
 import { Topic } from './entities/topic.entity';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   PrimaryKeyDto,
-  QueryTopicDetailInputDto,
   QueryTopicDetailOutDto,
   ResponseDto,
 } from 'src/common/base.dto';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { EntityAuth, EntityAuthGuard } from '../auth/entity.guard';
+import { Roles, RolesGuard } from '../auth/roles.guard';
 
 @Controller('topic')
 @ApiTags('帖子管理')
@@ -42,20 +45,17 @@ export class TopicController {
   }
 
   @ApiOperation({ summary: '查看帖子列表' })
-  @ApiBody({ type: QueryTopicListDto })
+  @ApiBody({ type: QueryTopicListInputDto })
   @ApiResponse({ status: 201, type: QueryTopicListOutDto })
   @Post('/list')
-  findAll(@QueryUser('id') userId, @Body() payload: QueryTopicListDto) {
+  findAll(@QueryUser('id') userId, @Body() payload: QueryTopicListInputDto) {
     return this.topicService.userList(userId, payload);
   }
 
   @ApiOperation({ summary: '查看帖子详情' })
   @ApiResponse({ status: 201, type: QueryTopicDetailOutDto })
   @Post('/detail')
-  async getDetail(
-    @Body() payload: QueryTopicDetailInputDto,
-    @QueryUser('id') userId,
-  ) {
+  async getDetail(@Body() payload: PrimaryKeyDto, @QueryUser('id') userId) {
     const { id } = payload;
     console.log('userId', userId);
     const topic = await this.topicService.findOne(id);
@@ -69,7 +69,7 @@ export class TopicController {
   @ApiOperation({ summary: '编辑帖子' })
   @ApiResponse({ status: 201, type: ResponseDto })
   @EntityAuth(Topic, 'id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, EntityAuthGuard)
   @Post('/update')
   update(@Body() payload: UpdateTopicDto) {
     return this.topicService.update(payload);
@@ -85,12 +85,17 @@ export class TopicController {
   }
 }
 
-@Controller('admin/topic')
 @ApiTags('管理平台-帖子管理')
+@Roles('admin')
+@UseGuards(RolesGuard)
+@Controller('admin/topic')
 export class AdminTopicController {
   constructor(private readonly topicService: TopicService) {}
 
+  @ApiOperation({ summary: '管理员创建帖子' })
+  @ApiResponse({ status: 201, type: ResponseDto })
   @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @Post('/create')
   create(@Body() payload: CreateTopicDto, @QueryUser('id') userId) {
     const { title, content, summary, categoryId } = payload;
@@ -103,31 +108,41 @@ export class AdminTopicController {
     );
   }
 
+  @ApiOperation({ summary: '查询帖子列表' })
+  @ApiResponse({ type: QueryTopicListOutDto })
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @Post('/list')
-  @ApiResponse({ type: [Topic] })
-  findAll(@QueryUser('id') userId, @Body() payload: QueryTopicListDto) {
-    return this.topicService.getList(userId, payload);
+  findAll(@Body() payload: QueryTopicListInputDto) {
+    return this.topicService.adminGetList(payload);
   }
 
+  @ApiOperation({ summary: '查询帖子详情' })
+  @ApiResponse({ type: QueryTopicDetailOutDto })
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @Post('/detail')
-  async detail(@Body() param: PrimaryKeyDto, @QueryUser('id') userId) {
+  async detail(@Body() param: PrimaryKeyDto) {
     const { id } = param;
-    console.log('userId', userId);
-    const topic = await this.topicService.findOne(id);
-    if (!topic) {
-      throw new BadRequestException('帖子不存在');
-    }
-    await this.topicService.IncrViewCount(id);
+    const topic = await this.topicService.adminGetDetail(id);
     return topic;
   }
 
+  @ApiOperation({ summary: '修改帖子' })
+  @ApiResponse({ type: ResponseDto })
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @Post('/update')
   update(@Body() updateResourceDto: UpdateTopicDto) {
     return this.topicService.update(updateResourceDto);
   }
 
+  @ApiOperation({ summary: '删除帖子' })
+  @ApiResponse({ type: ResponseDto })
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @Post('/delete')
-  remove(@Body() payload: { id: string }) {
-    return this.topicService.delete(payload.id);
+  remove(@Body() payload: PrimaryKeyDto) {
+    return this.topicService.adminDelete(payload.id);
   }
 }

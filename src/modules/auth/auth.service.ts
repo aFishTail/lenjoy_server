@@ -61,4 +61,8 @@ export class AuthService {
     const userInfo = await getGithubUserInfo(accessToken as any);
     return userInfo;
   }
+
+  async userInfo(userId: string) {
+    return await this.userService.findById(userId);
+  }
 }

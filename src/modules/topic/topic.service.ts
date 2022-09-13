@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateTopicDto } from './dto/update-topic.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getConnection, Repository } from 'typeorm';
 import { Topic } from './entities/topic.entity';
 import { CategoryService } from 'src/modules/category/category.service';
-import { QueryTopicListDto } from './dto/query-topic.dto';
+import { QueryTopicListInputDto } from './dto/query-topic.dto';
 import { UserLike } from '../user-like/entities/user-like.entity';
 import { ScoreService } from '../score/score.service';
 
@@ -60,7 +60,7 @@ export class TopicService {
     return data;
   }
 
-  async getList(userId: string, payload: QueryTopicListDto) {
+  async getList(userId: string, payload: QueryTopicListInputDto) {
     const { pageNum, pageSize, title, startTime, endTime, categoryLabel } =
       payload;
     const qb = this.topicRepository
@@ -98,7 +98,7 @@ export class TopicService {
     return data;
   }
   // 查询用户帖子列表
-  async userList(userId: string, payload: QueryTopicListDto) {
+  async userList(userId: string, payload: QueryTopicListInputDto) {
     const { title, pageNum, pageSize, categoryLabel } = payload;
     const qb = this.topicRepository
       .createQueryBuilder('topic')
@@ -138,7 +138,6 @@ export class TopicService {
   }
 
   async findOne(id: string) {
-    // const topic = await this.topicRepository.findOne({ id });
     const qb = this.topicRepository
       .createQueryBuilder('topic')
       .leftJoinAndMapOne(
@@ -182,5 +181,65 @@ export class TopicService {
       })
       .where('id = :id', { id })
       .execute();
+  }
+
+  async adminGetList(payload: QueryTopicListInputDto) {
+    const { pageNum, pageSize, title, startTime, endTime, categoryLabel, categoryId } =
+      payload;
+    const qb = this.topicRepository
+      .createQueryBuilder('topic')
+      .leftJoinAndSelect('topic.category', 'category')
+      .leftJoinAndMapOne(
+        'topic.user',
+        'user',
+        'user',
+        'user.id = topic.user_id',
+      );
+
+    if (categoryLabel) {
+      qb.andWhere('topic.categoryLabel = :categoryLabel', { categoryLabel });
+    }
+    if (categoryId) {
+      qb.andWhere('topic.categoryId = :categoryId', { categoryId });
+    }
+    if (title) {
+      qb.andWhere('topic.title LIKE :title', { title: `%${title}%` });
+    }
+    if (startTime && endTime) {
+      qb.andWhere('topic.create_at BETWEEN :startTime AND :endTime', {
+        startTime,
+        endTime,
+      });
+    }
+    qb.take(pageSize).skip((pageNum - 1) * pageSize);
+    const [records, total] = await qb.getManyAndCount();
+    const data = {
+      records,
+      total,
+    };
+    return data;
+  }
+
+  async adminGetDetail(id: string) {
+    const qb = this.topicRepository
+      .createQueryBuilder('topic')
+      .leftJoinAndMapOne(
+        'topic.user',
+        'user',
+        'user',
+        'user.id = topic.user_id',
+      )
+      .where({ id });
+    const topic = await qb.getOne();
+    if (!topic) {
+      throw new BadRequestException('帖子不存在');
+    }
+    return topic;
+  }
+
+  async adminDelete(id: string) {
+    const data = await this.topicRepository.findOne({ id });
+    await this.topicRepository.remove(data);
+    return null;
   }
 }

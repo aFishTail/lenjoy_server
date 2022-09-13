@@ -30,11 +30,6 @@ export class ResponseDto {
   code: number;
 }
 
-export class QueryTopicDetailInputDto {
-  @ApiProperty({ description: '主键id' })
-  @IsUUID()
-  id: string;
-}
 export class PrimaryKeyDto {
   @ApiProperty({ description: '主键id' })
   @IsUUID()

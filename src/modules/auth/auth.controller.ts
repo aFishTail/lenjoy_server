@@ -6,8 +6,10 @@ import {
   HttpStatus,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { QueryUser } from 'src/decorators/user.decorator';
 import { generateCaptcha } from 'src/utils/captcha';
 import { AuthService } from './auth.service';
 import {
@@ -15,6 +17,7 @@ import {
   LoginWithGithubInputDto,
   RegisterInputDto,
 } from './dto/auth.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @ApiTags('认证管理')
 @Controller('auth')
@@ -26,14 +29,19 @@ export class AuthController {
    * @param user
    */
   @Post('login')
-  @HttpCode(HttpStatus.OK)
   async login(@Body() user: LoginInputDto) {
     const res = this.authService.loginWithCaptcha(user);
     return res;
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('userInfo')
+  async userInfo(@QueryUser('id') userId) {
+    const res = this.authService.userInfo(userId);
+    return res;
+  }
+
   @Post('register')
-  @HttpCode(HttpStatus.OK)
   async register(@Body() payload: RegisterInputDto) {
     const res = this.authService.register(payload);
     return res;

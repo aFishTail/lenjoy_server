@@ -4,13 +4,19 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  Body,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import multer = require('multer');
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import { type } from 'os';
+import { UploadArticleImageInputDto } from './dto/article-upload.dto';
 
 @Controller('file')
 export class FileController {
+  @ApiOperation({ summary: '上传文章图片' })
+  @ApiBody({ type: UploadArticleImageInputDto })
   @Post('upload/img/article')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -37,6 +43,7 @@ export class FileController {
     }),
   )
   async coverImport(@UploadedFile() file) {
-    return { url: `/static/img/article/${file.filename}` };
+    const serverAddr = 'http://127.0.0.1:3000';
+    return { url: `${serverAddr}/static/img/article/${file.filename}` };
   }
 }

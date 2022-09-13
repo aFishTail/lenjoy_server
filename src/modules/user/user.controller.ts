@@ -16,7 +16,7 @@ import {
 import { User } from './entities/user.entity';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryUserDetailOutDto, QueryUserInputDto } from './dto/query-user.dto';
-import { QueryTopicDetailInputDto } from 'src/common/base.dto';
+import { PrimaryKeyDto } from 'src/common/base.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { VerifyEmailDto } from './dto/user-email.dto';
@@ -39,10 +39,9 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '查看用户详情' })
-  @ApiBody({ type: QueryTopicDetailInputDto })
   @ApiResponse({ type: QueryUserDetailOutDto })
   @Post('detail')
-  detail(@Body() param: QueryTopicDetailInputDto) {
+  detail(@Body() param: PrimaryKeyDto) {
     return this.userService.findById(param.id);
   }
 
@@ -97,10 +96,9 @@ export class AdminUserController {
   }
 
   @ApiOperation({ summary: '查看用户详情' })
-  @ApiBody({ type: QueryTopicDetailInputDto })
   @ApiResponse({ type: User })
   @Post('detail')
-  detail(@Body() param: QueryTopicDetailInputDto) {
+  detail(@Body() param: PrimaryKeyDto) {
     return this.userService.findById(param.id);
   }
 }

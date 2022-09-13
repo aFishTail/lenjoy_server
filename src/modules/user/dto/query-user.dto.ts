@@ -1,18 +1,21 @@
 import { ApiExtraModels, ApiProperty, IntersectionType } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { QueryPagerInputDto, ResponseDto } from 'src/common/base.dto';
 import { User } from '../entities/user.entity';
 
 export class QueryUserInputDto extends QueryPagerInputDto {
   @ApiProperty()
+  @IsOptional()
   @IsString()
   username: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   startTime: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   endTime: string;
 }

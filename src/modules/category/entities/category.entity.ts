@@ -16,16 +16,16 @@ export class Category {
   id: string;
 
   @ApiProperty({ description: '名称' })
-  @Column({ unique: true })
+  @Column({ length: 10, unique: true })
   name: string;
 
   @ApiProperty({ description: 'label值' })
-  @Column()
+  @Column({ length: 10 })
   label: string;
 
   @ApiProperty()
   // TODO: 能否获取到当前实例的名称
-  @Column({ length: 500, nullable: true })
+  @Column({ length: 200, nullable: true })
   description: string;
 
   @ApiProperty({ description: '图标', nullable: true })

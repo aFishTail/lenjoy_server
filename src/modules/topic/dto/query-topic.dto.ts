@@ -7,7 +7,11 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { QueryPagerInputDto, ResponseDto } from 'src/common/base.dto';
+import {
+  QueryPagerInputDto,
+  QueryPagerOutDto,
+  ResponseDto,
+} from 'src/common/base.dto';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Topic } from '../entities/topic.entity';
 
@@ -15,30 +19,35 @@ export class QueryTopicDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  userId: string;
+  userId?: string;
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  categoryLabel: string;
+  categoryLabel?: string;
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  title: string;
+  categoryId?: string;
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  startTime: string;
+  title?: string;
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  endTime: string;
+  startTime?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  endTime?: string;
 }
 
-export class QueryTopicListDto extends IntersectionType(
+export class QueryTopicListInputDto extends IntersectionType(
   QueryPagerInputDto,
   QueryTopicDto,
 ) {}
@@ -59,7 +68,25 @@ class UserVisitedTopicDto extends Topic {
   user: string;
 }
 
-export class QueryTopicListOutDto extends ResponseDto {
+export class QueryTopicListOut extends QueryPagerOutDto<UserVisitedTopicDto> {
   @ApiProperty({ type: UserVisitedTopicDto, isArray: true })
+  records: UserVisitedTopicDto[];
+}
+export class QueryTopicListOutDto extends ResponseDto {
+  @ApiProperty({ type: QueryTopicListOut, isArray: true })
   data: unknown;
 }
+
+// TODO: test
+// export class QueryTopicListOutDto extends ResponseDto {
+//   @ApiProperty({
+//     type: 'array',
+//     items: {
+//       type: 'object',
+//       items: {
+
+//       }
+//     }
+//   })
+//   data: unknown;
+// }

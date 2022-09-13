@@ -12,15 +12,6 @@ import { ValidationPipe } from './pipe/validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const config = new DocumentBuilder()
-    .addBearerAuth()
-    .setTitle('lenjoy api 文档')
-    .setDescription('lenjoy api 文档')
-    .setVersion('1.0')
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, document);
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -35,6 +26,17 @@ async function bootstrap() {
   app.useStaticAssets('public', {
     prefix: '/static',
   });
+
+  app.setGlobalPrefix('/api');
+  const config = new DocumentBuilder()
+    .addBearerAuth()
+    .setTitle('lenjoy api 文档')
+    .setDescription('lenjoy api 文档')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger', app, document);
   await app.listen(3000);
 }
 process.on('uncaughtException', (err) => {

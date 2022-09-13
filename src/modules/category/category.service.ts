@@ -4,7 +4,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
-import { QueryCategoryInputDto } from './dto/query-category.dto';
+import { QueryCategoryListInputDto } from './dto/query-category.dto';
 import { User } from '../user/entities/user.entity';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class CategoryService {
     return newCategory;
   }
 
-  async findAll(payload: QueryCategoryInputDto) {
+  async findAll(payload: QueryCategoryListInputDto) {
     const { name, startTime, endTime } = payload;
     const qb = this.categoryRepository
       .createQueryBuilder('category')

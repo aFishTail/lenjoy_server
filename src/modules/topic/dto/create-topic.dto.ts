@@ -13,6 +13,7 @@ export class CreateTopicDto {
 
   @ApiProperty({ description: '摘要' })
   @IsString()
+  @IsOptional()
   summary: string;
 
   @ApiProperty({ description: '帖子主题' })
