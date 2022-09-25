@@ -27,6 +27,7 @@ export class TransformInterceptor<T>
         const code = response.statusCode;
         const logFormat = ` \n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         Type: Response
+        statusCode: ${code},
         Request original url: ${request.originalUrl}
         Method: ${request.method}
         IP: ${request.ip}

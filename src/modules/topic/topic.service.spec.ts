@@ -97,7 +97,9 @@ describe('test topic service', () => {
   });
 
   it('increase view', async () => {
-    const old = await getConnection().getRepository(Topic).findOne();
+    const old = await getConnection()
+      .getRepository(Topic)
+      .findOne({ where: {} });
     await service.IncrViewCount(old.id);
     const updated = await getConnection().getRepository(Topic).findOne(old.id);
     expect(updated.viewCount).toBe(1);
@@ -105,9 +107,13 @@ describe('test topic service', () => {
 
   it('delete topic', async () => {
     const title = '修改后的测试帖子';
-    const old = await getConnection().getRepository(Topic).findOne({ title });
+    const old = await getConnection().getRepository(Topic).findOne({
+      where: { title },
+    });
     await service.delete(old.id);
-    const exist = await getConnection().getRepository(Topic).findOne(title);
+    const exist = await getConnection()
+      .getRepository(Topic)
+      .findOne({ where: { title } });
     expect(exist).toBeFalsy();
   });
 });

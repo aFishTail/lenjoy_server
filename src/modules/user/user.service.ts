@@ -50,7 +50,7 @@ export class UserService {
    * @param id
    */
   async findById(id): Promise<User> {
-    const user = await this.userRepository.findOne(id);
+    const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new HttpException('未查询到该用户', HttpStatus.BAD_REQUEST);
     }
@@ -105,7 +105,7 @@ export class UserService {
 
   async update(user: Partial<User>): Promise<any> {
     const { id, email } = user;
-    const oldUser = await this.userRepository.findOne(id);
+    const oldUser = await this.userRepository.findOne({ where: { id } });
     delete oldUser.password;
     if (user.username && user.username !== oldUser.username) {
       const existUser = await this.userRepository.findOne({
@@ -130,7 +130,7 @@ export class UserService {
 
   async updateBasic(user: UpdateUserBasicDto & { id: string }) {
     const { id } = user;
-    const olduser = await this.userRepository.findOne(id);
+    const olduser = await this.userRepository.findOne({ where: { id } });
     if (!olduser) {
       throw new BadRequestException('用户不存在');
     }
@@ -141,7 +141,7 @@ export class UserService {
 
   async updatePassword(p: UpdateUserPasswordDto): Promise<User> {
     const { id } = p;
-    const existUser = await this.userRepository.findOne(id);
+    const existUser = await this.userRepository.findOne({ where: { id } });
     const { oldPassword, newPassword } = p;
     if (
       !existUser ||

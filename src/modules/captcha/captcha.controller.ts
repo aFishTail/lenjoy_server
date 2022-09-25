@@ -15,7 +15,7 @@ export class CaptchaController {
   @ApiResponse({ status: 201, type: QueryCaptchaOutDto })
   @Post('get')
   findOne() {
-    // return this.captchaService.findOne();
+    // return this.captchaService.findOne({ where: {  } });
     const id = uuidv4();
     const imgUrl = `http://localhost:3000/api/captcha/show?id=${id}`;
     return {

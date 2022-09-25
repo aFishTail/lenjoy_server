@@ -4,11 +4,12 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  BaseEntity,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-export class Comment {
+export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

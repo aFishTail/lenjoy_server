@@ -1,7 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TopicModule } from './modules/topic/topic.module';
-import { CategoryModule } from './modules/category/category.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CommentModule } from './modules/comment/comment.module';
@@ -21,8 +20,6 @@ import { UserFavoriteModule } from './modules/user-favorite/user-favorite.module
 import * as path from 'path';
 import { FollowModule } from './modules/user-follow/follow.module';
 import { QueryUserMiddler } from './middleware/queryUser.middleware';
-import { TopicController } from './modules/topic/topic.controller';
-import { ScoreController } from './modules/score/score.controller';
 import { UserLike } from './modules/user-like/entities/user-like.entity';
 import { ThirdAccount, User } from './modules/user/entities/user.entity';
 import { Topic } from './modules/topic/entities/topic.entity';
@@ -35,6 +32,36 @@ import { Message } from './modules/message/entities/message.entity';
 import { EmailCode } from './modules/email/entities/emailCode.entity';
 import { UserFavorite } from './modules/user-favorite/entities/user-favorite.entity';
 import configuration from 'config/configuration';
+import { AdminModule } from '@adminjs/nestjs';
+import * as AdminJSTypeorm from '@adminjs/typeorm';
+import AdminJS, { ResourceOptions, ResourceWithOptions } from 'adminjs';
+import passwordsFeature from '@adminjs/passwords';
+import * as bcrypt from 'bcryptjs';
+
+AdminJS.registerAdapter({
+  Resource: AdminJSTypeorm.Resource,
+  Database: AdminJSTypeorm.Database,
+});
+
+const UserResource: ResourceWithOptions = {
+  resource: User,
+  options: {
+    properties: {
+      email: {
+        isRequired: true,
+      },
+      username: {
+        isRequired: true,
+      },
+    },
+  },
+  features: [
+    passwordsFeature({
+      properties: { encryptedPassword: 'password' },
+      hash: (password) => bcrypt.hashSync(password, 10),
+    }),
+  ],
+};
 
 @Module({
   imports: [
@@ -77,7 +104,33 @@ import configuration from 'config/configuration';
         },
       }),
     }),
-    CategoryModule,
+    AdminModule.createAdmin({
+      adminJsOptions: {
+        rootPath: '/admin',
+        resources: [
+          UserResource,
+          ThirdAccount,
+          {
+            resource: Topic,
+            options: {
+              properties: {
+                content: {
+                  type: 'richtext',
+                },
+              },
+            },
+          },
+          Category,
+          UserLike,
+          UserFavorite,
+          Comment,
+          Follow,
+          Score,
+          Message,
+          EmailCode,
+        ],
+      },
+    }),
     UserModule,
     AuthModule,
     CommentModule,

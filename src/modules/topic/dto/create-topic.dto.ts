@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateTopicDto {
   @ApiProperty({ description: '标题' })
@@ -9,6 +9,7 @@ export class CreateTopicDto {
 
   @ApiProperty({ description: '内容' })
   @IsString()
+  @IsNotEmpty()
   content: string;
 
   @ApiProperty({ description: '摘要' })
@@ -18,5 +19,6 @@ export class CreateTopicDto {
 
   @ApiProperty({ description: '帖子主题' })
   @IsString()
+  @IsNotEmpty()
   categoryId: string;
 }

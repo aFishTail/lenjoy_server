@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateTopicDto } from './dto/update-topic.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getConnection, Repository } from 'typeorm';
+import { DataSource, getConnection, Repository } from 'typeorm';
 import { Topic } from './entities/topic.entity';
 import { CategoryService } from 'src/modules/category/category.service';
 import { QueryTopicListInputDto } from './dto/query-topic.dto';
@@ -15,6 +15,7 @@ export class TopicService {
     private readonly topicRepository: Repository<Topic>,
     private readonly categoryService: CategoryService,
     private readonly scoreService: ScoreService,
+    private readonly dataSource: DataSource,
   ) {}
   async create(
     userId: string,
@@ -122,9 +123,10 @@ export class TopicService {
     const result = [];
     for (let i = 0; i < records.length; i++) {
       const n = { ...records[i], isLike: 0 };
-      const like = await getConnection()
+      // const like = await getConnection()
+      const like = await this.dataSource
         .getRepository(UserLike)
-        .findOne({ userId, entityId: n.id });
+        .findOne({ where: { userId, entityId: n.id } });
       if (like) {
         n.isLike = like.status;
       }
@@ -153,7 +155,9 @@ export class TopicService {
 
   async update(p: UpdateTopicDto) {
     const { id, title, content, categoryId } = p;
-    const oldTopic = await this.topicRepository.findOne({ id });
+    const oldTopic = await this.topicRepository.findOne({
+      where: { id },
+    });
     const newTopic = {
       ...oldTopic,
       title,
@@ -167,7 +171,9 @@ export class TopicService {
   }
 
   async delete(id: string) {
-    const data = await this.topicRepository.findOne({ id });
+    const data = await this.topicRepository.findOne({
+      where: { id },
+    });
     await this.topicRepository.remove(data);
     return null;
   }
@@ -184,8 +190,15 @@ export class TopicService {
   }
 
   async adminGetList(payload: QueryTopicListInputDto) {
-    const { pageNum, pageSize, title, startTime, endTime, categoryLabel, categoryId } =
-      payload;
+    const {
+      pageNum,
+      pageSize,
+      title,
+      startTime,
+      endTime,
+      categoryLabel,
+      categoryId,
+    } = payload;
     const qb = this.topicRepository
       .createQueryBuilder('topic')
       .leftJoinAndSelect('topic.category', 'category')
@@ -238,7 +251,9 @@ export class TopicService {
   }
 
   async adminDelete(id: string) {
-    const data = await this.topicRepository.findOne({ id });
+    const data = await this.topicRepository.findOne({
+      where: { id },
+    });
     await this.topicRepository.remove(data);
     return null;
   }

@@ -5,12 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  BaseEntity,
 } from 'typeorm';
 import { Topic } from 'src/modules/topic/entities/topic.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-export class Category {
+export class Category extends BaseEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;

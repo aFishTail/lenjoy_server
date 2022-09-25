@@ -7,13 +7,14 @@ import {
   BeforeInsert,
   OneToMany,
   ManyToOne,
+  BaseEntity,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
   /**
    * 检测密码是否一致
    * @param password0 加密前密码
@@ -127,11 +128,12 @@ export class User {
 }
 
 @Entity()
-export class ThirdAccount {
+export class ThirdAccount extends BaseEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
+  @ApiProperty()
   @ManyToOne(() => User, (user) => user.thirdAccount)
   user: User;
 
@@ -150,12 +152,14 @@ export class ThirdAccount {
     name: 'third_type',
   })
   ThirdType;
+
   @ApiProperty()
   @Column({
     name: 'third_id',
   })
   ThirdId: string;
 
+  @ApiProperty()
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
@@ -163,6 +167,7 @@ export class ThirdAccount {
   })
   createAt: Date;
 
+  @ApiProperty()
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',

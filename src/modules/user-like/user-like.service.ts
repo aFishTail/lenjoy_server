@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getConnection, getManager, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { UserLikeOperateDto } from './dto/user-like.dto';
 import { UserLike } from './entities/user-like.entity';
 
@@ -9,13 +9,16 @@ export class UserLikeService {
   constructor(
     @InjectRepository(UserLike)
     private userLikeRepository: Repository<UserLike>,
+    private dataSource: DataSource,
   ) {}
   async operate(userId, p: UserLikeOperateDto & { entityType: string }) {
     const { entityId, status, entityType } = p;
-    const oldRecord = await this.userLikeRepository.findOne({ userId });
+    const oldRecord = await this.userLikeRepository.findOne({
+      where: { userId },
+    });
 
     if (!oldRecord) {
-      await getManager().transaction(async (manager) => {
+      await this.dataSource.transaction(async (manager) => {
         const _repository = manager.getRepository(UserLike);
         const newRecord = await _repository.create({
           userId,
@@ -39,7 +42,7 @@ export class UserLikeService {
       );
     }
 
-    await getManager().transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       await manager.getRepository(UserLike).update(entityId, { status });
 
       const op = status ? '+' : '-';

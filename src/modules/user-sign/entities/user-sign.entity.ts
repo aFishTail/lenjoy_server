@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-export class UserSign {
+export class UserSign extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

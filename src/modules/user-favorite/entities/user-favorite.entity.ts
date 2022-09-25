@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -8,7 +9,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class UserFavorite {
+export class UserFavorite extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

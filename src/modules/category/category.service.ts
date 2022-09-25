@@ -53,12 +53,16 @@ export class CategoryService {
   }
 
   async findOne(id: string) {
-    return await this.categoryRepository.findOne({ id });
+    return await this.categoryRepository.findOne({
+      where: { id },
+    });
   }
 
   async update(updateCategoryDto: UpdateCategoryDto) {
     const oldData = await this.categoryRepository.findOne({
-      id: updateCategoryDto.id,
+      where: {
+        id: updateCategoryDto.id,
+      },
     });
     const newData = {
       ...oldData,
@@ -69,7 +73,9 @@ export class CategoryService {
   }
 
   async delete(id: string) {
-    const data = await this.categoryRepository.findOne({ id });
+    const data = await this.categoryRepository.findOne({
+      where: { id },
+    });
     this.categoryRepository.remove(data);
   }
 

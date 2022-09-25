@@ -13,7 +13,9 @@ export class UserFavoriteService {
 
   async operate(userId, p: UserFavoriteOperateDto & { entityType: string }) {
     const { entityId, status, entityType } = p;
-    const oldRecord = await this.userFavoriteRepository.findOne({ userId });
+    const oldRecord = await this.userFavoriteRepository.findOne({
+      where: { userId },
+    });
 
     if (!oldRecord) {
       await getManager().transaction(async (manager) => {

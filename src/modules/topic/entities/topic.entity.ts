@@ -8,6 +8,7 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
+  BaseEntity,
 } from 'typeorm';
 import { Category } from 'src/modules/category/entities/category.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -15,7 +16,7 @@ import { User } from 'src/modules/user/entities/user.entity';
 import { Comment } from 'src/modules/comment/entities/comment.entity';
 
 @Entity()
-export class Topic {
+export class Topic extends BaseEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
