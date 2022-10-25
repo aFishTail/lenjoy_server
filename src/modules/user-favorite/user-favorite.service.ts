@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getManager, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { UserFavoriteOperateDto } from './dto/user-favorite.dto';
 import { UserFavorite } from './entities/user-favorite.entity';
 
@@ -9,6 +9,7 @@ export class UserFavoriteService {
   constructor(
     @InjectRepository(UserFavorite)
     private userFavoriteRepository: Repository<UserFavorite>,
+    private dataSource: DataSource,
   ) {}
 
   async operate(userId, p: UserFavoriteOperateDto & { entityType: string }) {
@@ -18,7 +19,7 @@ export class UserFavoriteService {
     });
 
     if (!oldRecord) {
-      await getManager().transaction(async (manager) => {
+      await this.dataSource.transaction(async (manager) => {
         const _repository = manager.getRepository(UserFavorite);
         const newRecord = await _repository.create({
           userId,
@@ -42,7 +43,7 @@ export class UserFavoriteService {
       );
     }
 
-    await getManager().transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       await manager.getRepository(UserFavorite).update(entityId, { status });
       const op = status ? '+' : '-';
       await manager.query(

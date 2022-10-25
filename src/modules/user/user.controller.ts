@@ -5,6 +5,9 @@ import {
   UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
+  HttpCode,
+  HttpStatus,
+  UploadedFiles,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,6 +24,10 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { VerifyEmailDto } from './dto/user-email.dto';
 import { EmialService } from '../email/email.service';
+import {
+  AnyFilesInterceptor,
+  FileFieldsInterceptor,
+} from '@nestjs/platform-express';
 
 @ApiTags('用户管理')
 @Controller('user')
@@ -47,8 +54,8 @@ export class UserController {
 
   @ApiOperation({ summary: '修改密码' })
   @Post('updatePassword')
-  remove(@Body() payload: UpdateUserPasswordDto) {
-    return this.userService.updatePassword(payload);
+  remove(@Body() payload: UpdateUserPasswordDto, @QueryUser('id') id) {
+    return this.userService.updatePassword({ ...payload, id });
   }
 
   @ApiOperation({ summary: '设置邮箱' })
@@ -92,6 +99,13 @@ export class AdminUserController {
   @Post('update')
   @ApiBody({ type: User })
   update(@Body() param) {
+    return this.userService.update(param);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('updateBasic')
+  @ApiBody({ type: User })
+  updateBasic(@Body() param) {
     return this.userService.update(param);
   }
 

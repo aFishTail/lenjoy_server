@@ -17,9 +17,8 @@ export function loggerMiddleware(
    Status code: ${code}
    Parmas: ${JSON.stringify(req.params)}
    Query: ${JSON.stringify(req.query)}
-   Body: ${JSON.stringify(
-     req.body,
-   )} \n  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+   Body: ${JSON.stringify(req.body)} 
+   \n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  `;
   // 根据状态码进行日志类型区分
   if (code >= 500) {

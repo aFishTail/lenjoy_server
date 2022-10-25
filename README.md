@@ -34,3 +34,10 @@ export class UserLikeOperateOutDto extends ResponseDto {
   data: unknown;
 }
 ```
+
+## 问题记录及解决方法
+### server
+1. 注册排名怎么计算的，若多用户同时注册时，怎么处理并发？
+
+### client
+1. nextjs getServerSideProps 中怎么获取到一些客户端存储到变量，如token， userId

@@ -8,6 +8,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export enum ScoreOperateType {
+  INCREASE = 'increase',
+  DECREASE = 'decrease',
+}
+
 @Entity()
 export class Score extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -26,8 +31,13 @@ export class Score extends BaseEntity {
   entityId: string;
 
   @ApiProperty({ description: '操作类型' })
-  @Column({ comment: '操作类型, 0: 减少， 1: 增加' })
-  type: number;
+  @Column({
+    type: 'enum',
+    enum: ScoreOperateType,
+    nullable: false,
+    comment: '操作类型',
+  })
+  type: ScoreOperateType;
 
   @ApiProperty({ description: '分数' })
   @Column()

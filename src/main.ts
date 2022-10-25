@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
 import { AppModule } from './app.module';
 import { AllExceptionFilter } from './filters/all-exception.filter';
 import { HttpExceptionFilter } from './filters/http-execption.filter';
@@ -9,12 +10,19 @@ import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { Log4jsLogger } from './logger';
 import { loggerMiddleware } from './middleware/logger.middleware';
 import { ValidationPipe } from './pipe/validation.pipe';
+import helmet from 'helmet';
+import * as compression from 'compression';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // app.use(helmet());
+  app.use(compression());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  // app.use(bodyParser.json({ limit: '1mb' }));
+  // app.use(bodyParser.urlencoded({ extended: true }));
+
   app.useLogger(app.get(Log4jsLogger));
   app.use(loggerMiddleware);
   app.useGlobalInterceptors(new TransformInterceptor());

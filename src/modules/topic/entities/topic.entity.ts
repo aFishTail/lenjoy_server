@@ -5,9 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  OneToOne,
   JoinColumn,
-  OneToMany,
   BaseEntity,
 } from 'typeorm';
 import { Category } from 'src/modules/category/entities/category.entity';
@@ -17,6 +15,8 @@ import { Comment } from 'src/modules/comment/entities/comment.entity';
 
 @Entity()
 export class Topic extends BaseEntity {
+  static modelName = 'topic';
+
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;

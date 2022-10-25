@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getManager, Repository } from 'typeorm';
+import { IScoreConfig } from 'src/common/constants';
+import { DataSource, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { ScoreOperateDto } from './dto/score.dto';
-import { Score } from './entities/score.entity';
+import { Score, ScoreOperateType } from './entities/score.entity';
 
 @Injectable()
 export class ScoreService {
@@ -12,15 +13,17 @@ export class ScoreService {
     private readonly scoreRepository: Repository<Score>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly dataSource: DataSource,
   ) {}
+
   async operate(
     userId: string,
-    type: 0 | 1,
+    type: ScoreOperateType,
     entityId: string,
     entityType: string,
   ) {
     const { score, desc } = getOpScoreAndDesc(type, entityType);
-    await getManager().transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       const scoreEntity = await manager.getRepository(Score).create({
         userId,
         entityId,
@@ -76,13 +79,13 @@ export class ScoreService {
 }
 
 // 获取操作类型的积分
-function getOpScoreAndDesc(type, entityType) {
+export function getOpScoreAndDesc(type: ScoreOperateType, entityType) {
   let score = 0;
   let desc = '';
   switch (entityType) {
     case 'topic':
-      score = 5;
-      desc = `${type ? '发布' : '删除'}帖子`;
+      score = IScoreConfig.PostTopic;
+      desc = `${type === ScoreOperateType.INCREASE ? '发布' : '删除'}帖子`;
       break;
 
     default:

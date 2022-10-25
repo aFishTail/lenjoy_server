@@ -1,6 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { getManager, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { EmailCode } from './entities/emailCode.entity';
 import * as dayjs from 'dayjs';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,6 +12,7 @@ export class EmialService {
     private readonly mailerService: MailerService,
     @InjectRepository(EmailCode)
     private readonly emialCodeRepository: Repository<EmailCode>,
+    private readonly dataSource: DataSource,
   ) {}
   async sendVerifyEmail(
     user: { userId: string; username: string; email: string },
@@ -56,7 +57,7 @@ export class EmialService {
     if (isAfterOneDay) {
       throw new HttpException('验证邮箱已过期', HttpStatus.BAD_REQUEST);
     }
-    await getManager().transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       await manager
         .createQueryBuilder()
         .update(User)

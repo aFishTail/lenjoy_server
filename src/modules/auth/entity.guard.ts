@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { User } from '../user/entities/user.entity';
-import { getManager } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 export const EntityAuth = (model: any, idKey: string) =>
   SetMetadata('entity', [model, idKey]);
@@ -17,10 +17,11 @@ export class EntityAuthGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly jwtService: JwtService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const [model, entityId] = this.reflector.get<string>(
+    const [model, entityId] = this.reflector.get<any>(
       'entity',
       context.getHandler(),
     );
@@ -40,8 +41,11 @@ export class EntityAuthGuard implements CanActivate {
       return false;
     }
     const entityIdValue = request.body[entityId];
-    const entity: Record<string, string> & { userId: string } =
-      await getManager().findOne(model, entityIdValue);
+    const entity = await this.dataSource
+      .getRepository(model)
+      .createQueryBuilder(model.modelName)
+      .where({ id: entityIdValue })
+      .getOne();
     return entity && entity.userId === user.id;
   }
 }

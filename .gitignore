@@ -36,3 +36,5 @@ lerna-debug.log*
 
 /config/config.yaml
 /config/config.prod.yaml
+
+/public

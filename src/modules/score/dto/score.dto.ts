@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsIn, IsNumber, Max, Min } from 'class-validator';
 import { IEntityTypeList } from 'src/common/constants';
+import { ScoreOperateType } from '../entities/score.entity';
 
 export class ScoreOperateDto {
   @ApiProperty({ description: '实体id' })
@@ -13,7 +14,8 @@ export class ScoreOperateDto {
   entityType: string;
 
   @ApiProperty({ description: '操作类型，0:减少， 1:增加' })
-  @IsIn([0, 1], { message: '类型只能为0或者1的数字' })
-  @IsNumber()
-  type: 0 | 1;
+  @IsIn([ScoreOperateType.DECREASE, ScoreOperateType.INCREASE], {
+    message: '类型只能为0或者1的数字',
+  })
+  type: ScoreOperateType;
 }

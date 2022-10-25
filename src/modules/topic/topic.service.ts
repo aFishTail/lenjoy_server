@@ -7,6 +7,7 @@ import { CategoryService } from 'src/modules/category/category.service';
 import { QueryTopicListInputDto } from './dto/query-topic.dto';
 import { UserLike } from '../user-like/entities/user-like.entity';
 import { ScoreService } from '../score/score.service';
+import { ScoreOperateType } from '../score/entities/score.entity';
 
 @Injectable()
 export class TopicService {
@@ -49,7 +50,12 @@ export class TopicService {
       summary,
       categoryId,
     );
-    this.scoreService.operate(userId, 1, topic.id, 'topic');
+    await this.scoreService.operate(
+      userId,
+      ScoreOperateType.INCREASE,
+      topic.id,
+      'topic',
+    );
     return null;
   }
 
@@ -92,15 +98,20 @@ export class TopicService {
     }
     qb.take(pageSize).skip((pageNum - 1) * pageSize);
     const [records, total] = await qb.getManyAndCount();
-    const data = {
+    return {
       records,
       total,
     };
-    return data;
   }
   // 查询用户帖子列表
   async userList(userId: string, payload: QueryTopicListInputDto) {
-    const { title, pageNum, pageSize, categoryLabel } = payload;
+    const {
+      title,
+      pageNum,
+      pageSize,
+      categoryLabel,
+      userId: topicUserId,
+    } = payload;
     const qb = this.topicRepository
       .createQueryBuilder('topic')
       .leftJoinAndSelect('topic.category', 'category')
@@ -114,6 +125,9 @@ export class TopicService {
 
     if (title) {
       qb.andWhere('topic.title LIKE :title', { title: `%${title}%` });
+    }
+    if (userId) {
+      qb.andWhere('topic.user_id = :userId', { userId: topicUserId });
     }
     if (categoryLabel) {
       qb.andWhere('category.label = :label', { label: categoryLabel });

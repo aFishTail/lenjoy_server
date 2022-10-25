@@ -33,16 +33,12 @@ export class Comment extends BaseEntity {
   @Column({ length: 500 })
   ip: string;
 
-  @ApiProperty({ description: '状态' })
-  @Column('simple-enum', { enum: ['locked', 'active'], default: 'active' })
-  status: string; // 用户状态
-
   @ApiProperty({ description: '评论用户id' })
   @Column({ comment: '评论用户id', name: 'user_id' })
   userId: string; // 评论主体的ID
 
-  @ApiProperty({ description: '评论主体，比如帖子' })
-  @Column({ comment: '评论主体,比如帖子', name: 'entity_id' })
+  @ApiProperty({ description: '评论主体帖子id' })
+  @Column({ comment: '评论主体帖子id', name: 'entity_id' })
   entityId: string; // 评论主体的ID
 
   @ApiProperty({ description: '引用的评论id' })

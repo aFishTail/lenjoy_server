@@ -92,8 +92,7 @@ export class UserService {
       where: { username },
     });
 
-    const isPasswordValid = User.comparePassword(password, existUser.password);
-    if (!existUser || !isPasswordValid) {
+    if (!existUser || !User.comparePassword(password, existUser.password)) {
       throw new HttpException('用户名或密码错误', HttpStatus.BAD_REQUEST);
     }
 
@@ -135,8 +134,7 @@ export class UserService {
       throw new BadRequestException('用户不存在');
     }
     const newUser = this.userRepository.merge(olduser, user);
-    await this.userRepository.save(newUser);
-    return null;
+    return await this.userRepository.save(newUser);
   }
 
   async updatePassword(p: UpdateUserPasswordDto): Promise<User> {

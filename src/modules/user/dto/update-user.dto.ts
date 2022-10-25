@@ -19,15 +19,20 @@ export class SetEmailDto {
 }
 
 export class UpdateUserBasicDto {
-  @ApiProperty({ description: '简介' })
+  @ApiProperty({ description: '头像' })
   @IsString()
   @IsOptional()
-  nickname?: string;
+  avatar: string;
 
   @ApiProperty({ description: '简介' })
   @IsString()
   @IsOptional()
-  description?: string;
+  nickname: string;
+
+  @ApiProperty({ description: '简介' })
+  @IsString()
+  @IsOptional()
+  description: string;
 }
 
 export class UpdateUserPasswordDto {
