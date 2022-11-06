@@ -15,7 +15,6 @@ export class CaptchaController {
   @ApiResponse({ status: 201, type: QueryCaptchaOutDto })
   @Post('get')
   findOne() {
-    // return this.captchaService.findOne({ where: {  } });
     const id = uuidv4();
     const imgUrl = `http://localhost:3000/api/captcha/show?id=${id}`;
     return {
@@ -29,7 +28,7 @@ export class CaptchaController {
   @Get('show')
   async show(@Res() res, @Query('id') id) {
     // const svgCaptcha = generateCaptcha();
-    const img = this.captchaService.create(id);
+    const img = await this.captchaService.create(id);
     res.type('image/svg+xml'); //指定返回的类型
     res.send(img.data); //给页面返回一张图片
   }

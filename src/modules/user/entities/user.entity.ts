@@ -38,7 +38,7 @@ export class User extends BaseEntity {
 
   @ApiHideProperty()
   @Exclude()
-  @Column({ length: 500 })
+  @Column({ length: 500, nullable: true })
   password: string;
 
   @ApiProperty({ description: '用户昵称' })
@@ -102,7 +102,7 @@ export class User extends BaseEntity {
 
   @ApiProperty()
   @OneToMany(() => ThirdAccount, (thirdAccount) => thirdAccount.user)
-  thirdAccount: ThirdAccount[];
+  thirdAccounts: ThirdAccount[];
 
   @CreateDateColumn({
     type: 'datetime',
@@ -123,7 +123,7 @@ export class User extends BaseEntity {
    */
   @BeforeInsert()
   beforeHandler() {
-    this.password = bcrypt.hashSync(this.password, 10);
+    this.password = this.password && bcrypt.hashSync(this.password, 10);
   }
 }
 
@@ -134,16 +134,16 @@ export class ThirdAccount extends BaseEntity {
   id: number;
 
   @ApiProperty()
-  @ManyToOne(() => User, (user) => user.thirdAccount)
+  @ManyToOne(() => User, (user) => user.thirdAccounts)
   user: User;
 
   @ApiProperty()
   @Column()
-  Avatar: string;
+  avatar: string;
 
   @ApiProperty()
   @Column({ name: 'nickname' })
-  Nickname: string;
+  nickname: string;
 
   @ApiProperty()
   @Column('simple-enum', {
@@ -151,13 +151,13 @@ export class ThirdAccount extends BaseEntity {
     default: 'github',
     name: 'third_type',
   })
-  ThirdType;
+  thirdType;
 
   @ApiProperty()
   @Column({
     name: 'third_id',
   })
-  ThirdId: string;
+  thirdId: string;
 
   @ApiProperty()
   @CreateDateColumn({

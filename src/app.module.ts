@@ -96,7 +96,7 @@ const UserResource: ResourceWithOptions = {
         charset: 'utf8mb4',
         timezone: '+08:00',
         synchronize: true,
-        logging: false,
+        logging: true,
         migrationsTableName: 'custom_migration_table',
         migrations: ['migration/*.js'],
         cli: {

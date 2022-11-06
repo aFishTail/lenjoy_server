@@ -10,15 +10,20 @@ import {
   UpdateUserDto,
   UpdateUserPasswordDto,
 } from './dto/update-user.dto';
-import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { DataSource, Repository } from 'typeorm';
+import { ThirdAccount, User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ThirdAccountType } from 'src/common/constants';
+import { ThirdAccountUserInfo } from 'src/utils/github';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(ThirdAccount)
+    private readonly thirdAccountRepository: Repository<ThirdAccount>,
+    private readonly dataSource: DataSource,
   ) {}
   async create(user: Partial<User>) {
     const { username, password, email, nickname } = user;
@@ -167,7 +172,47 @@ export class UserService {
     await this.userRepository.update(userId, { email });
     return null;
   }
+
   async remove(userId: string) {
     await this.userRepository.delete(userId);
+  }
+
+  async findThirdAccount(userInfo, type: ThirdAccountType) {
+    // 解决typeorm 实体关系
+    return await this.thirdAccountRepository.findOne({
+      where: { thirdId: userInfo.id, thirdType: type },
+      relations: {
+        user: true,
+      },
+    });
+  }
+
+  async createThirdAccount(
+    userInfo: ThirdAccountUserInfo,
+    type: ThirdAccountType,
+  ): Promise<User> {
+    let user;
+    await this.dataSource.transaction(async (manager) => {
+      user = await manager.getRepository(User).create({
+        username: userInfo.name,
+        nickname: userInfo.name,
+        avatar: userInfo.avatar_url,
+        email: userInfo.name,
+        description: userInfo.bio,
+      });
+
+      await manager.getRepository(User).save(user);
+
+      const thirdAccount = await manager.getRepository(ThirdAccount).create({
+        nickname: userInfo.name,
+        avatar: userInfo.name,
+        thirdId: userInfo.id + '',
+        thirdType: type,
+        user: user,
+      });
+
+      await manager.getRepository(ThirdAccount).save(thirdAccount);
+    });
+    return user;
   }
 }

@@ -26,11 +26,11 @@ export class Comment extends BaseEntity {
   commentCount: number;
 
   @ApiProperty({ description: '用户代理' })
-  @Column({ length: 500, name: 'user_agent' })
+  @Column({ length: 500, name: 'user_agent', nullable: true })
   userAgent: string;
 
   @ApiProperty({ description: 'IP地址' })
-  @Column({ length: 500 })
+  @Column({ length: 500, nullable: true })
   ip: string;
 
   @ApiProperty({ description: '评论用户id' })

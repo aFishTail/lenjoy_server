@@ -1,3 +1,5 @@
+import { ThirdAccount } from 'src/modules/user/entities/user.entity';
+
 export enum IFollowStatus {
   followed,
   unfollow,
@@ -25,4 +27,9 @@ export enum IMessageType {
   TypeTopicRecommend = 4, // 话题被设为推荐
   TypeTopicDelete = 5, // 话题被删除
   TypeArticleComment = 6, // 收到文章评论
+}
+
+export enum ThirdAccountType {
+  GITHUB = 0,
+  QQ = 1,
 }

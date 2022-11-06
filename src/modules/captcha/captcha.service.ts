@@ -7,10 +7,10 @@ import { UpdateCaptchaDto } from './dto/update-captcha.dto';
 @Injectable()
 export class CaptchaService {
   constructor(private cache: CacheService) {}
-  create(captchaId: string) {
+  async create(captchaId: string) {
     const img = generateCaptcha();
     const value = img.text;
-    this.cache.client.set(captchaId, value, 'EX', 60 * 60);
+    await this.cache.client.set(captchaId, value, 'EX', 60 * 60);
     return img;
   }
 

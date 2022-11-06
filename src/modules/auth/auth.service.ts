@@ -3,10 +3,15 @@ import { Injectable } from '@nestjs/common';
 // import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/modules/user/user.service';
 import { User } from 'src/modules/user/entities/user.entity';
-import { getGithubAccessToken, getGithubUserInfo } from 'src/utils/github';
+import {
+  getGithubAccessToken,
+  getGithubUserInfo,
+  ThirdAccountUserInfo,
+} from 'src/utils/github';
 import { LoginInputDto, RegisterInputDto } from './dto/auth.dto';
 import { CacheService } from 'src/modules/cache/cache.service';
 import { CaptchaService } from 'src/modules/captcha/captcha.service';
+import { ThirdAccountType } from 'src/common/constants';
 
 @Injectable()
 export class AuthService {
@@ -58,11 +63,35 @@ export class AuthService {
 
   async loginWithGithub(code: string) {
     const accessToken = await getGithubAccessToken(code);
-    const userInfo = await getGithubUserInfo(accessToken as any);
-    return userInfo;
+    const userInfo = await getGithubUserInfo(accessToken);
+    const user = await this.getOrCreateByGithub(userInfo);
+    const token = this.createToken({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    });
+    return Object.assign(user, { token });
   }
 
   async userInfo(userId: string) {
     return await this.userService.findById(userId);
+  }
+
+  async getOrCreateByGithub(userInfo: ThirdAccountUserInfo): Promise<User> {
+    const thirdAccount = await this.userService.findThirdAccount(
+      userInfo,
+      ThirdAccountType.GITHUB,
+    );
+    if (thirdAccount) {
+      return thirdAccount.user;
+    }
+
+    const user = await this.userService.createThirdAccount(
+      userInfo,
+      ThirdAccountType.GITHUB,
+    );
+
+    return user;
   }
 }
