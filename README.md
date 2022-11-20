@@ -3,7 +3,7 @@
 
 ### 相关仓库
 - 论坛仓库：[https://github.com/aFishTail/lenjoy_client](https://github.com/aFishTail/lenjoy_client)
-- 后台管理平台：[https://github.com/aFishTail/lenjoy_client](https://github.com/aFishTail/lenjoy_client)
+- 后台管理平台：[https://github.com/aFishTail/lenjoy_admin](https://github.com/aFishTail/lenjoy_admin)
 ## 设计概要记录
 
 ### 验证码
