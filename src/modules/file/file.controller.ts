@@ -43,7 +43,7 @@ export class FileController {
     }),
   )
   async coverImport(@UploadedFile() file) {
-    const serverAddr = 'http://127.0.0.1:3000';
+    const serverAddr = 'http://81.69.252.155:6060';
     return { url: `${serverAddr}/static/img/article/${file.filename}` };
   }
 

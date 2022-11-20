@@ -16,7 +16,7 @@ export class CaptchaController {
   @Post('get')
   findOne() {
     const id = uuidv4();
-    const imgUrl = `http://localhost:3000/api/captcha/show?id=${id}`;
+    const imgUrl = `http://81.69.252.155:6060/api/captcha/show?id=${id}`;
     return {
       id,
       imgUrl,
