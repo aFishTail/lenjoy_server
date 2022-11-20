@@ -1,3 +1,9 @@
+## 简介
+该项目是采用NestJs，TypeOrm+mysql,redis构建的社区论坛后台服务，演示地址：http://81.69.252:6069
+
+### 相关仓库
+- 论坛仓库：[https://github.com/aFishTail/lenjoy_client](https://github.com/aFishTail/lenjoy_client)
+- 后台管理平台：[https://github.com/aFishTail/lenjoy_client](https://github.com/aFishTail/lenjoy_client)
 ## 设计概要记录
 
 ### 验证码
