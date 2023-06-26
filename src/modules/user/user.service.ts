@@ -123,7 +123,7 @@ export class UserService {
       const existUserByEmail = await this.userRepository.findOne({
         where: { email },
       });
-      if (existUserByEmail) {
+      if (existUserByEmail && existUserByEmail.id !== id) {
         throw new HttpException('邮箱已被使用', HttpStatus.BAD_REQUEST);
       }
     }
@@ -167,6 +167,7 @@ export class UserService {
       where: { email },
     });
     if (existUserByEmail) {
+      if (existUserByEmail.id === userId) return null;
       throw new HttpException('邮箱已被使用', HttpStatus.BAD_REQUEST);
     }
     await this.userRepository.update(userId, { email });

@@ -57,7 +57,6 @@ export class TopicController {
   @Post('/detail')
   async getDetail(@Body() payload: PrimaryKeyDto, @QueryUser('id') userId) {
     const { id } = payload;
-    console.log('userId', userId);
     const topic = await this.topicService.findOne(id);
     if (!topic) {
       throw new BadRequestException('帖子不存在');

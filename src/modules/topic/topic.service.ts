@@ -171,6 +171,7 @@ export class TopicService {
         'user',
         'user.id = topic.user_id',
       )
+      .leftJoinAndSelect('topic.category', 'category')
       .where({ id });
     const topic = await qb.getOne();
     return topic;

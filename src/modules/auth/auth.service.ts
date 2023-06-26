@@ -54,7 +54,14 @@ export class AuthService {
     const { captchaId, captchaCode, username, password } = user;
     await this.captchaService.validate(captchaId, captchaCode);
     await this.userService.create(user);
-    return await this.userService.login(username, password);
+    const data = await this.userService.login(username, password);
+    const token = this.createToken({
+      id: data.id,
+      username: data.username,
+      email: data.email,
+      role: data.role,
+    });
+    return Object.assign(data, { token });
   }
 
   async validateUser(payload: User) {

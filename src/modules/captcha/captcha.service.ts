@@ -23,7 +23,7 @@ export class CaptchaService {
     if (!captchaValue) {
       throw new HttpException('验证码不存在', HttpStatus.BAD_REQUEST);
     }
-    if (code.toLocaleLowerCase !== captchaValue.toLocaleLowerCase) {
+    if (code.toLocaleLowerCase() !== captchaValue.toLocaleLowerCase()) {
       throw new HttpException('验证码不正确', HttpStatus.BAD_REQUEST);
     }
     return true;

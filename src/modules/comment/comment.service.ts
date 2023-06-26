@@ -86,6 +86,7 @@ export class CommentService {
     const { topicId, pageNum, pageSize } = p;
     const qb = this.commentRepository
       .createQueryBuilder('comment')
+      .orderBy('comment.createAt', 'ASC')
       .leftJoinAndMapOne(
         'comment.user',
         'user',
