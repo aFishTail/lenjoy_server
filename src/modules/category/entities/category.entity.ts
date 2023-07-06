@@ -21,7 +21,7 @@ export class Category extends BaseEntity {
   name: string;
 
   @ApiProperty({ description: 'label值' })
-  @Column({ length: 10 })
+  @Column({ length: 36 })
   label: string;
 
   @ApiProperty()

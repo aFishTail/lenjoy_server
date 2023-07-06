@@ -40,7 +40,7 @@ export class AdminCategoryController {
 
   @ApiOperation({ summary: '新增' })
   @ApiResponse({ type: ResponseDto })
-  @Roles('admin')
+  // @Roles('admin')
   @Post('/create')
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
@@ -48,7 +48,7 @@ export class AdminCategoryController {
 
   @ApiOperation({ summary: '查询列表' })
   @ApiResponse({ type: QueryCategoryListOutDto })
-  @Roles('admin')
+  // @Roles('admin')
   @Post('/list')
   findAll(@Body() payload: QueryCategoryListInputDto) {
     return this.categoryService.findAll(payload);
@@ -56,7 +56,7 @@ export class AdminCategoryController {
 
   @ApiOperation({ summary: '查询详情' })
   @ApiResponse({ type: QueryCategoryDetailOutDto })
-  @Roles('admin')
+  // @Roles('admin')
   @Post('/detail')
   findOne(@Body() payload: PrimaryKeyDto) {
     return this.categoryService.findOne(payload.id);
@@ -64,7 +64,7 @@ export class AdminCategoryController {
 
   @ApiOperation({ summary: '编辑' })
   @ApiResponse({ type: ResponseDto })
-  @Roles('admin')
+  // @Roles('admin')
   @Post('/update')
   update(@Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoryService.update(updateCategoryDto);
@@ -72,7 +72,7 @@ export class AdminCategoryController {
 
   @ApiOperation({ summary: '删除' })
   @ApiResponse({ type: ResponseDto })
-  @Roles('admin')
+  // @Roles('admin')
   @Post('/delete')
   remove(@Body() payload: PrimaryKeyDto) {
     return this.categoryService.delete(payload.id);
