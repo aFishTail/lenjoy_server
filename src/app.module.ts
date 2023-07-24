@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TopicModule } from './modules/topic/topic.module';
 import { UserModule } from './modules/user/user.module';
@@ -8,7 +8,7 @@ import { ScoreModule } from './modules/score/score.module';
 import { UserLikeModule } from './modules/user-like/user-like.module';
 import { UserSignModule } from './modules/user-sign/user-sign.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Log4jsModule } from './logger';
+// import { Log4jsModule } from './logger';
 import { CaptchaModule } from './modules/captcha/captcha.module';
 import { CacheModule } from './modules/cache/cache.module';
 import { EmailModule } from './modules/email/email.module';
@@ -37,6 +37,9 @@ import * as AdminJSTypeorm from '@adminjs/typeorm';
 import AdminJS, { ResourceOptions, ResourceWithOptions } from 'adminjs';
 import passwordsFeature from '@adminjs/passwords';
 import * as bcrypt from 'bcryptjs';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+import 'winston-daily-rotate-file';
 
 AdminJS.registerAdapter({
   Resource: AdminJSTypeorm.Resource,
@@ -138,7 +141,7 @@ const UserResource: ResourceWithOptions = {
     FollowModule,
     UserLikeModule,
     UserSignModule,
-    Log4jsModule.forRoot(),
+    // Log4jsModule.forRoot(),
     CaptchaModule,
     CacheModule,
     EmailModule,
@@ -165,9 +168,28 @@ const UserResource: ResourceWithOptions = {
     FileModule,
     MessageModule,
     UserFavoriteModule,
+    // WinstonModule.forRoot({
+    //   transports: [
+    //     new winston.transports.DailyRotateFile({
+    //       dirname: `logs`, // 日志保存的目录
+    //       filename: '%DATE%.log', // 日志名称，占位符 %DATE% 取值为 datePattern 值。
+    //       datePattern: 'YYYY-MM-DD', // 日志轮换的频率，此处表示每天。
+    //       zippedArchive: true, // 是否通过压缩的方式归档被轮换的日志文件。
+    //       maxSize: '20m', // 设置日志文件的最大大小，m 表示 mb 。
+    //       maxFiles: '14d', // 保留日志文件的最大天数，此处表示自动删除超过 14 天的日志文件。
+    //       // 记录时添加时间戳信息
+    //       format: winston.format.combine(
+    //         winston.format.timestamp({
+    //         	format: 'YYYY-MM-DD HH:mm:ss',
+    //         }),
+    //         winston.format.json(),
+    //       ),
+    //     }),
+    //   ],
+    // })
   ],
   controllers: [],
-  providers: [],
+  providers: [Logger],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
