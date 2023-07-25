@@ -31,7 +31,7 @@ export class TopicController {
 
   @ApiOperation({ summary: '发布帖子' })
   @ApiResponse({ status: 201, type: ResponseDto })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, EntityAuthGuard)
   @Post('/create')
   create(@Body() payload: CreateTopicDto, @QueryUser('id') userId) {
     const { title, content, summary, categoryId } = payload;
@@ -85,16 +85,14 @@ export class TopicController {
 }
 
 @ApiTags('管理平台-帖子管理')
-// @Roles('admin')
-// @UseGuards(RolesGuard)
+@Roles('admin')
+@UseGuards(RolesGuard)
 @Controller('admin/topic')
 export class AdminTopicController {
   constructor(private readonly topicService: TopicService) {}
 
   @ApiOperation({ summary: '管理员创建帖子' })
   @ApiResponse({ status: 201, type: ResponseDto })
-  // @UseGuards(JwtAuthGuard)
-  // @Roles('admin')
   @Post('/create')
   create(@Body() payload: CreateTopicDto, @QueryUser('id') userId) {
     const { title, content, summary, categoryId } = payload;
@@ -109,8 +107,6 @@ export class AdminTopicController {
 
   @ApiOperation({ summary: '查询帖子列表' })
   @ApiResponse({ type: QueryTopicListOutDto })
-  // @UseGuards(JwtAuthGuard)
-  // @Roles('admin')
   @Post('/list')
   findAll(@Body() payload: QueryTopicListInputDto) {
     return this.topicService.adminGetList(payload);
@@ -118,8 +114,6 @@ export class AdminTopicController {
 
   @ApiOperation({ summary: '查询帖子详情' })
   @ApiResponse({ type: QueryTopicDetailOutDto })
-  // @UseGuards(JwtAuthGuard)
-  // @Roles('admin')
   @Post('/detail')
   async detail(@Body() param: PrimaryKeyDto) {
     const { id } = param;
@@ -129,8 +123,6 @@ export class AdminTopicController {
 
   @ApiOperation({ summary: '修改帖子' })
   @ApiResponse({ type: ResponseDto })
-  // @UseGuards(JwtAuthGuard)
-  // @Roles('admin')
   @Post('/update')
   update(@Body() updateResourceDto: UpdateTopicDto) {
     return this.topicService.update(updateResourceDto);
@@ -138,8 +130,6 @@ export class AdminTopicController {
 
   @ApiOperation({ summary: '删除帖子' })
   @ApiResponse({ type: ResponseDto })
-  // @UseGuards(JwtAuthGuard)
-  // @Roles('admin')
   @Post('/delete')
   remove(@Body() payload: PrimaryKeyDto) {
     return this.topicService.adminDelete(payload.id);

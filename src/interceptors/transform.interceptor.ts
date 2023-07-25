@@ -25,7 +25,7 @@ export class TransformInterceptor<T>
         const request = ctx.getRequest();
         const response = ctx.getResponse();
         const code = response.statusCode;
-        const logFormat = ` \n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        const logFormat = `\nInterceptor: \n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         Type: Response
         statusCode: ${code},
         Request original url: ${request.originalUrl}

@@ -21,4 +21,3 @@ export const getReqMainInfo: (req: Request) => {
     body,
   };
 };
-
