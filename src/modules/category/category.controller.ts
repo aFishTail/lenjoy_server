@@ -12,6 +12,7 @@ import {
 import { RemoveCategoryInputDto } from './dto/remove-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('分类')
 @Controller('category')
@@ -33,14 +34,14 @@ export class CategoryController {
 }
 
 @ApiTags('管理平台-分类')
-@UseGuards(RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('admin/category')
 export class AdminCategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @ApiOperation({ summary: '新增' })
   @ApiResponse({ type: ResponseDto })
-  // @Roles('admin')
+  @Roles('admin')
   @Post('/create')
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
@@ -48,7 +49,7 @@ export class AdminCategoryController {
 
   @ApiOperation({ summary: '查询列表' })
   @ApiResponse({ type: QueryCategoryListOutDto })
-  // @Roles('admin')
+  @Roles('admin')
   @Post('/list')
   findAll(@Body() payload: QueryCategoryListInputDto) {
     return this.categoryService.findAll(payload);
@@ -56,7 +57,7 @@ export class AdminCategoryController {
 
   @ApiOperation({ summary: '查询详情' })
   @ApiResponse({ type: QueryCategoryDetailOutDto })
-  // @Roles('admin')
+  @Roles('admin')
   @Post('/detail')
   findOne(@Body() payload: PrimaryKeyDto) {
     return this.categoryService.findOne(payload.id);
@@ -64,7 +65,7 @@ export class AdminCategoryController {
 
   @ApiOperation({ summary: '编辑' })
   @ApiResponse({ type: ResponseDto })
-  // @Roles('admin')
+  @Roles('admin')
   @Post('/update')
   update(@Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoryService.update(updateCategoryDto);
@@ -72,7 +73,7 @@ export class AdminCategoryController {
 
   @ApiOperation({ summary: '删除' })
   @ApiResponse({ type: ResponseDto })
-  // @Roles('admin')
+  @Roles('admin')
   @Post('/delete')
   remove(@Body() payload: PrimaryKeyDto) {
     return this.categoryService.delete(payload.id);

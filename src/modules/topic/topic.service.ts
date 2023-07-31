@@ -248,6 +248,7 @@ export class TopicService {
         endTime,
       });
     }
+    qb.orderBy('topic.createAt', 'DESC');
     qb.take(pageSize).skip((pageNum - 1) * pageSize);
     const [records, total] = await qb.getManyAndCount();
     const data = {

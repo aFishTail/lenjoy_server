@@ -86,7 +86,7 @@ export class TopicController {
 
 @ApiTags('管理平台-帖子管理')
 @Roles('admin')
-@UseGuards(RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('admin/topic')
 export class AdminTopicController {
   constructor(private readonly topicService: TopicService) {}
