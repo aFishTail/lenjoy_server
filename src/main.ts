@@ -7,7 +7,6 @@ import { AppModule } from './app.module';
 import { AllExceptionFilter } from './filters/all-exception.filter';
 import { HttpExceptionFilter } from './filters/http-execption.filter';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
-import { Log4jsLogger } from './logger';
 import { loggerMiddleware } from './middleware/logger.middleware';
 import { ValidationPipe } from './pipe/validation.pipe';
 import helmet from 'helmet';
@@ -15,8 +14,9 @@ import * as compression from 'compression';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { format } from 'winston';
+import 'winston-daily-rotate-file';
 
-const { combine, timestamp, label, printf } = format;
+const { combine, timestamp, printf } = format;
 const myFormat = printf(({ level, message, timestamp }) => {
   const time = new Date(timestamp).toLocaleString();
   return `${time} ${level}: ${message}`;
