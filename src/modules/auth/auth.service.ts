@@ -8,7 +8,11 @@ import {
   getGithubUserInfo,
   ThirdAccountUserInfo,
 } from 'src/utils/github';
-import { LoginInputDto, RegisterInputDto } from './dto/auth.dto';
+import {
+  LoginInputDto,
+  LoginWithoutCaptchaDto,
+  RegisterInputDto,
+} from './dto/auth.dto';
 import { CacheService } from 'src/modules/cache/cache.service';
 import { CaptchaService } from 'src/modules/captcha/captcha.service';
 import { ThirdAccountType } from 'src/common/constants';
@@ -37,9 +41,8 @@ export class AuthService {
     });
     return Object.assign(data, { token });
   }
-  async loginWithCaptcha(user: LoginInputDto) {
-    const { captchaId, captchaCode, username, password } = user;
-    await this.captchaService.validate(captchaId, captchaCode);
+  async loginWithCaptcha(user: LoginWithoutCaptchaDto) {
+    const { username, password } = user;
     const data = await this.userService.login(username, password);
     const token = this.createToken({
       id: data.id,

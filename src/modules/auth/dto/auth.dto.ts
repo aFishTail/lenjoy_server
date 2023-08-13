@@ -34,3 +34,11 @@ export class LoginInputDto {
   @IsString()
   captchaCode: string;
 }
+
+export class LoginWithoutCaptchaDto {
+  @IsString()
+  username: string;
+
+  @IsString()
+  password: string;
+}

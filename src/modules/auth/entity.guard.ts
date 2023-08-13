@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   Injectable,
@@ -8,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { User } from '../user/entities/user.entity';
 import { DataSource } from 'typeorm';
+import { CommonResponseMessage } from 'src/common/commonResponseMessage';
 
 export const EntityAuth = (model: any, idKey: string) =>
   SetMetadata('entity', [model, idKey]);
@@ -46,6 +48,9 @@ export class EntityAuthGuard implements CanActivate {
       .createQueryBuilder(model.modelName)
       .where({ id: entityIdValue })
       .getOne();
+    if (!entity) {
+      throw new BadRequestException(CommonResponseMessage.EntityNiotFound);
+    }
     return entity && entity.userId === user.id;
   }
 }

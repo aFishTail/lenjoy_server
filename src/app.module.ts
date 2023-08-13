@@ -32,6 +32,8 @@ import { Message } from './modules/message/entities/message.entity';
 import { EmailCode } from './modules/email/entities/emailCode.entity';
 import { UserFavorite } from './modules/user-favorite/entities/user-favorite.entity';
 import configuration from 'config/configuration';
+import { ResourceModule } from './modules/resource/resource.module';
+import { Resource } from './modules/resource/entities/resource.entity';
 
 @Module({
   imports: [
@@ -62,6 +64,7 @@ import configuration from 'config/configuration';
           Score,
           Message,
           EmailCode,
+          Resource,
         ],
         charset: 'utf8mb4',
         synchronize: true,
@@ -71,8 +74,7 @@ import configuration from 'config/configuration';
         cli: {
           migrationsDir: 'migration',
         },
-        timezone: '-08:00',
-        dateStrings: true,
+        timezone: '+08:00',
       }),
     }),
     UserModule,
@@ -82,7 +84,6 @@ import configuration from 'config/configuration';
     FollowModule,
     UserLikeModule,
     UserSignModule,
-    // Log4jsModule.forRoot(),
     CaptchaModule,
     CacheModule,
     EmailModule,
@@ -109,6 +110,7 @@ import configuration from 'config/configuration';
     FileModule,
     MessageModule,
     UserFavoriteModule,
+    ResourceModule,
   ],
   controllers: [],
   providers: [Logger],

@@ -73,7 +73,7 @@ export class Topic extends BaseEntity {
   ip: string;
 
   @ApiProperty({ type: Category, isArray: true })
-  @ManyToOne(() => Category, (category) => category.topics, {
+  @ManyToOne(() => Category, (category) => category.resources, {
     cascade: true,
   })
   @JoinColumn()

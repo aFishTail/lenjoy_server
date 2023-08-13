@@ -15,6 +15,7 @@ import { AuthService } from './auth.service';
 import {
   LoginInputDto,
   LoginWithGithubInputDto,
+  LoginWithoutCaptchaDto,
   RegisterInputDto,
 } from './dto/auth.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -30,6 +31,12 @@ export class AuthController {
    */
   @Post('login')
   async login(@Body() user: LoginInputDto) {
+    const res = this.authService.loginWithCaptcha(user);
+    return res;
+  }
+
+  @Post('loginWithoutCaptcha')
+  async loginWithoutCaptcha(@Body() user: LoginWithoutCaptchaDto) {
     const res = this.authService.loginWithCaptcha(user);
     return res;
   }

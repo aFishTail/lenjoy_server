@@ -31,7 +31,7 @@ export class TopicController {
 
   @ApiOperation({ summary: '发布帖子' })
   @ApiResponse({ status: 201, type: ResponseDto })
-  @UseGuards(JwtAuthGuard, EntityAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('/create')
   create(@Body() payload: CreateTopicDto, @QueryUser('id') userId) {
     const { title, content, summary, categoryId } = payload;
@@ -61,8 +61,7 @@ export class TopicController {
     if (!topic) {
       throw new BadRequestException('帖子不存在');
     }
-    await this.topicService.IncrViewCount(id);
-    return topic;
+    return this.topicService.IncrViewCount(id);
   }
 
   @ApiOperation({ summary: '编辑帖子' })
@@ -76,8 +75,8 @@ export class TopicController {
 
   @ApiOperation({ summary: '删除帖子' })
   @ApiResponse({ status: 201, type: ResponseDto })
-  @EntityAuth(Topic, 'id')
   @UseGuards(JwtAuthGuard, EntityAuthGuard)
+  @EntityAuth(Topic, 'id')
   @Post('/delete')
   remove(@Body() payload: PrimaryKeyDto) {
     return this.topicService.delete(payload.id);

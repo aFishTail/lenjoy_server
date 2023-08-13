@@ -203,7 +203,7 @@ export class TopicService {
   }
 
   async IncrViewCount(id: string) {
-    await this.topicRepository
+    return this.topicRepository
       .createQueryBuilder()
       .update(Topic)
       .set({

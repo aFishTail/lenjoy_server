@@ -1,5 +1,3 @@
-import { ThirdAccount } from 'src/modules/user/entities/user.entity';
-
 export enum IFollowStatus {
   followed,
   unfollow,
@@ -15,9 +13,11 @@ export enum IUserSignType {
 }
 export const IEntityTypeList = ['topic', 'comment'];
 
-export enum IScoreConfig {
-  PostTopic = 5,
-}
+export const IScoreConfig = {
+  PostTopic: 5, // 发布帖子奖励
+  PostResource: 5, // 发布资源奖励
+  PlatformChargeRatio: 0.2, // 平台抽取交易比例
+} as const;
 
 export enum IMessageType {
   TypeTopicComment = 0, // 收到话题评论
