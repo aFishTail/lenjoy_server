@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Topic } from 'src/modules/topic/entities/topic.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Resource } from 'src/modules/resource/entities/resource.entity';
 
 @Entity()
 export class Category extends BaseEntity {
@@ -43,6 +44,9 @@ export class Category extends BaseEntity {
 
   @OneToMany(() => Topic, (topic) => topic.category)
   topics: Array<Topic>;
+
+  @OneToMany(() => Resource, (resource) => resource.category)
+  resources: Array<Resource>;
 
   @CreateDateColumn({
     type: 'datetime',

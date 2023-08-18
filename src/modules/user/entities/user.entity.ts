@@ -8,10 +8,13 @@ import {
   OneToMany,
   ManyToOne,
   BaseEntity,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { Resource } from 'src/modules/resource/entities/resource.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -103,6 +106,11 @@ export class User extends BaseEntity {
   @ApiProperty()
   @OneToMany(() => ThirdAccount, (thirdAccount) => thirdAccount.user)
   thirdAccounts: ThirdAccount[];
+
+  @ApiProperty({ description: '用户可见的资源' })
+  @ManyToMany(() => Resource, (resource) => resource.id)
+  @JoinTable()
+  havePermissionResources: Resource[];
 
   @CreateDateColumn({
     type: 'datetime',

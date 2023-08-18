@@ -12,7 +12,6 @@ import {
   QueryPagerOutDto,
   ResponseDto,
 } from 'src/common/base.dto';
-import { User } from 'src/modules/user/entities/user.entity';
 import { Topic } from '../entities/topic.entity';
 
 export class QueryTopicDto {
