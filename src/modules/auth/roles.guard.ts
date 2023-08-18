@@ -25,7 +25,7 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     let token = request.headers.authorization;
-
+    if (!token) return false;
     if (/Bearer/.test(token)) {
       // 不需要 Bearer，否则验证失败
       token = token.split(' ').pop();
