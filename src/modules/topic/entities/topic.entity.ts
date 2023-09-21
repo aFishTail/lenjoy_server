@@ -35,10 +35,10 @@ export class Topic extends BaseEntity {
 
   @ApiProperty({ description: '是否推荐' })
   @Column({ default: 0 })
-  recommand: number;
+  recommend: number;
 
   // Todo: 推荐时间？
-  // recommandTime
+  // recommendTime
 
   @ApiProperty({ description: '观看数量' })
   @Column({ name: 'view_count', default: 0 })

@@ -34,6 +34,7 @@ import { UserFavorite } from './modules/user-favorite/entities/user-favorite.ent
 import configuration from 'config/configuration';
 import { ResourceModule } from './modules/resource/resource.module';
 import { Resource } from './modules/resource/entities/resource.entity';
+import { RewardModule } from './reward/reward.module';
 
 @Module({
   imports: [
@@ -111,6 +112,7 @@ import { Resource } from './modules/resource/entities/resource.entity';
     MessageModule,
     UserFavoriteModule,
     ResourceModule,
+    RewardModule,
   ],
   controllers: [],
   providers: [Logger],

@@ -79,7 +79,7 @@ export class Resource {
 
   @ApiProperty({ description: '是否推荐' })
   @Column({ default: 0 })
-  recommand: number;
+  recommend: number;
 
   @ApiProperty({ description: '观看数量' })
   @Column({ name: 'view_count', default: 0 })
