@@ -1,11 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRewardDto } from './dto/create-reward.dto';
 import { UpdateRewardDto } from './dto/update-reward.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../user/entities/user.entity';
+import { Repository } from 'typeorm';
+import { Reward } from './entities/reward.entity';
 
 @Injectable()
 export class RewardService {
-  create(createRewardDto: CreateRewardDto) {
-    return 'This action adds a new reward';
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Reward)
+    private readonly rewardRepository: Repository<Reward>,
+  ) {}
+  async create(createRewardDto: CreateRewardDto, userId: string) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    const reward = await this.rewardRepository.create({
+      ...createRewardDto,
+      postUser: user,
+    });
+    return await this.rewardRepository.save(reward);
   }
 
   findAll() {

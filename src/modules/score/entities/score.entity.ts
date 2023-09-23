@@ -7,11 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-export enum ScoreOperateType {
-  INCREASE = 'increase',
-  DECREASE = 'decrease',
-}
+import { ScoreOperateType } from '../score.type';
 
 @Entity()
 export class Score extends BaseEntity {

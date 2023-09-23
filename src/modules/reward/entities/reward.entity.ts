@@ -5,6 +5,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -16,9 +17,29 @@ export class Reward {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiProperty()
-  @OneToOne('topic')
-  topic: Topic;
+  @ApiProperty({ description: '标题' })
+  @Column({ length: 50 })
+  title: string;
+
+  @ApiProperty({ description: '内容' })
+  @Column({ type: 'text' })
+  content: string;
+
+  @ApiProperty({ description: '观看数量' })
+  @Column({ name: 'view_count', default: 0 })
+  viewCount: number;
+
+  @ApiProperty({ description: '评论数量' })
+  @Column({ comment: '评论数量', default: 0, name: 'comment_count' })
+  commentCount: number;
+
+  @ApiProperty({ description: '点赞数量' })
+  @Column({ comment: '点赞数量', name: 'like_count', default: 0 })
+  likeCount: number;
+
+  @ApiProperty({ description: '收藏数量' })
+  @Column({ comment: '收藏数量', name: 'favorite_count', default: 0 })
+  favoriteCount: number;
 
   @ApiProperty()
   @Column({
@@ -47,10 +68,12 @@ export class Reward {
 
   @ApiProperty()
   @OneToOne(() => User)
+  @JoinColumn()
   postUser: User;
 
   @ApiProperty()
   @OneToOne(() => User)
+  @JoinColumn()
   rewardUser: User;
 
   @ApiProperty()

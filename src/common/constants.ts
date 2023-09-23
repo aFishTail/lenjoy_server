@@ -13,11 +13,10 @@ export enum IUserSignType {
 }
 export const IEntityTypeList = ['topic', 'comment'];
 
-export const IScoreConfig = {
-  PostTopic: 5, // 发布帖子奖励
-  PostResource: 5, // 发布资源奖励
-  PlatformChargeRatio: 0.2, // 平台抽取交易比例
-} as const;
+export enum EntityTypeEnum {
+  Topic = 'topic',
+  Reward = 'reward',
+}
 
 export enum IMessageType {
   TypeTopicComment = 0, // 收到话题评论
