@@ -7,8 +7,9 @@ import { CategoryService } from 'src/modules/category/category.service';
 import { QueryTopicListInputDto } from './dto/query-topic.dto';
 import { UserLike } from '../user-like/entities/user-like.entity';
 import { ScoreService } from '../score/score.service';
-import { ScoreOperateType } from '../score/entities/score.entity';
 import { User } from '../user/entities/user.entity';
+import { ScoreOperateType } from '../score/score.type';
+import { EntityTypeEnum } from 'src/common/constants';
 
 @Injectable()
 export class TopicService {
@@ -63,7 +64,7 @@ export class TopicService {
       userId,
       ScoreOperateType.INCREASE,
       topic.id,
-      'topic',
+      EntityTypeEnum.Topic,
     );
     return null;
   }

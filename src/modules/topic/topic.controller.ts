@@ -14,15 +14,12 @@ import {
 } from './dto/query-topic.dto';
 import { Topic } from './entities/topic.entity';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import {
-  PrimaryKeyDto,
-  QueryTopicDetailOutDto,
-  ResponseDto,
-} from 'src/common/base.dto';
+import { PrimaryKeyDto, ResponseDto } from 'src/common/base.dto';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { EntityAuth, EntityAuthGuard } from '../auth/entity.guard';
 import { Roles, RolesGuard } from '../auth/roles.guard';
+import { QueryTopicDetailOutDto } from './dto/detail-topic.dto';
 
 @Controller('topic')
 @ApiTags('帖子管理')

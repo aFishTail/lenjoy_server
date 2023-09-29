@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, MaxLength, IsOptional, IsNumber, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  MaxLength,
+  IsNumber,
+  IsBoolean,
+} from 'class-validator';
 
 export class CreateRewardDto {
   @ApiProperty({ description: '悬赏积分' })
@@ -21,14 +27,4 @@ export class CreateRewardDto {
   @IsString()
   @IsNotEmpty()
   content: string;
-
-  @ApiProperty({ description: '摘要' })
-  @IsString()
-  @IsOptional()
-  summary: string;
-
-  @ApiProperty({ description: '帖子主题' })
-  @IsString()
-  @IsNotEmpty()
-  categoryId: string;
 }

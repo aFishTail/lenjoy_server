@@ -38,7 +38,10 @@ export class ScoreService {
         .createQueryBuilder()
         .update(User)
         .where({ id: userId })
-        .set({ score: () => `score ${type ? '+' : '-'} ${score}` })
+        .set({
+          score: () =>
+            `score ${type === ScoreOperateType.INCREASE ? '+' : '-'} ${score}`,
+        })
         .execute();
     });
     return null;

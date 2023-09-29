@@ -32,6 +32,7 @@ export function getOperateScore(entityType: EntityTypeEnum) {
   }
   return result;
 }
+
 export function getOperateDesc(
   type: ScoreOperateType,
   entityType: EntityTypeEnum,
@@ -48,4 +49,17 @@ export function getOperateDesc(
       break;
   }
   return result;
+}
+
+/**
+ * 获取积分操作的变化
+ * @param newScore
+ * @param oldScore
+ * @returns
+ */
+export function getChangeInfo(newScore: number, oldScore) {
+  const type =
+    newScore > oldScore ? ScoreOperateType.INCREASE : ScoreOperateType.DECREASE;
+  const score = Math.abs(newScore - oldScore);
+  return { type, score };
 }

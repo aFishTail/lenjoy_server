@@ -75,17 +75,3 @@ export class QueryTopicListOutDto extends ResponseDto {
   @ApiProperty({ type: QueryTopicListOut, isArray: true })
   data: unknown;
 }
-
-// TODO: test
-// export class QueryTopicListOutDto extends ResponseDto {
-//   @ApiProperty({
-//     type: 'array',
-//     items: {
-//       type: 'object',
-//       items: {
-
-//       }
-//     }
-//   })
-//   data: unknown;
-// }

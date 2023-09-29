@@ -5,17 +5,30 @@ import {
   ScoreOperateType,
 } from './score.type';
 import {
+  getChangeInfo,
   getOpScoreAndDesc,
   getOperateDesc,
   getOperateScore,
 } from './score.util';
 
 describe('Score Service', () => {
-  describe('test getOperateScore', () => {
+  it('test getChangeInfo', () => {
+    expect(getChangeInfo(100, 150)).toEqual({
+      type: ScoreOperateType.DECREASE,
+      score: 50,
+    });
+
+    expect(getChangeInfo(100, 40)).toEqual({
+      type: ScoreOperateType.INCREASE,
+      score: 60,
+    });
+  });
+
+  it('test getOperateScore', () => {
     expect(getOperateScore(EntityTypeEnum.Topic)).toBe(ScoreConfig.PostTopic);
   });
 
-  describe('test getOperateDesc', () => {
+  it('test getOperateDesc', () => {
     const cases = [
       {
         type: ScoreOperateType.INCREASE,

@@ -1,3 +1,5 @@
+export const ADMIN_USER_ID = 'admin';
+
 export enum ScoreOperateType {
   INCREASE = 'increase',
   DECREASE = 'decrease',

@@ -35,7 +35,3 @@ export class PrimaryKeyDto {
   @IsUUID()
   id: string;
 }
-export class QueryTopicDetailOutDto extends ResponseDto {
-  @ApiProperty({ type: Topic })
-  data: unknown;
-}
