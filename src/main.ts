@@ -74,7 +74,6 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, document);
 
   await app.listen(3000);
-  console.log('运行在3000端口！');
 }
 process.on('uncaughtException', (err) => {
   console.log('捕获到了未知错误', err);
