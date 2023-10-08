@@ -4,13 +4,6 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Score } from './entities/score.entity';
 import { ScoreService } from './score.service';
-import { EntityTypeEnum } from 'src/common/constants';
-import {
-  ScoreConfig,
-  ScoreOperateOption,
-  ScoreOperateType,
-} from './score.type';
-import { getOpScoreAndDesc } from './score.util';
 describe('Score Service', () => {
   let service: ScoreService;
   let scoreRepository: Repository<Score>;

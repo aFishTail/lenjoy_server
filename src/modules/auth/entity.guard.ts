@@ -26,7 +26,7 @@ export class EntityAuthGuard implements CanActivate {
     const [model, entityId] = this.reflector.get<any>(
       'entity',
       context.getHandler(),
-    );
+    ) as any;
     if (!model || !entityId) {
       return true;
     }

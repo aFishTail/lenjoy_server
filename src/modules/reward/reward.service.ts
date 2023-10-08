@@ -1,15 +1,18 @@
-import { ScoreOperateType } from './../score/score.type';
+import { ScoreConfig, ScoreOperateType } from './../score/score.type';
 import { ScoreService } from './../score/score.service';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRewardDto } from './dto/create-reward.dto';
 import { UpdateRewardDto } from './dto/update-reward.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Reward } from './entities/reward.entity';
 import { EntityTypeEnum } from 'src/common/constants';
 import { QueryRewardListInputDto } from './dto/query-reward.dto';
 import { getChangeInfo } from '../score/score.util';
+import { ConfirmRewardAnswerDto } from './dto/confirm-reward-answer.dto';
+import { RewardAnswer } from '../reward-answer/entities/reward-answer.entity';
+import _ from 'lodash';
 
 @Injectable()
 export class RewardService {
@@ -18,18 +21,21 @@ export class RewardService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Reward)
     private readonly rewardRepository: Repository<Reward>,
+    @InjectRepository(RewardAnswer)
+    private readonly rewardAnswerRepository: Repository<RewardAnswer>,
     private readonly scoreService: ScoreService,
     private dataSource: DataSource,
   ) {}
   async create(createRewardDto: CreateRewardDto, userId: string) {
     const user = await this.userRepository.findOneBy({ id: userId });
     await this.dataSource.transaction(async (manager) => {
-      const reward = await this.rewardRepository.create({
+      const reward = await manager.getRepository(Reward).create({
         ...createRewardDto,
         postUser: user,
       });
-      const savedReward = await this.rewardRepository.save(reward);
-      await this.scoreService.operate(
+      const savedReward = await manager.getRepository(Reward).save(reward);
+      await this.scoreService.operateWithTransaction(
+        manager,
         userId,
         { type: ScoreOperateType.DECREASE, score: createRewardDto.score },
         savedReward.id,
@@ -44,6 +50,7 @@ export class RewardService {
       .createQueryBuilder('reward')
       .leftJoinAndSelect('reward.postUser', 'user')
       .leftJoinAndSelect('reward.rewardUser', 'user')
+      .leftJoinAndSelect('reward.rewardAnswers', 'rewardAnswer')
       .orderBy('reward.create_at', 'DESC');
     if (title) {
       qb.andWhere('reward.title LIKE :title', { title: `%${title}%` });
@@ -87,7 +94,8 @@ export class RewardService {
           updatedReward.score,
           oldReward.score,
         );
-        await this.scoreService.operate(
+        await this.scoreService.operateWithTransaction(
+          manager,
           userId,
           { type, score, desc: '更新悬赏' },
           updatedReward.id,
@@ -97,16 +105,19 @@ export class RewardService {
     });
   }
 
-  async remove(id: string, userId: string) {
-    // TODO: 这里的事务并不完整， scoreService启动了另一个事务
+  async canncel(id: string, userId: string) {
     await this.dataSource.transaction(async (manager) => {
       const rewardRepository = manager.getRepository(Reward);
       const reward = await rewardRepository.findOneBy({ id });
-      await rewardRepository.remove(reward);
-      await this.scoreService.operate(
+      reward.status = 'cancel';
+      reward.cancelType = 'user';
+      await rewardRepository.save(reward);
+      await this.setUserCompeleteRate(manager, userId);
+      await this.scoreService.operateWithTransaction(
+        manager,
         userId,
         {
-          type: ScoreOperateType.DECREASE,
+          type: ScoreOperateType.INCREASE,
           score: reward.score,
         },
         reward.id,
@@ -114,5 +125,64 @@ export class RewardService {
       );
     });
     return null;
+  }
+
+  /**
+   * 确认某个回答为悬赏答案
+   */
+  async confirm(
+    confirmRewardAnswerDto: ConfirmRewardAnswerDto,
+    userId: string,
+  ) {
+    const { rewardId, rewardAnswerId } = confirmRewardAnswerDto;
+    const reward = await this.rewardRepository.findOneBy({ id: rewardId });
+    const rewardAnswer = await this.rewardAnswerRepository.findOneBy({
+      id: rewardAnswerId,
+    });
+    if (!reward) {
+      throw new BadRequestException('悬赏帖子不存在');
+    }
+    if (!rewardAnswer) {
+      throw new BadRequestException('悬赏回答不存在');
+    }
+    if (reward.confirmedRewardAnswer) {
+      throw new BadRequestException('该悬赏已确认答案');
+    }
+    this.dataSource.manager.transaction(async (manager) => {
+      reward.confirmedRewardAnswer = rewardAnswer;
+      reward.status = 'finish';
+      reward.cancelType = 'admin';
+      await this.setUserCompeleteRate(manager, userId);
+      await manager.getRepository(Reward).save(reward);
+      // TODO: 积分操作
+      await this.scoreService.operateWithTransaction(
+        manager,
+        userId,
+        {
+          type: ScoreOperateType.INCREASE,
+          score: reward.score * ScoreConfig.PlatformChargeRatio,
+          desc: '被选为悬赏正确答案',
+        },
+        reward.id,
+        EntityTypeEnum.Reward,
+      );
+    });
+  }
+
+  async setUserCompeleteRate(manager: EntityManager, userId: string) {
+    const user = await manager.getRepository(User).findOneBy({ id: userId });
+    const userRewards = await manager
+      .getRepository(Reward)
+      .createQueryBuilder('reward')
+      .where('reward.status IN (:...names)', { name: ['finish', 'cancel'] })
+      .where('reward.postUser = :userId', { userId })
+      .getMany();
+    const compeleteRate = _.floor(
+      userRewards.filter((r) => r.cancelType === 'user').length /
+        userRewards.length,
+      4,
+    );
+    user.compeleteRate = compeleteRate;
+    manager.getRepository(User).save(user);
   }
 }

@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateTopicDto } from './dto/update-topic.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, getConnection, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Topic } from './entities/topic.entity';
 import { CategoryService } from 'src/modules/category/category.service';
 import { QueryTopicListInputDto } from './dto/query-topic.dto';

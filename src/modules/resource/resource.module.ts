@@ -6,6 +6,8 @@ import { Resource } from './entities/resource.entity';
 import { CategoryModule } from '../category/category.module';
 import { AuthModule } from '../auth/auth.module';
 import { ScoreModule } from '../score/score.module';
+import { ResourceAdminController } from './admin/resource-admin.controller';
+import { ResourceAdminService } from './admin/resource-admin.service';
 
 @Module({
   imports: [
@@ -14,7 +16,7 @@ import { ScoreModule } from '../score/score.module';
     AuthModule,
     ScoreModule,
   ],
-  controllers: [ResourceController],
-  providers: [ResourceService],
+  controllers: [ResourceController, ResourceAdminController],
+  providers: [ResourceService, ResourceAdminService],
 })
 export class ResourceModule {}

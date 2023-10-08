@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, QueryBuilder, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Topic } from '../topic/entities/topic.entity';
 import {
   CreateCommentToCommentDto,
@@ -9,12 +9,8 @@ import {
 import {
   DelCommentToCommentDto,
   DelTopicCommentDto,
-} from './dto/del-comment.dto copy';
-import {
-  QuerySubCommentListDto,
-  QueryTopicCommentListDto,
-} from './dto/query-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+} from './dto/del-comment.dto';
+import { QueryTopicCommentListDto } from './dto/query-comment.dto';
 import { Comment } from './entities/comment.entity';
 
 @Injectable()

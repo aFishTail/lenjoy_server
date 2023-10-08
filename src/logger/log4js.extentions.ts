@@ -17,7 +17,7 @@ export const parseNestModuleCallStack = (data, skipIdx = 7) => {
       fileName: lineMatch[2],
       lineNumber: parseInt(lineMatch[3], 10),
       columnNumber: parseInt(lineMatch[4], 10),
-      callStack: stackLines.join('\n')
+      callStack: stackLines.join('\n'),
     };
   }
   return null;

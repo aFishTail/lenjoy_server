@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { CommentService } from './comment.service';
@@ -14,9 +6,8 @@ import {
   CreateCommentToCommentDto,
   CreateTopicCommentDto,
 } from './dto/create-comment.dto';
-import { DelCommentToCommentDto } from './dto/del-comment.dto copy';
+import { DelCommentToCommentDto } from './dto/del-comment.dto';
 import { QueryTopicCommentListDto } from './dto/query-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @ApiTags('评论管理')
 @Controller('comment')

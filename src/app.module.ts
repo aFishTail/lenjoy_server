@@ -34,7 +34,11 @@ import { UserFavorite } from './modules/user-favorite/entities/user-favorite.ent
 import configuration from 'config/configuration';
 import { ResourceModule } from './modules/resource/resource.module';
 import { Resource } from './modules/resource/entities/resource.entity';
-import { RewardModule } from './reward/reward.module';
+import { RewardModule } from './modules/reward/reward.module';
+import { RewardAnswerModule } from './modules/reward-answer/reward-answer.module';
+import { Reward } from './modules/reward/entities/reward.entity';
+import { RewardAnswer } from './modules/reward-answer/entities/reward-answer.entity';
+import { UserBehavior } from './modules/user/entities/user-behavior.entity';
 
 @Module({
   imports: [
@@ -55,6 +59,7 @@ import { RewardModule } from './reward/reward.module';
         entities: [
           User,
           ThirdAccount,
+          UserBehavior,
           UserLike,
           UserFavorite,
           Topic,
@@ -66,6 +71,8 @@ import { RewardModule } from './reward/reward.module';
           Message,
           EmailCode,
           Resource,
+          Reward,
+          RewardAnswer,
         ],
         charset: 'utf8mb4',
         synchronize: true,
@@ -113,6 +120,7 @@ import { RewardModule } from './reward/reward.module';
     UserFavoriteModule,
     ResourceModule,
     RewardModule,
+    // RewardAnswerModule,
   ],
   controllers: [],
   providers: [Logger],

@@ -4,10 +4,8 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import {
   UpdateUserBasicDto,
-  UpdateUserDto,
   UpdateUserPasswordDto,
 } from './dto/update-user.dto';
 import { DataSource, Repository } from 'typeorm';

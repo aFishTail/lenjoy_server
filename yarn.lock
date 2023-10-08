@@ -7,29 +7,6 @@
   resolved "https://registry.npmjs.org/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@adminjs/express@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.npmjs.org/@adminjs/express/-/express-6.0.0.tgz#9ad77dda79034682aee22f746f9b9460d5e5739a"
-  integrity sha512-TIylSszG5yUp+uHFYWWCrlztViiR05KM7suDo4SWd4UezZYc0mwNgfYPsnEmKkf5VFMEiCtYqhdCt38OxUPn/g==
-
-"@adminjs/nestjs@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.npmjs.org/@adminjs/nestjs/-/nestjs-6.0.1.tgz#72608cc115f7468833fd2d2513e137ace633a1c3"
-  integrity sha512-1gtO7Q1iNolL2bduowigSkzkQHzUSWvu/C1SK3LgvwAuWZE4ayOuHcfZ9LOhfskOhnyo91knoWv/0HaQAUQpwQ==
-  dependencies:
-    "@types/express-session" "^1.17.7"
-    reflect-metadata "^0.1.13"
-
-"@adminjs/passwords@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.npmjs.org/@adminjs/passwords/-/passwords-4.0.0.tgz#e20e7246ff2c249342081ae52b77f2297a756515"
-  integrity sha512-lkN3r7zMKAcSUg1TGSbvywoNDZmwuPsmcVufIlNJm4ZGHWImVyFAG2vEspmzCyYPR6seFKx3BuLxsW93x+CRwg==
-
-"@adminjs/typeorm@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.npmjs.org/@adminjs/typeorm/-/typeorm-5.0.0.tgz#7dddc339ab00a82477a20803701c6045011a1b31"
-  integrity sha512-woJWm0bw13EOt+L6RMYTWcpfb8vxOU5GW5AvmwktWngNAQU7R5mJOU7V+/rtrFgJePI3fkpLhe053/rtotRcGg==
-
 "@ampproject/remapping@^2.0.0":
   version "2.1.1"
   resolved "https://registry.npmmirror.com/@ampproject/remapping/-/remapping-2.1.1.tgz"
@@ -1012,14 +989,14 @@
     webpack "5.88.1"
     webpack-node-externals "3.0.0"
 
-"@nestjs/common@^10.1.3":
-  version "10.1.3"
-  resolved "https://registry.npmjs.org/@nestjs/common/-/common-10.1.3.tgz#7f80d7c011e94bfb2177100cc8862e4fc65a6630"
-  integrity sha512-xSyXBwgcmiFwQqek1Urw/AL3pRPq9bp/tpgfTxmnJg3gP6XNUbx1fDr0de50irXgZYzFKfVFo9ptC3b2du5YKA==
+"@nestjs/common@^10.0.0":
+  version "10.2.7"
+  resolved "https://registry.npmjs.org/@nestjs/common/-/common-10.2.7.tgz#339db2efa33d3822dd81d2993bd44b538a7451b6"
+  integrity sha512-cUtCRXiUstDmh4bSBhVbq4cI439Gngp4LgLGLBmd5dqFQodfXKnSD441ldYfFiLz4rbUsnoMJz/8ZjuIEI+B7A==
   dependencies:
     uid "2.0.2"
     iterare "1.2.1"
-    tslib "2.6.1"
+    tslib "2.6.2"
 
 "@nestjs/common@^7.4.4":
   version "7.6.18"
@@ -1031,27 +1008,27 @@
     tslib "2.2.0"
     uuid "8.3.2"
 
-"@nestjs/config@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/@nestjs/config/-/config-3.0.0.tgz#154ddbaf2b97201a94a3c84757c352c405718cb4"
-  integrity sha512-fzASk1Uv6AjdE6uA1na8zpqRCXAhRpcfgpCVv3SAKlgJ3VR3bEjcI4G17WHLgLBsmPzI1ofdkSI451WLD1F1Rw==
+"@nestjs/config@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.npmjs.org/@nestjs/config/-/config-3.1.1.tgz#51e23ed84debd08afb86acf7b92bc4bf341797da"
+  integrity sha512-qu5QlNiJdqQtOsnB6lx4JCXPQ96jkKUsOGd+JXfXwqJqZcOSAq6heNFg0opW4pq4J/VZoNwoo87TNnx9wthnqQ==
   dependencies:
-    dotenv "16.1.4"
+    dotenv "16.3.1"
     dotenv-expand "10.0.0"
     lodash "4.17.21"
     uuid "9.0.0"
 
-"@nestjs/core@^10.1.3":
-  version "10.1.3"
-  resolved "https://registry.npmjs.org/@nestjs/core/-/core-10.1.3.tgz#6f74ac04695847976dd84836d8063624a793c127"
-  integrity sha512-VzK54TuacC3Vmq3b5xTyMVTlDNJeKbjpKfV9fNqm4TbIBm8ZPo3FC0osJAbAK4XwbVvv2Flq1yA3CutasupVjw==
+"@nestjs/core@^10.0.0":
+  version "10.2.7"
+  resolved "https://registry.npmjs.org/@nestjs/core/-/core-10.2.7.tgz#26ca5cc63504b54a08c4cdc6da9300c9b8904fde"
+  integrity sha512-5GSu53QUUcwX17sNmlJPa1I0wIeAZOKbedyVuQx0ZAwWVa9g0wJBbsNP+R4EJ+j5Dkdzt/8xkiZvnKt8RFRR8g==
   dependencies:
     uid "2.0.2"
     "@nuxtjs/opencollective" "0.3.2"
     fast-safe-stringify "2.1.1"
     iterare "1.2.1"
     path-to-regexp "3.2.0"
-    tslib "2.6.1"
+    tslib "2.6.2"
 
 "@nestjs/core@^7.4.4":
   version "7.6.18"
@@ -1074,12 +1051,7 @@
     "@types/jsonwebtoken" "9.0.2"
     jsonwebtoken "9.0.0"
 
-"@nestjs/mapped-types@*":
-  version "1.0.1"
-  resolved "https://registry.npmmirror.com/@nestjs/mapped-types/-/mapped-types-1.0.1.tgz"
-  integrity sha512-NFvofzSinp00j5rzUd4tf+xi9od6383iY0JP7o0Bnu1fuItAUkWBgc4EKuIQ3D+c2QI3i9pG1kDWAeY27EMGtg==
-
-"@nestjs/mapped-types@2.0.2":
+"@nestjs/mapped-types@2.0.2", "@nestjs/mapped-types@^2.0.2":
   version "2.0.2"
   resolved "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-2.0.2.tgz#c8a090a8d22145b85ed977414c158534210f2e4f"
   integrity sha512-V0izw6tWs6fTp9+KiiPUbGHWALy563Frn8X6Bm87ANLRuE46iuBMD5acKBDP5lKL/75QFvrzSJT7HkCbB0jTpg==
@@ -1348,13 +1320,6 @@
     "@types/range-parser" "*"
     "@types/send" "*"
 
-"@types/express-session@^1.17.7":
-  version "1.17.7"
-  resolved "https://registry.npmjs.org/@types/express-session/-/express-session-1.17.7.tgz#ced215c1244cb594be10e39f2781ddcd650be9a6"
-  integrity sha512-L25080PBYoRLu472HY/HNCxaXY8AaGgqGC8/p/8+BYMhG0RDOLQ1wpXOpAzr4Gi5TGozTKyJv5BVODM5UNyVMw==
-  dependencies:
-    "@types/express" "*"
-
 "@types/express@*":
   version "4.17.14"
   resolved "https://registry.npmjs.org/@types/express/-/express-4.17.14.tgz#143ea0557249bc1b3b54f15db4c81c3d4eb3569c"
@@ -1437,6 +1402,11 @@
   integrity sha512-drE6uz7QBKq1fYqqoFKTDRdFCPHd5TCub75BM+D+cMx7NU9hUz7SESLfC2fSCXVFMO5Yj8sOWHuGqPgjc+fz0Q==
   dependencies:
     "@types/node" "*"
+
+"@types/lodash@^4.14.199":
+  version "4.14.199"
+  resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.199.tgz#c3edb5650149d847a277a8961a7ad360c474e9bf"
+  integrity sha512-Vrjz5N5Ia4SEzWWgIVwnHNEnb1UE1XMkvY5DGXrAeOGE9imk0hgTHh5GyDjLDJi9OTCn9oo9dXH1uToK1VRfrg==
 
 "@types/mime@^1":
   version "1.3.2"
@@ -3089,12 +3059,7 @@ dotenv-expand@10.0.0:
   resolved "https://registry.npmjs.org/dotenv-expand/-/dotenv-expand-10.0.0.tgz#12605d00fb0af6d0a592e6558585784032e4ef37"
   integrity sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==
 
-dotenv@16.1.4:
-  version "16.1.4"
-  resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.1.4.tgz#67ac1a10cd9c25f5ba604e4e08bc77c0ebe0ca8c"
-  integrity sha512-m55RtE8AsPeJBpOIFKihEmqUcoVncQIwo7x9U8ZwLEZw9ZpXboz2c+rvog+jUaJvVrZ5kBOeYQBX5+8Aa/OZQw==
-
-dotenv@^16.0.3:
+dotenv@16.3.1, dotenv@^16.0.3:
   version "16.3.1"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
   integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
@@ -5916,10 +5881,10 @@ mute-stream@0.0.8:
   resolved "https://registry.npmmirror.com/mute-stream/-/mute-stream-0.0.8.tgz"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-mysql2@^3.5.2:
-  version "3.5.2"
-  resolved "https://registry.npmjs.org/mysql2/-/mysql2-3.5.2.tgz#a06050e1514e9ac15711a8b883ffd51cb44b2dc8"
-  integrity sha512-cptobmhYkYeTBIFp2c0piw2+gElpioga1rUw5UidHvo8yaHijMZoo8A3zyBVoo/K71f7ZFvrShA9iMIy9dCzCA==
+mysql2@^3.6.1:
+  version "3.6.1"
+  resolved "https://registry.npmjs.org/mysql2/-/mysql2-3.6.1.tgz#be8876c8bb5d5da544951217dfa87a5ffbd8407e"
+  integrity sha512-O7FXjLtNkjcMBpLURwkXIhyVbX9i4lq4nNRCykPNOXfceq94kJ0miagmTEGCZieuO8JtwtXaZ41U6KT4eF9y3g==
   dependencies:
     denque "^2.1.0"
     generate-function "^2.3.1"
@@ -7778,6 +7743,11 @@ tslib@2.6.1, tslib@^2.5.0, tslib@^2.6.0:
   version "2.6.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.1.tgz#fd8c9a0ff42590b25703c0acb3de3d3f4ede0410"
   integrity sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==
+
+tslib@2.6.2:
+  version "2.6.2"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz#703ac29425e7b37cd6fd456e92404d46d1f3e4ae"
+  integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
 
 tslib@^1.9.0:
   version "1.14.1"

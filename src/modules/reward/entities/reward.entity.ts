@@ -1,11 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { RewardAnswer } from 'src/modules/reward-answer/entities/reward-answer.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -59,12 +62,19 @@ export class Reward extends BaseEntity {
   isPublic: boolean;
 
   @ApiProperty()
-  @Column({
-    type: 'int',
-    nullable: true,
-    comment: '0 进行中，1 结束，2 撤销',
+  @Column('simple-enum', {
+    enum: ['underway', 'finish', 'cancel'],
+    default: 'underway',
+    comment: '状态',
   })
-  status: number;
+  status: string;
+
+  @ApiProperty()
+  @Column('simple-enum', {
+    enum: ['user', 'admin'],
+    comment: '撤销类型: 用户，管理员',
+  })
+  cancelType: string;
 
   @ApiProperty()
   @OneToOne(() => User)
@@ -75,6 +85,16 @@ export class Reward extends BaseEntity {
   @OneToOne(() => User)
   @JoinColumn()
   rewardUser: User;
+
+  @OneToMany(() => RewardAnswer, (rewardAnswer) => rewardAnswer.reward)
+  rewardAnswers: RewardAnswer[];
+
+  @OneToOne(() => RewardAnswer)
+  @JoinColumn()
+  confirmedRewardAnswer: RewardAnswer;
+
+  @DeleteDateColumn({ nullable: false })
+  deletedTime: Date;
 
   @ApiProperty()
   @CreateDateColumn({

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsString, IsUUID, MaxLength } from 'class-validator';
-import { IEntityTypeList } from 'src/common/constants';
+import { IsUUID } from 'class-validator';
 
 export class DelTopicCommentDto {
   @ApiProperty()

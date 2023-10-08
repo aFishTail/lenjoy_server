@@ -1,7 +1,7 @@
 import { EntityTypeEnum } from 'src/common/constants';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Score } from './entities/score.entity';
 import { ScoreOperateOption, ScoreOperateType } from './score.type';
@@ -44,6 +44,35 @@ export class ScoreService {
         })
         .execute();
     });
+    return null;
+  }
+
+  async operateWithTransaction(
+    manager: EntityManager,
+    userId: string,
+    typeOption: ScoreOperateType | ScoreOperateOption,
+    entityId: string,
+    entityType: EntityTypeEnum,
+  ) {
+    const { score, type, desc } = getOpScoreAndDesc(typeOption, entityType);
+    const scoreEntity = await manager.getRepository(Score).create({
+      userId,
+      entityId,
+      entityType,
+      score,
+      type,
+      description: desc,
+    });
+    await manager.getRepository(Score).save(scoreEntity);
+    await manager
+      .createQueryBuilder()
+      .update(User)
+      .where({ id: userId })
+      .set({
+        score: () =>
+          `score ${type === ScoreOperateType.INCREASE ? '+' : '-'} ${score}`,
+      })
+      .execute();
     return null;
   }
 

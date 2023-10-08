@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsUUID } from 'class-validator';
-import { Topic } from 'src/modules/topic/entities/topic.entity';
 
 export class QueryPagerInputDto {
   @ApiProperty()

@@ -1,4 +1,4 @@
-import { IsEmail, IsString, Length, length } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 export class LoginWithGithubInputDto {
   @IsString()
   code: string;

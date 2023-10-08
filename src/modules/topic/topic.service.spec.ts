@@ -7,9 +7,6 @@ import { getConnection } from 'typeorm';
 import { CategoryService } from '../category/category.service';
 import { Category } from '../category/entities/category.entity';
 import { ScoreService } from '../score/score.service';
-import { ThirdAccount, User } from '../user/entities/user.entity';
-import { UserService } from '../user/user.service';
-import { title } from 'process';
 
 describe('test topic service', () => {
   let service: TopicService;

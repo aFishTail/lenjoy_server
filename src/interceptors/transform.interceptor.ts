@@ -1,5 +1,4 @@
 import {
-  Injectable,
   NestInterceptor,
   ExecutionContext,
   CallHandler,

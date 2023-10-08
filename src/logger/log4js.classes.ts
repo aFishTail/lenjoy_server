@@ -45,7 +45,7 @@ export class Log4jsLogger implements LoggerService {
       minute: 'numeric',
       second: 'numeric',
       day: '2-digit',
-      month: '2-digit'
+      month: '2-digit',
     } as const;
     return new Date(Date.now()).toLocaleString(undefined, localeStringOptions);
   }

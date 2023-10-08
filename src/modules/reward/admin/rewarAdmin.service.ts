@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ScoreService } from 'src/modules/score/score.service';
-import { User } from 'src/modules/user/entities/user.entity';
-import { Repository, DataSource } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Reward } from '../entities/reward.entity';
 import { QueryRewardListInputDto } from '../dto/query-reward.dto';
 import { ADMIN_USER_ID, ScoreOperateType } from 'src/modules/score/score.type';
@@ -11,8 +10,6 @@ import { EntityTypeEnum } from 'src/common/constants';
 @Injectable()
 export class RewardAdminService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
     @InjectRepository(Reward)
     private readonly rewardRepository: Repository<Reward>,
     private readonly scoreService: ScoreService,

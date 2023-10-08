@@ -4,6 +4,6 @@ import { UserSignController } from './user-sign.controller';
 
 @Module({
   controllers: [UserSignController],
-  providers: [UserSignService]
+  providers: [UserSignService],
 })
 export class UserSignModule {}

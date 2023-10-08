@@ -1,4 +1,4 @@
-import { ApiExtraModels, ApiProperty, IntersectionType } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 import { QueryPagerInputDto, ResponseDto } from 'src/common/base.dto';
 import { User } from '../entities/user.entity';

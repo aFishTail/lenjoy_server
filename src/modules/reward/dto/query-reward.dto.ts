@@ -1,12 +1,5 @@
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
-import {
-  IsString,
-  IsNotEmpty,
-  MaxLength,
-  IsOptional,
-  IsNumber,
-  IsBoolean,
-} from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 import {
   QueryPagerInputDto,
   QueryPagerOutDto,

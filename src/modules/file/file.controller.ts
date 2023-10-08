@@ -1,17 +1,11 @@
 import {
   Controller,
-  BadRequestException,
   Post,
   UploadedFile,
   UseInterceptors,
-  Body,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { join } from 'path';
-import multer = require('multer');
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
-import { type } from 'os';
 import { UploadArticleImageInputDto } from './dto/article-upload.dto';
 import { FileService } from './file.service';
 

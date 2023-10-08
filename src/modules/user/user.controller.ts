@@ -5,9 +5,6 @@ import {
   UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
-  HttpCode,
-  HttpStatus,
-  UploadedFiles,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,10 +21,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { VerifyEmailDto } from './dto/user-email.dto';
 import { EmialService } from '../email/email.service';
-import {
-  AnyFilesInterceptor,
-  FileFieldsInterceptor,
-} from '@nestjs/platform-express';
 
 @ApiTags('用户管理')
 @Controller('user')

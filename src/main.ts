@@ -2,14 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as express from 'express';
-import * as bodyParser from 'body-parser';
 import { AppModule } from './app.module';
 import { AllExceptionFilter } from './filters/all-exception.filter';
 import { HttpExceptionFilter } from './filters/http-execption.filter';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { loggerMiddleware } from './middleware/logger.middleware';
 import { ValidationPipe } from './pipe/validation.pipe';
-import helmet from 'helmet';
 import * as compression from 'compression';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
@@ -76,6 +74,7 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, document);
 
   await app.listen(3000);
+  console.log('运行在3000端口！');
 }
 process.on('uncaughtException', (err) => {
   console.log('捕获到了未知错误', err);

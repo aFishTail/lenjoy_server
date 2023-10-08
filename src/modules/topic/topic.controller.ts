@@ -52,7 +52,7 @@ export class TopicController {
   @ApiOperation({ summary: '查看帖子详情' })
   @ApiResponse({ status: 201, type: QueryTopicDetailOutDto })
   @Post('/detail')
-  async getDetail(@Body() payload: PrimaryKeyDto, @QueryUser('id') userId) {
+  async getDetail(@Body() payload: PrimaryKeyDto) {
     const { id } = payload;
     const topic = await this.topicService.findOne(id);
     if (!topic) {

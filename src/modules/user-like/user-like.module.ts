@@ -6,7 +6,7 @@ import { UserLike } from './entities/user-like.entity';
 import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserLike])],
+  imports: [TypeOrmModule.forFeature([UserLike]), UserModule],
   controllers: [UserLikeController],
   exports: [UserLikeService],
   providers: [UserLikeService],

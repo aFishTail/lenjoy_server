@@ -7,11 +7,10 @@ import {
   ManyToOne,
   JoinColumn,
   BaseEntity,
+  DeleteDateColumn,
 } from 'typeorm';
 import { Category } from 'src/modules/category/entities/category.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from 'src/modules/user/entities/user.entity';
-import { Comment } from 'src/modules/comment/entities/comment.entity';
 
 @Entity()
 export class Topic extends BaseEntity {
@@ -82,6 +81,9 @@ export class Topic extends BaseEntity {
   @ApiProperty()
   @Column({ name: 'user_id' })
   userId: string;
+
+  @DeleteDateColumn({ nullable: false })
+  deletedTime: Date;
 
   @ApiProperty()
   @CreateDateColumn({

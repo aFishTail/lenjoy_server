@@ -5,8 +5,8 @@ import {
   BaseEntity,
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -59,7 +59,7 @@ export class Resource extends BaseEntity {
 
   // 非public资源可以查看的用户集合
   @ApiProperty()
-  @ManyToMany(() => User, (user) => user.id)
+  @ManyToMany(() => User)
   @JoinTable()
   withPermissionUsers: User[];
 
@@ -72,10 +72,7 @@ export class Resource extends BaseEntity {
   score: number;
 
   @ApiProperty({ type: Category, isArray: true })
-  @ManyToOne(() => Category, (category) => category.topics, {
-    cascade: true,
-  })
-  @JoinColumn()
+  @ManyToOne(() => Category)
   category: Category;
 
   @ApiProperty({ description: '是否推荐' })
@@ -105,6 +102,9 @@ export class Resource extends BaseEntity {
   @ApiProperty({ description: '最后评论人' })
   @Column({ name: 'last_comment_user', nullable: true })
   lastCommentUser: string;
+
+  @DeleteDateColumn({ nullable: false })
+  deletedTime: Date;
 
   @ApiProperty()
   @CreateDateColumn({

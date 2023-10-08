@@ -1,16 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { QueryUser } from 'src/decorators/user.decorator';
-import { generateCaptcha } from 'src/utils/captcha';
 import { AuthService } from './auth.service';
 import {
   LoginInputDto,

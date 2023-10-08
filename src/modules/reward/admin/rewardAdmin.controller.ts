@@ -10,7 +10,7 @@ import { RewardAdminService } from './rewarAdmin.service';
 @Roles('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('admin/reward')
-export class AdminTopicController {
+export class RewardAdminController {
   constructor(private readonly rewardAdminService: RewardAdminService) {}
 
   @ApiOperation({ summary: '查询悬赏列表' })
