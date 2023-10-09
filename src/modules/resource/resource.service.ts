@@ -27,7 +27,7 @@ export class ResourceService {
     if (!isPublic && !score) {
       throw new BadRequestException('该资源非公开, 需要填写价值积分');
     }
-    const newReource = await this.resourceRepository.create({
+    const newResource = await this.resourceRepository.create({
       name,
       url,
       haveCode,
@@ -37,8 +37,8 @@ export class ResourceService {
       category: existCategory,
       userId,
     });
-    await this.resourceRepository.save(newReource);
-    return newReource;
+    await this.resourceRepository.save(newResource);
+    return newResource;
   }
 
   async queryPage(

@@ -10,6 +10,7 @@ import { ScoreService } from '../score/score.service';
 import { User } from '../user/entities/user.entity';
 import { ScoreOperateType } from '../score/score.type';
 import { EntityTypeEnum } from 'src/common/constants';
+import { UserBehavior } from '../user/entities/user-behavior.entity';
 
 @Injectable()
 export class TopicService {
@@ -28,15 +29,15 @@ export class TopicService {
     categoryId: string,
   ) {
     const existCategory = await this.categoryService.findById(categoryId);
-    const newReource = await this.topicRepository.create({
+    const newResource = await this.topicRepository.create({
       title,
       content,
       summary,
       category: existCategory,
       userId,
     });
-    await this.topicRepository.save(newReource);
-    return newReource;
+    await this.topicRepository.save(newResource);
+    return newResource;
   }
   async postTopic(
     userId: string,
@@ -52,7 +53,6 @@ export class TopicService {
     if (!user.emailVerified) {
       throw new BadRequestException('用户邮箱未认证');
     }
-
     const topic = await this.create(
       userId,
       title,
@@ -60,12 +60,19 @@ export class TopicService {
       summary,
       categoryId,
     );
-    await this.scoreService.operate(
-      userId,
-      ScoreOperateType.INCREASE,
-      topic.id,
-      EntityTypeEnum.Topic,
-    );
+    const userBehavior = await this.dataSource
+      .getRepository(UserBehavior)
+      .createQueryBuilder('userBehavior')
+      .where('userId = :userId', { userId })
+      .getOne();
+    if (!userBehavior.firstTopic) {
+      await this.scoreService.operate(
+        userId,
+        ScoreOperateType.INCREASE,
+        topic.id,
+        EntityTypeEnum.Topic,
+      );
+    }
     return null;
   }
 
