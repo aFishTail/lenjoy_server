@@ -112,7 +112,7 @@ export class User extends BaseEntity {
   @JoinTable()
   havePermissionResources: Resource[];
 
-  @Column({ type: 'decimal', comment: '完结率' })
+  @Column({ type: 'decimal', comment: '完结率', default: 1 })
   compeleteRate: number;
 
   @CreateDateColumn({

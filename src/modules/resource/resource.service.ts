@@ -21,6 +21,9 @@ export class ResourceService {
     const { name, url, haveCode, code, isPublic, score, categoryId } =
       createResourceDto;
     const existCategory = await this.categoryService.findById(categoryId);
+    if (!existCategory) {
+      throw new BadRequestException('该主题不存在');
+    }
     if (haveCode && !code) {
       throw new BadRequestException('该资源需要密码,链接密码不能为空');
     }
@@ -66,10 +69,10 @@ export class ResourceService {
       qb.andWhere('resource.isPublic = :isPublic', { isPublic });
     }
     if (isWithPermission) {
-      qb.leftJoinAndSelect('resource.withPermissionUsers', 'user').where(
-        'user.id = :userId',
-        { userId },
-      );
+      qb.leftJoinAndSelect(
+        'resource.withPermissionUsers',
+        'permissionUser',
+      ).where('permissionUser.id = :userId', { userId });
     }
     qb.orderBy('resource.createAt', 'DESC');
     const [records, total] = await qb.getManyAndCount();
@@ -110,6 +113,9 @@ export class ResourceService {
     };
     if (categoryId && categoryId !== oldResource.category.id) {
       newResource.category = await this.categoryService.findById(categoryId);
+      if (!newResource.category) {
+        throw new BadRequestException('该主题不存在');
+      }
     }
     const updatedTopic = this.resourceRepository.merge(
       oldResource,
@@ -119,6 +125,7 @@ export class ResourceService {
   }
 
   async remove(id: string) {
-    return await this.resourceRepository.delete({ id });
+    await this.resourceRepository.softDelete({ id });
+    return;
   }
 }
