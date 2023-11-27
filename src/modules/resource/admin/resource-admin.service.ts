@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ScoreService } from 'src/modules/score/score.service';
 import { Repository, DataSource } from 'typeorm';
@@ -19,20 +19,20 @@ export class ResourceAdminService {
   async findAll(payload: QueryResourceAdminInputDto) {
     const { name, pageNum, pageSize, isPublic, categoryId } = payload;
     const qb = this.resourceRepository
-      .createQueryBuilder('reward')
-      .leftJoinAndSelect('reward.postUser', 'user')
-      .leftJoinAndSelect('reward.rewardUser', 'user')
-      .orderBy('reward.create_at', 'DESC');
+      .createQueryBuilder('resource')
+      .leftJoinAndSelect('resource.user', 'user')
+      .leftJoinAndSelect('resource.withPermissionUsers', 'withPermissionUser')
+      .orderBy('resource.create_at', 'DESC');
     if (name) {
-      qb.andWhere('reward.name LIKE :name', { name: `%${name}%` });
+      qb.andWhere('resource.name LIKE :name', { name: `%${name}%` });
     }
     if (categoryId) {
-      qb.andWhere('reward.categoryId = :categoryId', {
+      qb.andWhere('resource.categoryId = :categoryId', {
         categoryId: categoryId,
       });
     }
     if (isPublic) {
-      qb.andWhere('reward.isPublic = :isPublic', {
+      qb.andWhere('resource.isPublic = :isPublic', {
         isPublic: isPublic,
       });
     }
@@ -49,22 +49,25 @@ export class ResourceAdminService {
     const qb = this.resourceRepository
       .createQueryBuilder('resource')
       .where({ id });
-    const reward = await qb.getOne();
-    return reward;
+    const resource = await qb.getOne();
+    if (!resource) {
+      throw new BadRequestException('资源不存在');
+    }
+    return resource;
   }
 
   async remove(id: string) {
     await this.dataSource.manager.transaction(async (manager) => {
-      const reward = await this.resourceRepository.findOneBy({ id });
-      await this.resourceRepository.softRemove(reward);
+      const resource = await this.resourceRepository.findOneBy({ id });
+      await this.resourceRepository.softRemove(resource);
       await this.scoreService.operateWithTransaction(
         manager,
         ADMIN_USER_ID,
         {
           type: ScoreOperateType.DECREASE,
-          score: reward.score,
+          score: resource.score,
         },
-        reward.id,
+        resource.id,
         EntityTypeEnum.Reward,
       );
     });

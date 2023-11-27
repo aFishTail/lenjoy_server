@@ -1,13 +1,14 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { ResourceService } from './resource.service';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { UpdateResourceDto } from './dto/update-resource.dto';
 import { PrimaryKeyDto } from 'src/common/base.dto';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { QueryResourceDto } from './dto/query-resource.dto';
 import { EntityAuth, EntityAuthGuard } from '../auth/entity.guard';
 import { Resource } from './entities/resource.entity';
+import { QueryResourceInputDto } from './dto/query-resource.dto';
+import { Request } from 'express';
 
 @Controller('resource')
 export class ResourceController {
@@ -24,7 +25,7 @@ export class ResourceController {
 
   @Post('query')
   queryPage(
-    @Body() queryResourceDto: QueryResourceDto,
+    @Body() queryResourceDto: QueryResourceInputDto,
     @QueryUser('id') userId,
   ) {
     return this.resourceService.queryPage(queryResourceDto, userId);
@@ -38,8 +39,14 @@ export class ResourceController {
   }
 
   @Post('detail')
-  findOne(@Body() payload: PrimaryKeyDto) {
-    return this.resourceService.findOne(payload.id);
+  // @UseGuards(JwtAuthGuard)
+  findOne(
+    @Body() payload: PrimaryKeyDto,
+    @QueryUser('id') userId: string,
+    @Req() req: Request,
+  ) {
+    console.log('req', req);
+    return this.resourceService.findOne(payload.id, userId);
   }
 
   @UseGuards(JwtAuthGuard, EntityAuthGuard)
@@ -47,5 +54,11 @@ export class ResourceController {
   @Post('delete')
   remove(@Body() payload: PrimaryKeyDto) {
     return this.resourceService.remove(payload.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('pay')
+  pay(@Body() payload: PrimaryKeyDto, @QueryUser('id') userId: string) {
+    return this.resourceService.pay(payload.id, userId);
   }
 }

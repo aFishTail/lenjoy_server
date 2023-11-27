@@ -13,6 +13,7 @@ import { ThirdAccount, User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ThirdAccountType } from 'src/common/constants';
 import { ThirdAccountUserInfo } from 'src/utils/github';
+import { UserBehavior } from './entities/user-behavior.entity';
 
 @Injectable()
 export class UserService {
@@ -21,6 +22,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(ThirdAccount)
     private readonly thirdAccountRepository: Repository<ThirdAccount>,
+    @InjectRepository(UserBehavior)
+    private readonly userBehaviorRepository: Repository<UserBehavior>,
     private readonly dataSource: DataSource,
   ) {}
   async create(user: Partial<User>) {
@@ -43,9 +46,16 @@ export class UserService {
     if (!nickname) {
       user.nickname = username;
     }
-    const newUser = await this.userRepository.create(user);
-    await this.userRepository.save(newUser);
-    return newUser;
+    await this.dataSource.transaction(async (manager) => {
+      const userRepository = manager.getRepository(User);
+      const userBehaviorRepository = manager.getRepository(UserBehavior);
+      const newUser = await userRepository.create(user);
+      await userRepository.save(newUser);
+      const userBehavior = await userBehaviorRepository.create({
+        user: newUser,
+      });
+      await userBehaviorRepository.save(userBehavior);
+    });
   }
 
   /**

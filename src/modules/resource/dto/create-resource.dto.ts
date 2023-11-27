@@ -21,10 +21,6 @@ export class CreateResourceDto {
   @MaxLength(255, { message: '链接最长不可以超过255位字符' })
   url: string;
 
-  @ApiProperty({ description: '是否加密' })
-  @IsBoolean()
-  haveCode: boolean;
-
   @ApiProperty({ description: '链接密码' })
   @IsString()
   @IsOptional()
@@ -45,4 +41,8 @@ export class CreateResourceDto {
   @IsString()
   @IsNotEmpty()
   categoryId: string;
+
+  @ApiProperty({ description: '内容' })
+  @IsString()
+  content: string;
 }

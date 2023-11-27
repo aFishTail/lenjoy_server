@@ -58,7 +58,8 @@ export class TopicController {
     if (!topic) {
       throw new BadRequestException('帖子不存在');
     }
-    return this.topicService.IncrViewCount(id);
+    await this.topicService.IncrViewCount(id);
+    return topic;
   }
 
   @ApiOperation({ summary: '编辑帖子' })

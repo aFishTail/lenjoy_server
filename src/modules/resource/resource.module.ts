@@ -8,10 +8,11 @@ import { AuthModule } from '../auth/auth.module';
 import { ScoreModule } from '../score/score.module';
 import { ResourceAdminController } from './admin/resource-admin.controller';
 import { ResourceAdminService } from './admin/resource-admin.service';
+import { User } from '../user/entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Resource]),
+    TypeOrmModule.forFeature([Resource, User]),
     CategoryModule,
     AuthModule,
     ScoreModule,

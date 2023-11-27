@@ -50,7 +50,12 @@ export class Resource extends BaseEntity {
   lastCheckTime: Date;
 
   @ApiProperty()
-  @Column({ type: 'uuid', comment: '所属用户', nullable: false })
+  @Column({
+    type: 'uuid',
+    name: 'user_id',
+    comment: '所属用户',
+    nullable: false,
+  })
   userId: string;
 
   @ApiProperty()
@@ -74,6 +79,10 @@ export class Resource extends BaseEntity {
   @ApiProperty({ type: Category, isArray: true })
   @ManyToOne(() => Category)
   category: Category;
+
+  @ApiProperty({ description: '内容' })
+  @Column({ type: 'text' })
+  content: string;
 
   @ApiProperty({ description: '是否推荐' })
   @Column({ default: 0 })
@@ -102,6 +111,10 @@ export class Resource extends BaseEntity {
   @ApiProperty({ description: '最后评论人' })
   @Column({ name: 'last_comment_user', nullable: true })
   lastCommentUser: string;
+
+  @ApiProperty({ type: User })
+  @ManyToOne(() => User)
+  user: User;
 
   @DeleteDateColumn({ nullable: false })
   deletedTime: Date;

@@ -25,8 +25,8 @@ export class ResourceAdminController {
   @Post('/detail')
   async detail(@Body() param: PrimaryKeyDto) {
     const { id } = param;
-    const topic = await this.resourceAdminService.findOne(id);
-    return topic;
+    const resource = await this.resourceAdminService.findOne(id);
+    return resource;
   }
 
   @ApiOperation({ summary: '删除资源' })

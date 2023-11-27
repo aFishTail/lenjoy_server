@@ -1,4 +1,12 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { AuthService } from './auth.service';
@@ -20,9 +28,15 @@ export class AuthController {
    * @param user
    */
   @Post('login')
-  async login(@Body() user: LoginInputDto) {
-    const res = this.authService.loginWithCaptcha(user);
-    return res;
+  async login(
+    @Body() user: LoginInputDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const data = await this.authService.loginWithCaptcha(user);
+    res.cookie('token', 'user123');
+    // res.status(HttpStatus.OK).json(data);
+    return data;
+    // return res;
   }
 
   @Post('loginWithoutCaptcha')

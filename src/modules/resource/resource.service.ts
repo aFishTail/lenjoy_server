@@ -6,26 +6,26 @@ import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryService } from '../category/category.service';
 import { ScoreService } from '../score/score.service';
-import { QueryResourceDto } from './dto/query-resource.dto';
+import { QueryResourceInputDto } from './dto/query-resource.dto';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class ResourceService {
   constructor(
     @InjectRepository(Resource)
     private readonly resourceRepository: Repository<Resource>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly categoryService: CategoryService,
     private readonly scoreService: ScoreService,
     private readonly dataSource: DataSource,
   ) {}
   async create(createResourceDto: CreateResourceDto, userId: string) {
-    const { name, url, haveCode, code, isPublic, score, categoryId } =
+    const { name, url, code, isPublic, score, categoryId, content } =
       createResourceDto;
     const existCategory = await this.categoryService.findById(categoryId);
     if (!existCategory) {
       throw new BadRequestException('该主题不存在');
-    }
-    if (haveCode && !code) {
-      throw new BadRequestException('该资源需要密码,链接密码不能为空');
     }
     if (!isPublic && !score) {
       throw new BadRequestException('该资源非公开, 需要填写价值积分');
@@ -33,11 +33,12 @@ export class ResourceService {
     const newResource = await this.resourceRepository.create({
       name,
       url,
-      haveCode,
+      haveCode: !!code,
       code,
       isPublic,
       score,
       category: existCategory,
+      content,
       userId,
     });
     await this.resourceRepository.save(newResource);
@@ -45,10 +46,11 @@ export class ResourceService {
   }
 
   async queryPage(
-    queryResourceDto: QueryResourceDto,
+    queryResourceDto: QueryResourceInputDto,
     userId: string | undefined,
   ) {
-    const { name, categoryId, isPublic, isWithPermission } = queryResourceDto;
+    const { name, categoryId, isPublic, isWithPermission, pageNum, pageSize } =
+      queryResourceDto;
     const qb = this.resourceRepository
       .createQueryBuilder('resource')
       .leftJoinAndSelect('resource.category', 'category')
@@ -75,6 +77,7 @@ export class ResourceService {
       ).where('permissionUser.id = :userId', { userId });
     }
     qb.orderBy('resource.createAt', 'DESC');
+    qb.limit(pageSize).offset((pageNum - 1) * pageSize);
     const [records, total] = await qb.getManyAndCount();
     const data = {
       records,
@@ -83,21 +86,33 @@ export class ResourceService {
     return data;
   }
 
-  async findOne(id: string) {
-    const resource = await this.resourceRepository.findOneBy({ id });
+  async findOne(id: string, userId: string) {
+    const qb = this.resourceRepository
+      .createQueryBuilder('resource')
+      .leftJoinAndMapOne(
+        'resource.user',
+        'user',
+        'user',
+        'user.id = resource.user_id',
+      )
+      .leftJoinAndSelect('resource.category', 'category')
+      .leftJoinAndSelect('resource.withPermissionUsers', 'withPermissionUser')
+      .where({ id });
+    const resource = await qb.getOne();
     if (!resource) {
       throw new BadRequestException('资源不存在');
     }
     resource.viewCount = resource.viewCount + 1;
-    return await this.resourceRepository.save(resource);
+    const havePayed = !!resource.withPermissionUsers.find(
+      (e) => e.id === userId,
+    );
+    const newResource = await this.resourceRepository.save(resource);
+    return { ...newResource, havePayed };
   }
 
   async update(updateResourceDto: UpdateResourceDto) {
-    const { id, name, url, haveCode, code, isPublic, categoryId } =
+    const { id, name, url, code, isPublic, categoryId, score } =
       updateResourceDto;
-    // const oldResource = await this.resourceRepository.findOne({
-    //   where: { id },
-    // });
     const oldResource = await this.resourceRepository
       .createQueryBuilder('resource')
       .leftJoinAndSelect('resource.category', 'category')
@@ -107,9 +122,10 @@ export class ResourceService {
       ...oldResource,
       name,
       url,
-      haveCode,
+      haveCode: !!code,
       code,
       isPublic,
+      score,
     };
     if (categoryId && categoryId !== oldResource.category.id) {
       newResource.category = await this.categoryService.findById(categoryId);
@@ -126,6 +142,22 @@ export class ResourceService {
 
   async remove(id: string) {
     await this.resourceRepository.softDelete({ id });
+    return;
+  }
+
+  async pay(id: string, userId: string) {
+    const resource = await this.resourceRepository
+      .createQueryBuilder('resource')
+      .leftJoinAndSelect('resource.withPermissionUsers', 'withPermissionUser')
+      .where('resource.id = :id', { id })
+      .getOne();
+    const withPermissionUsers = resource.withPermissionUsers;
+    if (withPermissionUsers.find((e) => e.id === userId)) {
+      throw new BadRequestException('已支付积分，无需重复支付');
+    }
+    const user = await this.userRepository.findOneBy({ id: userId });
+    withPermissionUsers.push(user);
+    this.resourceRepository.save(resource);
     return;
   }
 }
