@@ -1,6 +1,4 @@
 {
-    "cSpell.words": [
-        "datetime",
-        "typeorm"
-    ]
+  "cSpell.words": ["datetime", "typeorm"],
+  "editor.inlineSuggest.showToolbar": "onHover"
 }

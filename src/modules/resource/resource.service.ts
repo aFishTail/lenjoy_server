@@ -160,4 +160,20 @@ export class ResourceService {
     this.resourceRepository.save(resource);
     return;
   }
+
+  async viewResourceUrl(id: string, userId: string) {
+    const resource = await this.resourceRepository
+      .createQueryBuilder('resource')
+      .leftJoinAndSelect('resource.withPermissionUsers', 'withPermissionUser')
+      .where('resource.id = :id', { id })
+      .getOne();
+    const withPermissionUsers = resource.withPermissionUsers;
+    if (!withPermissionUsers.find((e) => e.id === userId)) {
+      throw new BadRequestException('无权访问该资源');
+    }
+    return {
+      url: resource.url,
+      code: resource.code,
+    };
+  }
 }

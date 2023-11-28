@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { Category } from 'src/modules/category/entities/category.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import {
@@ -26,6 +27,7 @@ export class Resource extends BaseEntity {
 
   @ApiProperty({ description: '链接', nullable: false })
   @Column({ length: 255 })
+  @Exclude()
   url: string;
 
   @ApiProperty({ description: '是否加密', nullable: false })
@@ -34,6 +36,7 @@ export class Resource extends BaseEntity {
 
   @ApiProperty({ description: '链接密码' })
   @Column({ length: 20, nullable: true })
+  @Exclude()
   code: string;
 
   @ApiProperty({ description: '是否可以访问' })

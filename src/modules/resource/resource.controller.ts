@@ -39,7 +39,6 @@ export class ResourceController {
   }
 
   @Post('detail')
-  // @UseGuards(JwtAuthGuard)
   findOne(
     @Body() payload: PrimaryKeyDto,
     @QueryUser('id') userId: string,
@@ -60,5 +59,14 @@ export class ResourceController {
   @Post('pay')
   pay(@Body() payload: PrimaryKeyDto, @QueryUser('id') userId: string) {
     return this.resourceService.pay(payload.id, userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('viewResourceUrl')
+  viewResourceUrl(
+    @Body() payload: PrimaryKeyDto,
+    @QueryUser('id') userId: string,
+  ) {
+    return this.resourceService.viewResourceUrl(payload.id, userId);
   }
 }
