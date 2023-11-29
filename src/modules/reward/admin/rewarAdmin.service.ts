@@ -19,7 +19,7 @@ export class RewardAdminService {
     const { title, pageNum, pageSize } = payload;
     const qb = this.rewardRepository
       .createQueryBuilder('reward')
-      .leftJoinAndSelect('reward.postUser', 'user')
+      .leftJoinAndSelect('reward.user', 'user')
       .leftJoinAndSelect('reward.rewardUser', 'user')
       .orderBy('reward.create_at', 'DESC');
     if (title) {
@@ -37,7 +37,7 @@ export class RewardAdminService {
   async findOne(id: string) {
     const qb = this.rewardRepository
       .createQueryBuilder('reward')
-      .leftJoinAndSelect('reward.postUser', 'user')
+      .leftJoinAndSelect('reward.user', 'user')
       .leftJoinAndSelect('reward.rewardUser', 'user')
       .where({ id });
     const reward = await qb.getOne();

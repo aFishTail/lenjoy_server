@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Category } from 'src/modules/category/entities/category.entity';
 import { RewardAnswer } from 'src/modules/reward-answer/entities/reward-answer.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import {
@@ -8,6 +9,7 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -79,7 +81,7 @@ export class Reward extends BaseEntity {
   @ApiProperty()
   @OneToOne(() => User)
   @JoinColumn()
-  postUser: User;
+  user: User;
 
   @ApiProperty()
   @OneToOne(() => User)
@@ -92,6 +94,10 @@ export class Reward extends BaseEntity {
   @OneToOne(() => RewardAnswer)
   @JoinColumn()
   confirmedRewardAnswer: RewardAnswer;
+
+  @ApiProperty({ type: Category, isArray: true })
+  @ManyToOne(() => Category)
+  category: Category;
 
   @DeleteDateColumn({ nullable: false })
   deletedTime: Date;

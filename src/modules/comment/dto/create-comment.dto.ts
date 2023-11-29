@@ -1,18 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUUID,
   MaxLength,
+  IsIn,
 } from 'class-validator';
-import { IEntityTypeList } from 'src/common/constants';
 
 export class CreateTopicCommentDto {
   @ApiProperty()
-  @IsUUID()
+  @IsString()
   entityId: string;
+
+  @ApiProperty()
+  @IsIn(['topic', 'resource', 'reward'])
+  entityType: string;
 
   @ApiProperty()
   @IsString()

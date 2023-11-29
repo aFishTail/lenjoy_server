@@ -53,6 +53,18 @@ export class ResourceService {
       queryResourceDto;
     const qb = this.resourceRepository
       .createQueryBuilder('resource')
+      .select([
+        'resource.id',
+        'resource.name',
+        'resource.score',
+        'resource.isPublic',
+        'resource.accessible',
+        'resource.commentCount',
+        'resource.viewCount',
+        'resource.isPublic',
+        'resource.createAt',
+        'resource.userId',
+      ])
       .leftJoinAndSelect('resource.category', 'category')
       .leftJoinAndMapOne(
         'resource.user',
@@ -127,6 +139,7 @@ export class ResourceService {
       isPublic,
       score,
     };
+    if (newResource.isPublic) newResource.score = null;
     if (categoryId && categoryId !== oldResource.category.id) {
       newResource.category = await this.categoryService.findById(categoryId);
       if (!newResource.category) {
@@ -168,7 +181,10 @@ export class ResourceService {
       .where('resource.id = :id', { id })
       .getOne();
     const withPermissionUsers = resource.withPermissionUsers;
-    if (!withPermissionUsers.find((e) => e.id === userId)) {
+    if (
+      !withPermissionUsers.find((e) => e.id === userId) &&
+      resource.userId !== userId
+    ) {
       throw new BadRequestException('无权访问该资源');
     }
     return {

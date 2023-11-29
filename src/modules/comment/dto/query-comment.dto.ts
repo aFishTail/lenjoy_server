@@ -1,12 +1,16 @@
 import { IntersectionType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID } from 'class-validator';
+import { IsIn, IsString, IsUUID } from 'class-validator';
 import { QueryPagerInputDto } from 'src/common/base.dto';
 
 class QueryTopicCommentDto {
   @ApiProperty()
-  @IsUUID()
-  topicId: string;
+  @IsString()
+  entityId: string;
+
+  @ApiProperty()
+  @IsIn(['topic', 'resource', 'reward'])
+  entityType: string;
 }
 
 export class QueryTopicCommentListDto extends IntersectionType(

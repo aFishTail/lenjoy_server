@@ -31,7 +31,7 @@ export class RewardService {
     await this.dataSource.transaction(async (manager) => {
       const reward = await manager.getRepository(Reward).create({
         ...createRewardDto,
-        postUser: user,
+        user: user,
       });
       const savedReward = await manager.getRepository(Reward).save(reward);
       await this.scoreService.operateWithTransaction(
@@ -48,8 +48,8 @@ export class RewardService {
     const { title, pageNum, pageSize } = payload;
     const qb = this.rewardRepository
       .createQueryBuilder('reward')
-      .leftJoinAndSelect('reward.postUser', 'user')
-      .leftJoinAndSelect('reward.rewardUser', 'user')
+      .leftJoinAndSelect('reward.user', 'user')
+      .leftJoinAndSelect('reward.rewardUser', 'rewardUser')
       .leftJoinAndSelect('reward.rewardAnswers', 'rewardAnswer')
       .orderBy('reward.create_at', 'DESC');
     if (title) {
@@ -67,8 +67,8 @@ export class RewardService {
   async findOne(id: string, userId?: string) {
     const qb = this.rewardRepository
       .createQueryBuilder('reward')
-      .leftJoinAndSelect('reward.postUser', 'user')
-      .leftJoinAndSelect('reward.rewardUser', 'user')
+      .leftJoinAndSelect('reward.user', 'user')
+      .leftJoinAndSelect('reward.rewardUser', 'rewardUser')
       .where({ id });
     const reward = await qb.getOne();
     return reward;
@@ -175,7 +175,7 @@ export class RewardService {
       .getRepository(Reward)
       .createQueryBuilder('reward')
       .where('reward.status IN (:...names)', { name: ['finish', 'cancel'] })
-      .where('reward.postUser = :userId', { userId })
+      .where('reward.user = :userId', { userId })
       .getMany();
     const compeleteRate = _.floor(
       userRewards.filter((r) => r.cancelType === 'user').length /

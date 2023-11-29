@@ -45,12 +45,13 @@ export class EntityAuthGuard implements CanActivate {
     const entityIdValue = request.body[entityId];
     const entity = await this.dataSource
       .getRepository(model)
-      .createQueryBuilder(model.modelName)
+      .createQueryBuilder(model.name)
+      .leftJoinAndSelect(`${model.name}.user`, 'user')
       .where({ id: entityIdValue })
       .getOne();
     if (!entity) {
       throw new BadRequestException(CommonResponseMessage.EntityNiotFound);
     }
-    return entity && entity.userId === user.id;
+    return entity?.userId === user.id || entity?.user?.id === user.id;
   }
 }

@@ -41,6 +41,15 @@ export class Comment extends BaseEntity {
   @Column({ comment: '评论主体帖子id', name: 'entity_id' })
   entityId: string; // 评论主体的ID
 
+  @ApiProperty({ description: '评论主体类型' })
+  @Column('simple-enum', {
+    enum: ['topic', 'resource', 'reward'],
+    default: 'topic',
+    name: 'entity_type',
+    comment: '评论主体类型',
+  })
+  entityType: string;
+
   @ApiProperty({ description: '引用的评论id' })
   @Column({
     comment: '引用的评论id',

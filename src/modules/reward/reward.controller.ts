@@ -17,51 +17,51 @@ import { ConfirmRewardAnswerDto } from './dto/confirm-reward-answer.dto';
 
 @Controller('reward')
 export class RewardController {
-  // constructor(private readonly rewardService: RewardService) {}
-  // @ApiOperation({ summary: '发布悬赏' })
-  // @ApiResponse({ status: 201, type: ResponseDto })
-  // @UseGuards(JwtAuthGuard)
-  // @Post('/create')
-  // create(@Body() createRewardDto: CreateRewardDto, @QueryUser('id') userId) {
-  //   return this.rewardService.create(createRewardDto, userId);
-  // }
-  // @ApiOperation({ summary: '查看悬赏列表' })
-  // @ApiBody({ type: QueryRewardListInputDto })
-  // @ApiResponse({ status: 201, type: QueryRewardListOutDto })
-  // @Post('list')
-  // findAll(@QueryUser('id') userId, @Body() payload: QueryRewardListInputDto) {
-  //   return this.rewardService.findAll(payload, userId);
-  // }
-  // @ApiOperation({ summary: '查看悬赏详情' })
-  // @ApiResponse({ status: 201, type: QueryRewardDetailOutDto })
-  // @Post('detail')
-  // findOne(@Body() { id }: PrimaryKeyDto, @QueryUser('id') userId) {
-  //   return this.rewardService.findOne(id, userId);
-  // }
-  // @ApiOperation({ summary: '修改悬赏帖' })
-  // @ApiResponse({ type: ResponseDto })
-  // @EntityAuth(Reward, 'id')
-  // @UseGuards(JwtAuthGuard, EntityAuthGuard)
-  // @Post('/update')
-  // update(@Body() updateRewardDto: UpdateRewardDto, @QueryUser('id') userId) {
-  //   return this.rewardService.update(updateRewardDto, userId);
-  // }
-  // @ApiOperation({ summary: '删除悬赏帖' })
-  // @ApiResponse({ status: 201, type: ResponseDto })
-  // @UseGuards(JwtAuthGuard, EntityAuthGuard)
-  // @EntityAuth(Reward, 'id')
-  // @Post('/delete')
-  // remove(payload: PrimaryKeyDto, @QueryUser('id') userId) {
-  //   return this.rewardService.canncel(payload.id, userId);
-  // }
-  // @ApiOperation({ summary: '确认某个回答为悬赏答案' })
-  // @ApiResponse({ status: 201, type: ResponseDto })
-  // @UseGuards(JwtAuthGuard)
-  // @Post('/confirm')
-  // confirm(
-  //   @Body() confirmRewardAnswerDto: ConfirmRewardAnswerDto,
-  //   @QueryUser('id') userId,
-  // ) {
-  //   return this.rewardService.confirm(confirmRewardAnswerDto, userId);
-  // }
+  constructor(private readonly rewardService: RewardService) {}
+  @ApiOperation({ summary: '发布悬赏' })
+  @ApiResponse({ status: 201, type: ResponseDto })
+  @UseGuards(JwtAuthGuard)
+  @Post('/create')
+  create(@Body() createRewardDto: CreateRewardDto, @QueryUser('id') userId) {
+    return this.rewardService.create(createRewardDto, userId);
+  }
+  @ApiOperation({ summary: '查看悬赏列表' })
+  @ApiBody({ type: QueryRewardListInputDto })
+  @ApiResponse({ status: 201, type: QueryRewardListOutDto })
+  @Post('/query')
+  findAll(@QueryUser('id') userId, @Body() payload: QueryRewardListInputDto) {
+    return this.rewardService.findAll(payload, userId);
+  }
+  @ApiOperation({ summary: '查看悬赏详情' })
+  @ApiResponse({ status: 201, type: QueryRewardDetailOutDto })
+  @Post('/detail')
+  findOne(@Body() { id }: PrimaryKeyDto, @QueryUser('id') userId) {
+    return this.rewardService.findOne(id, userId);
+  }
+  @ApiOperation({ summary: '修改悬赏帖' })
+  @ApiResponse({ type: ResponseDto })
+  @EntityAuth(Reward, 'id')
+  @UseGuards(JwtAuthGuard, EntityAuthGuard)
+  @Post('/update')
+  update(@Body() updateRewardDto: UpdateRewardDto, @QueryUser('id') userId) {
+    return this.rewardService.update(updateRewardDto, userId);
+  }
+  @ApiOperation({ summary: '删除悬赏帖' })
+  @ApiResponse({ status: 201, type: ResponseDto })
+  @UseGuards(JwtAuthGuard, EntityAuthGuard)
+  @EntityAuth(Reward, 'id')
+  @Post('/delete')
+  remove(payload: PrimaryKeyDto, @QueryUser('id') userId) {
+    return this.rewardService.canncel(payload.id, userId);
+  }
+  @ApiOperation({ summary: '确认某个回答为悬赏答案' })
+  @ApiResponse({ status: 201, type: ResponseDto })
+  @UseGuards(JwtAuthGuard)
+  @Post('/confirm')
+  confirm(
+    @Body() confirmRewardAnswerDto: ConfirmRewardAnswerDto,
+    @QueryUser('id') userId,
+  ) {
+    return this.rewardService.confirm(confirmRewardAnswerDto, userId);
+  }
 }

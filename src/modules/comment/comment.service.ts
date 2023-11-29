@@ -24,13 +24,14 @@ export class CommentService {
   /**
    * 添加文章的一级评论
    */
-  async addTopicComment(userId: string, p: CreateTopicCommentDto) {
-    const { entityId, content } = p;
+  async addComment(userId: string, p: CreateTopicCommentDto) {
+    const { entityId, content, entityType } = p;
     await this.dataSource.transaction(async (manager) => {
       const comment = await manager.getRepository(Comment).create({
         userId,
         entityId,
         content,
+        entityType,
       });
       await manager.getRepository(Comment).save(comment);
       await manager.increment(Topic, { id: entityId }, 'commentCount', 1);
@@ -79,7 +80,7 @@ export class CommentService {
    * 获取帖子下的评论列表
    */
   async getCommentList(userId: string, p: QueryTopicCommentListDto) {
-    const { topicId, pageNum, pageSize } = p;
+    const { entityId, entityType, pageNum, pageSize } = p;
     const qb = this.commentRepository
       .createQueryBuilder('comment')
       .orderBy('comment.createAt', 'ASC')
@@ -89,7 +90,8 @@ export class CommentService {
         'user',
         'user.id = comment.user_id',
       )
-      .andWhere('entity_id = :id', { id: topicId })
+      .andWhere('entity_id = :entityId', { entityId })
+      .andWhere('entity_type = :entityType', { entityType })
       .take(pageSize)
       .skip(pageSize * (pageNum - 1));
 

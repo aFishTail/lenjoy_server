@@ -87,6 +87,7 @@ export class ScoreService {
       select: [
         'id',
         'username',
+        'nickname',
         'score',
         'avatar',
         'topicCount',
@@ -98,10 +99,19 @@ export class ScoreService {
       take: 10,
     });
     return data.map((e) => {
-      const { id, username, score, avatar, topicCount, commentCount } = e;
+      const {
+        id,
+        username,
+        nickname,
+        score,
+        avatar,
+        topicCount,
+        commentCount,
+      } = e;
       return {
         userId: id,
         username,
+        nickname,
         avatar,
         topicCount,
         commentCount,

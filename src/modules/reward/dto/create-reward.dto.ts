@@ -27,4 +27,9 @@ export class CreateRewardDto {
   @IsString()
   @IsNotEmpty()
   content: string;
+
+  @ApiProperty({ description: '主题' })
+  @IsString()
+  @IsNotEmpty()
+  categoryId: string;
 }
