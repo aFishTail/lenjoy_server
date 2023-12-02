@@ -12,7 +12,8 @@ import { QueryRewardListInputDto } from './dto/query-reward.dto';
 import { getChangeInfo } from '../score/score.util';
 import { ConfirmRewardAnswerDto } from './dto/confirm-reward-answer.dto';
 import { RewardAnswer } from '../reward-answer/entities/reward-answer.entity';
-import _ from 'lodash';
+import { floor } from 'lodash';
+import { CategoryService } from '../category/category.service';
 
 @Injectable()
 export class RewardService {
@@ -24,13 +25,18 @@ export class RewardService {
     @InjectRepository(RewardAnswer)
     private readonly rewardAnswerRepository: Repository<RewardAnswer>,
     private readonly scoreService: ScoreService,
+    private readonly categoryService: CategoryService,
     private dataSource: DataSource,
   ) {}
   async create(createRewardDto: CreateRewardDto, userId: string) {
+    const category = await this.categoryService.findById(
+      createRewardDto.categoryId,
+    );
     const user = await this.userRepository.findOneBy({ id: userId });
     await this.dataSource.transaction(async (manager) => {
       const reward = await manager.getRepository(Reward).create({
         ...createRewardDto,
+        category,
         user: user,
       });
       const savedReward = await manager.getRepository(Reward).save(reward);
@@ -48,6 +54,7 @@ export class RewardService {
     const { title, pageNum, pageSize } = payload;
     const qb = this.rewardRepository
       .createQueryBuilder('reward')
+      .leftJoinAndSelect('reward.category', 'category')
       .leftJoinAndSelect('reward.user', 'user')
       .leftJoinAndSelect('reward.rewardUser', 'rewardUser')
       .leftJoinAndSelect('reward.rewardAnswers', 'rewardAnswer')
@@ -55,6 +62,7 @@ export class RewardService {
     if (title) {
       qb.andWhere('reward.title LIKE :title', { title: `%${title}%` });
     }
+    qb.andWhere('reward.status != :status', { status: 'cancel' });
     qb.limit(pageSize).offset((pageNum - 1) * pageSize);
     const [records, total] = await qb.getManyAndCount();
     const data = {
@@ -67,6 +75,7 @@ export class RewardService {
   async findOne(id: string, userId?: string) {
     const qb = this.rewardRepository
       .createQueryBuilder('reward')
+      .leftJoinAndSelect('reward.category', 'category')
       .leftJoinAndSelect('reward.user', 'user')
       .leftJoinAndSelect('reward.rewardUser', 'rewardUser')
       .where({ id });
@@ -177,7 +186,7 @@ export class RewardService {
       .where('reward.status IN (:...names)', { name: ['finish', 'cancel'] })
       .where('reward.user = :userId', { userId })
       .getMany();
-    const compeleteRate = _.floor(
+    const compeleteRate = floor(
       userRewards.filter((r) => r.cancelType === 'user').length /
         userRewards.length,
       4,

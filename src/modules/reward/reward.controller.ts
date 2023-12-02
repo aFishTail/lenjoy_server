@@ -51,7 +51,7 @@ export class RewardController {
   @UseGuards(JwtAuthGuard, EntityAuthGuard)
   @EntityAuth(Reward, 'id')
   @Post('/delete')
-  remove(payload: PrimaryKeyDto, @QueryUser('id') userId) {
+  remove(@Body() payload: PrimaryKeyDto, @QueryUser('id') userId) {
     return this.rewardService.canncel(payload.id, userId);
   }
   @ApiOperation({ summary: '确认某个回答为悬赏答案' })

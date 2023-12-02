@@ -79,13 +79,11 @@ export class Reward extends BaseEntity {
   cancelType: string;
 
   @ApiProperty()
-  @OneToOne(() => User)
-  @JoinColumn()
+  @ManyToOne(() => User)
   user: User;
 
   @ApiProperty()
-  @OneToOne(() => User)
-  @JoinColumn()
+  @ManyToOne(() => User)
   rewardUser: User;
 
   @OneToMany(() => RewardAnswer, (rewardAnswer) => rewardAnswer.reward)
