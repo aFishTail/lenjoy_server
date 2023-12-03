@@ -6,13 +6,16 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PrimaryKeyDto, ResponseDto } from 'src/common/base.dto';
 import { QueryUser } from 'src/decorators/user.decorator';
-import { QueryRewardAnswerDto } from './dto/query-reward-answer.dto';
+import {
+  QueryRewardAnswerDto,
+  QueryRewardListInputDto,
+} from './dto/query-reward-answer.dto';
 
 @Controller('rewardAnswer')
 export class RewardAnswerController {
   constructor(private readonly rewardAnswerService: RewardAnswerService) {}
 
-  @ApiOperation({ summary: '发布悬赏' })
+  @ApiOperation({ summary: '回复悬赏' })
   @ApiResponse({ status: 201, type: ResponseDto })
   @UseGuards(JwtAuthGuard)
   @Post('/create')
@@ -25,10 +28,9 @@ export class RewardAnswerController {
 
   @ApiOperation({ summary: '查询悬赏列表' })
   @ApiResponse({ status: 201, type: ResponseDto })
-  @UseGuards(JwtAuthGuard)
-  @Post('/list')
-  findAll(@Body() queryRewardAnswerDto: QueryRewardAnswerDto) {
-    return this.rewardAnswerService.findAll(queryRewardAnswerDto);
+  @Post('/query')
+  findAll(@Body() payload: QueryRewardListInputDto) {
+    return this.rewardAnswerService.findAll(payload);
   }
 
   @ApiOperation({ summary: '修改悬赏帖子的回答' })
@@ -39,6 +41,9 @@ export class RewardAnswerController {
     return this.rewardAnswerService.update(updateRewardAnswerDto);
   }
 
+  @ApiOperation({ summary: '删除悬赏评论' })
+  @ApiResponse({ status: 201, type: ResponseDto })
+  @UseGuards(JwtAuthGuard)
   @Post('/delete')
   remove(@Body() { id }: PrimaryKeyDto) {
     return this.rewardAnswerService.remove(id);

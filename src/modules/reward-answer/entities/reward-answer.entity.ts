@@ -24,13 +24,16 @@ export class RewardAnswer extends BaseEntity {
   content: string;
 
   @ApiProperty()
-  @OneToOne(() => User)
-  @JoinColumn()
-  answerUser: User;
+  @ManyToOne(() => User)
+  user: User;
 
   @ApiProperty()
   @ManyToOne(() => Reward, (reward) => reward.rewardAnswers)
   reward: Reward;
+
+  @ApiProperty()
+  @Column({ type: 'boolean', comment: '是否悬赏答案', default: false })
+  isConfirmedAnswer: boolean;
 
   @ApiProperty()
   @CreateDateColumn({

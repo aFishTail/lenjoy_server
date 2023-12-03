@@ -120,7 +120,7 @@ import { UserBehavior } from './modules/user/entities/user-behavior.entity';
     UserFavoriteModule,
     ResourceModule,
     RewardModule,
-    // RewardAnswerModule,
+    RewardAnswerModule,
   ],
   controllers: [],
   providers: [Logger],

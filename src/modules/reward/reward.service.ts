@@ -58,6 +58,10 @@ export class RewardService {
       .leftJoinAndSelect('reward.user', 'user')
       .leftJoinAndSelect('reward.rewardUser', 'rewardUser')
       .leftJoinAndSelect('reward.rewardAnswers', 'rewardAnswer')
+      .leftJoinAndSelect(
+        'reward.confirmedRewardAnswer',
+        'confirmedRewardAnswer',
+      )
       .orderBy('reward.create_at', 'DESC');
     if (title) {
       qb.andWhere('reward.title LIKE :title', { title: `%${title}%` });
@@ -78,6 +82,10 @@ export class RewardService {
       .leftJoinAndSelect('reward.category', 'category')
       .leftJoinAndSelect('reward.user', 'user')
       .leftJoinAndSelect('reward.rewardUser', 'rewardUser')
+      .leftJoinAndSelect(
+        'reward.confirmedRewardAnswer',
+        'confirmedRewardAnswer',
+      )
       .where({ id });
     const reward = await qb.getOne();
     return reward;
@@ -163,6 +171,8 @@ export class RewardService {
       reward.cancelType = 'admin';
       await this.setUserCompeleteRate(manager, userId);
       await manager.getRepository(Reward).save(reward);
+      rewardAnswer.isConfirmedAnswer = true;
+      await manager.getRepository(RewardAnswer).save(rewardAnswer);
       // TODO: 积分操作
       await this.scoreService.operateWithTransaction(
         manager,
