@@ -8,6 +8,8 @@ import { CategoryService } from '../category/category.service';
 import { ScoreService } from '../score/score.service';
 import { QueryResourceInputDto } from './dto/query-resource.dto';
 import { User } from '../user/entities/user.entity';
+import { ScoreConfig, ScoreOperateType } from '../score/score.type';
+import { EntityTypeEnum } from 'src/common/constants';
 
 @Injectable()
 export class ResourceService {
@@ -164,13 +166,44 @@ export class ResourceService {
       .leftJoinAndSelect('resource.withPermissionUsers', 'withPermissionUser')
       .where('resource.id = :id', { id })
       .getOne();
+    const { score, isPublic } = resource;
+    if (isPublic) {
+      throw new BadRequestException('该资源免费，无需购买');
+    }
     const withPermissionUsers = resource.withPermissionUsers;
     if (withPermissionUsers.find((e) => e.id === userId)) {
       throw new BadRequestException('已支付积分，无需重复支付');
     }
     const user = await this.userRepository.findOneBy({ id: userId });
-    withPermissionUsers.push(user);
-    this.resourceRepository.save(resource);
+    if (user.score < score) {
+      throw new BadRequestException(`积分不足${score}，无法发布悬赏`);
+    }
+    this.dataSource.manager.transaction(async (manager) => {
+      withPermissionUsers.push(user);
+      manager.getRepository(Resource).save(resource);
+      await this.scoreService.operateWithTransaction(
+        manager,
+        resource.user.id,
+        {
+          type: ScoreOperateType.INCREASE,
+          score: resource.score * ScoreConfig.PlatformChargeRatio,
+          desc: '资源被购买',
+        },
+        resource.id,
+        EntityTypeEnum.Resource,
+      );
+      await this.scoreService.operateWithTransaction(
+        manager,
+        userId,
+        {
+          type: ScoreOperateType.DECREASE,
+          score: resource.score,
+          desc: '花费积分购买资源',
+        },
+        resource.id,
+        EntityTypeEnum.Resource,
+      );
+    });
     return;
   }
 
