@@ -11,9 +11,11 @@ import {
 import { DataSource, Repository } from 'typeorm';
 import { ThirdAccount, User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ThirdAccountType } from 'src/common/constants';
+import { EntityTypeEnum, ThirdAccountType } from 'src/common/constants';
 import { ThirdAccountUserInfo } from 'src/utils/github';
 import { UserBehavior } from './entities/user-behavior.entity';
+import { ScoreService } from '../score/score.service';
+import { ScoreConfig, ScoreDesc, ScoreOperateType } from '../score/score.type';
 
 @Injectable()
 export class UserService {
@@ -25,6 +27,7 @@ export class UserService {
     @InjectRepository(UserBehavior)
     private readonly userBehaviorRepository: Repository<UserBehavior>,
     private readonly dataSource: DataSource,
+    private readonly scoreService: ScoreService,
   ) {}
   async create(user: Partial<User>) {
     const { username, password, email, nickname } = user;
@@ -223,5 +226,63 @@ export class UserService {
       await manager.getRepository(ThirdAccount).save(thirdAccount);
     });
     return user;
+  }
+
+  async postFirstContent(
+    userId: string,
+    entityType: EntityTypeEnum,
+    entityId: string,
+  ) {
+    const userBehavior = await this.userBehaviorRepository
+      .createQueryBuilder('userBehavior')
+      .where('userBehavior.userId := userId', { userId })
+      .getOne();
+    switch (entityType) {
+      case EntityTypeEnum.Topic:
+        if (userBehavior.firstTopic) {
+          this.scoreService.operate(
+            userId,
+            {
+              type: ScoreOperateType.INCREASE,
+              score: ScoreConfig.PostFirstTopic,
+              desc: ScoreDesc.PostFirstTopic,
+            },
+            entityId,
+            entityType,
+          );
+        }
+        break;
+      case EntityTypeEnum.Resource:
+        if (userBehavior.firstResource) {
+          this.scoreService.operate(
+            userId,
+            {
+              type: ScoreOperateType.INCREASE,
+              score: ScoreConfig.PostFirstResource,
+              desc: ScoreDesc.PostFirstResource,
+            },
+            entityId,
+            entityType,
+          );
+        }
+        break;
+      case EntityTypeEnum.Reward:
+        if (userBehavior.firstReward) {
+          this.scoreService.operate(
+            userId,
+            {
+              type: ScoreOperateType.INCREASE,
+              score: ScoreConfig.PostFirstReward,
+              desc: ScoreDesc.PostFirstReward,
+            },
+            entityId,
+            entityType,
+          );
+        }
+        break;
+
+      default:
+        break;
+    }
   }
 }

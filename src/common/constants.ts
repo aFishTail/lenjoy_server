@@ -15,6 +15,7 @@ export const IEntityTypeList = ['topic', 'comment'];
 
 export enum EntityTypeEnum {
   Topic = 'topic',
+  Resource = 'resource',
   Reward = 'reward',
 }
 

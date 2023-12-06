@@ -12,7 +12,16 @@ export interface ScoreOperateOption {
 }
 
 export const ScoreConfig = {
+  PostFirstTopic: 10,
+  PostFirstResource: 10,
+  PostFirstReward: 10,
   PostTopic: 5, // 发布帖子奖励
   PostResource: 5, // 发布资源奖励
   PlatformChargeRatio: 0.2, // 平台抽取交易比例
+} as const;
+
+export const ScoreDesc = {
+  PostFirstTopic: '发布第一个话题',
+  PostFirstResource: '发布第一个资源',
+  PostFirstReward: '发布第一个悬赏',
 } as const;
