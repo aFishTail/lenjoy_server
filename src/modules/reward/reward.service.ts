@@ -29,10 +29,14 @@ export class RewardService {
     private dataSource: DataSource,
   ) {}
   async create(createRewardDto: CreateRewardDto, userId: string) {
+    const { score } = createRewardDto;
     const category = await this.categoryService.findById(
       createRewardDto.categoryId,
     );
     const user = await this.userRepository.findOneBy({ id: userId });
+    if (user.score < score) {
+      throw new BadRequestException(`积分不足${score}，无法发布悬赏`);
+    }
     await this.dataSource.transaction(async (manager) => {
       const reward = await manager.getRepository(Reward).create({
         ...createRewardDto,
