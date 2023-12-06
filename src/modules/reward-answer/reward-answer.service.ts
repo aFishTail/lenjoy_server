@@ -31,8 +31,19 @@ export class RewardAnswerService {
     return await this.rewardAnswerRepository.save(rewardAnswer);
   }
 
-  async findAll(queryRewardAnswerDto: QueryRewardListInputDto) {
+  async findAll(queryRewardAnswerDto: QueryRewardListInputDto, userId: string) {
     const { rewardId, pageNum, pageSize } = queryRewardAnswerDto;
+    const reward = await this.rewardRepository.findOne({
+      where: {
+        id: rewardId,
+      },
+      relations: {
+        user: true,
+      },
+    });
+    if (!reward.isPublic && reward.user.id !== userId) {
+      throw new BadRequestException('非公开悬赏， 不可访问');
+    }
     const [records, total] = await this.rewardAnswerRepository
       .createQueryBuilder('rewardAnswer')
       .leftJoinAndSelect('rewardAnswer.user', 'user')

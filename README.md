@@ -47,3 +47,10 @@ export class UserLikeOperateOutDto extends ResponseDto {
 
 ### client
 1. nextjs getServerSideProps 中怎么获取到一些客户端存储到变量，如token， userId
+
+## ChangeLog
+### 20231205
+#### 积分问题
+- [ ] 用户行为通过AOP编程实现
+- [ ] resource 购买时积分操作
+- [ ] 发布悬赏时校验当前socre是否满足需要

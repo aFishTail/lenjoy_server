@@ -4,6 +4,7 @@ import {
   Body,
   UseGuards,
   BadRequestException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TopicService } from './topic.service';
 import { CreateTopicDto } from './dto/create-topic.dto';
@@ -20,6 +21,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { EntityAuth, EntityAuthGuard } from '../auth/entity.guard';
 import { Roles, RolesGuard } from '../auth/roles.guard';
 import { QueryTopicDetailOutDto } from './dto/detail-topic.dto';
+import { FirstPostInterceptor } from 'src/interceptors/firstPost.interceptor';
 
 @Controller('topic')
 @ApiTags('帖子管理')
@@ -29,6 +31,7 @@ export class TopicController {
   @ApiOperation({ summary: '发布帖子' })
   @ApiResponse({ status: 201, type: ResponseDto })
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FirstPostInterceptor)
   @Post('/create')
   create(@Body() payload: CreateTopicDto, @QueryUser('id') userId) {
     const { title, content, summary, categoryId } = payload;

@@ -29,8 +29,11 @@ export class RewardAnswerController {
   @ApiOperation({ summary: '查询悬赏列表' })
   @ApiResponse({ status: 201, type: ResponseDto })
   @Post('/query')
-  findAll(@Body() payload: QueryRewardListInputDto) {
-    return this.rewardAnswerService.findAll(payload);
+  findAll(
+    @Body() payload: QueryRewardListInputDto,
+    @QueryUser('id') userId: string,
+  ) {
+    return this.rewardAnswerService.findAll(payload, userId);
   }
 
   @ApiOperation({ summary: '修改悬赏帖子的回答' })
