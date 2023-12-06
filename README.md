@@ -54,3 +54,4 @@ export class UserLikeOperateOutDto extends ResponseDto {
 - [ ] 用户行为通过AOP编程实现
 - [ ] resource 购买时积分操作
 - [x] 发布悬赏时校验当前socre是否满足需要
+- [ ] 

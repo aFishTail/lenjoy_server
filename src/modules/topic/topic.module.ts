@@ -6,6 +6,7 @@ import { Topic } from './entities/topic.entity';
 import { CategoryModule } from 'src/modules/category/category.module';
 import { AuthModule } from '../auth/auth.module';
 import { ScoreModule } from '../score/score.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ScoreModule } from '../score/score.module';
     CategoryModule,
     AuthModule,
     ScoreModule,
+    UserModule,
   ],
   controllers: [TopicController, AdminTopicController],
   providers: [TopicService],

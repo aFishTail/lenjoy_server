@@ -10,6 +10,7 @@ import { Reward } from './entities/reward.entity';
 import { RewardAnswer } from '../reward-answer/entities/reward-answer.entity';
 import { RewardAdminController } from './admin/rewardAdmin.controller';
 import { User } from '../user/entities/user.entity';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { User } from '../user/entities/user.entity';
     CategoryModule,
     AuthModule,
     ScoreModule,
+    UserModule,
   ],
   controllers: [RewardController, RewardAdminController],
   providers: [RewardService, RewardAdminService],

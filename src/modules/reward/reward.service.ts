@@ -37,7 +37,7 @@ export class RewardService {
     if (user.score < score) {
       throw new BadRequestException(`积分不足${score}，无法发布悬赏`);
     }
-    await this.dataSource.transaction(async (manager) => {
+    return await this.dataSource.transaction(async (manager) => {
       const reward = await manager.getRepository(Reward).create({
         ...createRewardDto,
         category,
@@ -47,10 +47,15 @@ export class RewardService {
       await this.scoreService.operateWithTransaction(
         manager,
         userId,
-        { type: ScoreOperateType.DECREASE, score: createRewardDto.score },
+        {
+          type: ScoreOperateType.DECREASE,
+          score: createRewardDto.score,
+          desc: '发布悬赏',
+        },
         savedReward.id,
         EntityTypeEnum.Reward,
       );
+      return reward;
     });
   }
 
@@ -140,6 +145,7 @@ export class RewardService {
         {
           type: ScoreOperateType.INCREASE,
           score: reward.score,
+          desc: '用户删除(取消)悬赏',
         },
         reward.id,
         EntityTypeEnum.Reward,

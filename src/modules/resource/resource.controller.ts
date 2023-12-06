@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req, UseInterceptors } from '@nestjs/common';
 import { ResourceService } from './resource.service';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { UpdateResourceDto } from './dto/update-resource.dto';
@@ -9,12 +9,14 @@ import { EntityAuth, EntityAuthGuard } from '../auth/entity.guard';
 import { Resource } from './entities/resource.entity';
 import { QueryResourceInputDto } from './dto/query-resource.dto';
 import { Request } from 'express';
+import { FirstPostInterceptor } from 'src/interceptors/firstPost.interceptor';
 
 @Controller('resource')
 export class ResourceController {
   constructor(private readonly resourceService: ResourceService) {}
 
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FirstPostInterceptor)
   @Post('/create')
   create(
     @Body() createResourceDto: CreateResourceDto,

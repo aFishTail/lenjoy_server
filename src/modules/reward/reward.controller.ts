@@ -1,5 +1,11 @@
 import { QueryUser } from './../../decorators/user.decorator';
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { RewardService } from './reward.service';
 import { CreateRewardDto } from './dto/create-reward.dto';
 import { UpdateRewardDto } from './dto/update-reward.dto';
@@ -14,6 +20,7 @@ import { EntityAuth, EntityAuthGuard } from '../auth/entity.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Reward } from './entities/reward.entity';
 import { ConfirmRewardAnswerDto } from './dto/confirm-reward-answer.dto';
+import { FirstPostInterceptor } from 'src/interceptors/firstPost.interceptor';
 
 @Controller('reward')
 export class RewardController {
@@ -21,6 +28,7 @@ export class RewardController {
   @ApiOperation({ summary: '发布悬赏' })
   @ApiResponse({ status: 201, type: ResponseDto })
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FirstPostInterceptor)
   @Post('/create')
   create(@Body() createRewardDto: CreateRewardDto, @QueryUser('id') userId) {
     return this.rewardService.create(createRewardDto, userId);

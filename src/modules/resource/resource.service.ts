@@ -181,28 +181,32 @@ export class ResourceService {
     this.dataSource.manager.transaction(async (manager) => {
       withPermissionUsers.push(user);
       manager.getRepository(Resource).save(resource);
-      await this.scoreService.operateWithTransaction(
-        manager,
-        resource.user.id,
-        {
-          type: ScoreOperateType.INCREASE,
-          score: resource.score * ScoreConfig.PlatformChargeRatio,
-          desc: '资源被购买',
-        },
-        resource.id,
-        EntityTypeEnum.Resource,
-      );
-      await this.scoreService.operateWithTransaction(
-        manager,
-        userId,
-        {
-          type: ScoreOperateType.DECREASE,
-          score: resource.score,
-          desc: '花费积分购买资源',
-        },
-        resource.id,
-        EntityTypeEnum.Resource,
-      );
+      try {
+        await this.scoreService.operateWithTransaction(
+          manager,
+          resource.userId,
+          {
+            type: ScoreOperateType.INCREASE,
+            score: resource.score * (1 - ScoreConfig.PlatformChargeRatio),
+            desc: '资源被购买',
+          },
+          resource.id,
+          EntityTypeEnum.Resource,
+        );
+        await this.scoreService.operateWithTransaction(
+          manager,
+          userId,
+          {
+            type: ScoreOperateType.DECREASE,
+            score: resource.score,
+            desc: '花费积分购买资源',
+          },
+          resource.id,
+          EntityTypeEnum.Resource,
+        );
+      } catch (err) {
+        throw new BadRequestException('请求异常，请稍后重试');
+      }
     });
     return;
   }

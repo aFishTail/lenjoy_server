@@ -9,6 +9,7 @@ import { ScoreModule } from '../score/score.module';
 import { ResourceAdminController } from './admin/resource-admin.controller';
 import { ResourceAdminService } from './admin/resource-admin.service';
 import { User } from '../user/entities/user.entity';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { User } from '../user/entities/user.entity';
     CategoryModule,
     AuthModule,
     ScoreModule,
+    UserModule,
   ],
   controllers: [ResourceController, ResourceAdminController],
   providers: [ResourceService, ResourceAdminService],

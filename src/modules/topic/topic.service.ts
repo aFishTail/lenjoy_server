@@ -60,20 +60,7 @@ export class TopicService {
       summary,
       categoryId,
     );
-    const userBehavior = await this.dataSource
-      .getRepository(UserBehavior)
-      .createQueryBuilder('userBehavior')
-      .where('userId = :userId', { userId })
-      .getOne();
-    if (!userBehavior.firstTopic) {
-      await this.scoreService.operate(
-        userId,
-        ScoreOperateType.INCREASE,
-        topic.id,
-        EntityTypeEnum.Topic,
-      );
-    }
-    return null;
+    return topic;
   }
 
   async findAll() {

@@ -28,15 +28,15 @@ export class UserBehavior extends BaseEntity {
 
   @ApiProperty()
   @Column({ type: Boolean, default: false, comment: '第一次发帖子' })
-  firstTopic: boolean;
+  haveFirstTopic: boolean;
 
   @ApiProperty()
   @Column({ type: Boolean, default: false, comment: '第一次发帖子' })
-  firstResource: boolean;
+  haveFirstResource: boolean;
 
   @ApiProperty()
   @Column({ type: Boolean, default: false, comment: '第一次发布悬赏' })
-  firstReward: boolean;
+  haveFirstReward: boolean;
 
   @ApiProperty()
   @CreateDateColumn({

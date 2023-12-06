@@ -235,52 +235,66 @@ export class UserService {
   ) {
     const userBehavior = await this.userBehaviorRepository
       .createQueryBuilder('userBehavior')
-      .where('userBehavior.userId := userId', { userId })
+      .where('userBehavior.userId =:userId', { userId })
       .getOne();
     switch (entityType) {
       case EntityTypeEnum.Topic:
-        if (userBehavior.firstTopic) {
-          this.scoreService.operate(
-            userId,
-            {
-              type: ScoreOperateType.INCREASE,
-              score: ScoreConfig.PostFirstTopic,
-              desc: ScoreDesc.PostFirstTopic,
-            },
-            entityId,
-            entityType,
-          );
+        if (!userBehavior.haveFirstTopic) {
+          this.dataSource.manager.transaction(async (manager) => {
+            userBehavior.haveFirstTopic = true;
+            await manager.getRepository(UserBehavior).save(userBehavior);
+            await this.scoreService.operateWithTransaction(
+              manager,
+              userId,
+              {
+                type: ScoreOperateType.INCREASE,
+                score: ScoreConfig.PostFirstTopic,
+                desc: ScoreDesc.PostFirstTopic,
+              },
+              entityId,
+              entityType,
+            );
+          });
         }
         break;
       case EntityTypeEnum.Resource:
-        if (userBehavior.firstResource) {
-          this.scoreService.operate(
-            userId,
-            {
-              type: ScoreOperateType.INCREASE,
-              score: ScoreConfig.PostFirstResource,
-              desc: ScoreDesc.PostFirstResource,
-            },
-            entityId,
-            entityType,
-          );
+        if (!userBehavior.haveFirstResource) {
+          this.dataSource.manager.transaction(async (manager) => {
+            userBehavior.haveFirstResource = true;
+            await manager.getRepository(UserBehavior).save(userBehavior);
+            await this.scoreService.operateWithTransaction(
+              manager,
+              userId,
+              {
+                type: ScoreOperateType.INCREASE,
+                score: ScoreConfig.PostFirstResource,
+                desc: ScoreDesc.PostFirstResource,
+              },
+              entityId,
+              entityType,
+            );
+          });
         }
         break;
       case EntityTypeEnum.Reward:
-        if (userBehavior.firstReward) {
-          this.scoreService.operate(
-            userId,
-            {
-              type: ScoreOperateType.INCREASE,
-              score: ScoreConfig.PostFirstReward,
-              desc: ScoreDesc.PostFirstReward,
-            },
-            entityId,
-            entityType,
-          );
+        if (!userBehavior.haveFirstReward) {
+          this.dataSource.manager.transaction(async (manager) => {
+            userBehavior.haveFirstReward = true;
+            await manager.getRepository(UserBehavior).save(userBehavior);
+            await this.scoreService.operateWithTransaction(
+              manager,
+              userId,
+              {
+                type: ScoreOperateType.INCREASE,
+                score: ScoreConfig.PostFirstReward,
+                desc: ScoreDesc.PostFirstReward,
+              },
+              entityId,
+              entityType,
+            );
+          });
         }
         break;
-
       default:
         break;
     }

@@ -7,12 +7,11 @@ import {
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { EntityTypeEnum } from 'src/common/constants';
-import { ScoreService } from 'src/modules/score/score.service';
 import { UserService } from 'src/modules/user/user.service';
 
 const PostTopicUrl = '/api/topic/create';
-const PostResourceUrl = '/api/topic/create';
-const PostRewardUrl = '/api/topic/create';
+const PostResourceUrl = '/api/resource/create';
+const PostRewardUrl = '/api/reward/create';
 
 @Injectable()
 export class FirstPostInterceptor implements NestInterceptor {
