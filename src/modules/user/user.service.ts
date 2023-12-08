@@ -16,6 +16,7 @@ import { ThirdAccountUserInfo } from 'src/utils/github';
 import { UserBehavior } from './entities/user-behavior.entity';
 import { ScoreService } from '../score/score.service';
 import { ScoreConfig, ScoreDesc, ScoreOperateType } from '../score/score.type';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class UserService {
@@ -298,5 +299,39 @@ export class UserService {
       default:
         break;
     }
+  }
+
+  async dailyCheck(userId: string) {
+    const userBehavior = await this.userBehaviorRepository
+      .createQueryBuilder('userBehavior')
+      .where('userBehavior.userId =: userId', { userId })
+      .getOne();
+    if (userBehavior.dailyCheckIn) {
+      throw new BadRequestException('不可重复签到');
+    }
+    userBehavior.dailyCheckIn = true;
+    return this.userBehaviorRepository.save(userBehavior);
+  }
+
+  @Cron('* * 9 * * *')
+  resetDailyCheck() {
+    this.userBehaviorRepository
+      .createQueryBuilder()
+      .update(UserBehavior)
+      .set({ dailyCheckIn: false })
+      .execute();
+  }
+
+  async getDailyCheck(userId: string) {
+    const userBehavior = await this.userBehaviorRepository
+      .createQueryBuilder('userBehavior')
+      .where('userBehavior.userId =: userId', { userId })
+      .getOne();
+    return userBehavior.dailyCheckIn;
+  }
+
+  async verifyEmail(userId: string) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    return user.emailVerified;
   }
 }

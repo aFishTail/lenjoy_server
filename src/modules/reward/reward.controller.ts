@@ -21,6 +21,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Reward } from './entities/reward.entity';
 import { ConfirmRewardAnswerDto } from './dto/confirm-reward-answer.dto';
 import { FirstPostInterceptor } from 'src/interceptors/firstPost.interceptor';
+import { EmailVerifyInterceptor } from 'src/interceptors/emailVerify.interceptor';
 
 @Controller('reward')
 export class RewardController {
@@ -28,7 +29,7 @@ export class RewardController {
   @ApiOperation({ summary: '发布悬赏' })
   @ApiResponse({ status: 201, type: ResponseDto })
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FirstPostInterceptor)
+  @UseInterceptors(EmailVerifyInterceptor, FirstPostInterceptor)
   @Post('/create')
   create(@Body() createRewardDto: CreateRewardDto, @QueryUser('id') userId) {
     return this.rewardService.create(createRewardDto, userId);

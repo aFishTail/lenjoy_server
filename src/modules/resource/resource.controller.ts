@@ -10,13 +10,14 @@ import { Resource } from './entities/resource.entity';
 import { QueryResourceInputDto } from './dto/query-resource.dto';
 import { Request } from 'express';
 import { FirstPostInterceptor } from 'src/interceptors/firstPost.interceptor';
+import { EmailVerifyInterceptor } from 'src/interceptors/emailVerify.interceptor';
 
 @Controller('resource')
 export class ResourceController {
   constructor(private readonly resourceService: ResourceService) {}
 
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FirstPostInterceptor)
+  @UseInterceptors(EmailVerifyInterceptor,FirstPostInterceptor)
   @Post('/create')
   create(
     @Body() createResourceDto: CreateResourceDto,

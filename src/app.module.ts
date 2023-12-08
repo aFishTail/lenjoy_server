@@ -39,8 +39,7 @@ import { RewardAnswerModule } from './modules/reward-answer/reward-answer.module
 import { Reward } from './modules/reward/entities/reward.entity';
 import { RewardAnswer } from './modules/reward-answer/entities/reward-answer.entity';
 import { UserBehavior } from './modules/user/entities/user-behavior.entity';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { FirstPostInterceptor } from './interceptors/firstPost.interceptor';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -123,6 +122,7 @@ import { FirstPostInterceptor } from './interceptors/firstPost.interceptor';
     ResourceModule,
     RewardModule,
     RewardAnswerModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [],
   providers: [Logger],

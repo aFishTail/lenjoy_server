@@ -7,10 +7,6 @@ import { CategoryService } from 'src/modules/category/category.service';
 import { QueryTopicListInputDto } from './dto/query-topic.dto';
 import { UserLike } from '../user-like/entities/user-like.entity';
 import { ScoreService } from '../score/score.service';
-import { User } from '../user/entities/user.entity';
-import { ScoreOperateType } from '../score/score.type';
-import { EntityTypeEnum } from 'src/common/constants';
-import { UserBehavior } from '../user/entities/user-behavior.entity';
 
 @Injectable()
 export class TopicService {
@@ -46,13 +42,6 @@ export class TopicService {
     summary: string,
     categoryId: string,
   ) {
-    // 校验用户邮箱有没有认证
-    const user = await this.dataSource
-      .getRepository(User)
-      .findOneBy({ id: userId });
-    if (!user.emailVerified) {
-      throw new BadRequestException('用户邮箱未认证');
-    }
     const topic = await this.create(
       userId,
       title,

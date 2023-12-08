@@ -108,4 +108,16 @@ export class AdminUserController {
   detail(@Body() param: PrimaryKeyDto) {
     return this.userService.findById(param.id);
   }
+
+  @ApiOperation({ summary: '日常签到' })
+  @Post('dailySign')
+  dailyCheck(@QueryUser('id') userId: string) {
+    return this.userService.dailyCheck(userId);
+  }
+
+  @ApiOperation({ summary: '日常签到' })
+  @Post('getDailyCheck')
+  getDailyCheck(@QueryUser('id') userId: string) {
+    return this.userService.findById(userId);
+  }
 }

@@ -48,10 +48,17 @@ export class UserLikeOperateOutDto extends ResponseDto {
 ### client
 1. nextjs getServerSideProps 中怎么获取到一些客户端存储到变量，如token， userId
 
-## ChangeLog
-### 20231205
-#### 积分问题
-- [ ] 用户行为通过AOP编程实现
-- [ ] resource 购买时积分操作
+## TODO
+- [x] 用户行为通过AOP编程实现
+- [x] resource 购买时积分操作
 - [x] 发布悬赏时校验当前socre是否满足需要
-- [ ] 
+- [ ] 邮件配置提取到配置文件中
+- [ ] 配置文件可以根据运行环境自动化
+- [ ] captcha生成的地址能够正常访问
+- [ ] qiniu 域名映射
+- [ ] 敏感key，密钥隐藏
+- [ ] 消息模块功能
+- [ ] 用户发布资源，悬赏时校验email
+- [ ] 运行前时初始化admin账号密码（可配置）
+- [x] 签到功能
+- [ ] 自定义execption和业务code，便于前端处理

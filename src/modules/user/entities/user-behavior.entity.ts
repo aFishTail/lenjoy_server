@@ -18,7 +18,7 @@ export class UserBehavior extends BaseEntity {
   id: number;
 
   @ApiProperty()
-  @JoinColumn()
+  @JoinColumn({ foreignKeyConstraintName: 'userId' })
   @OneToOne(() => User)
   user: User;
 
