@@ -12,7 +12,7 @@ import { RuntimeException } from '@nestjs/core/errors/exceptions/runtime.excepti
 export class AllExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger();
 
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
@@ -32,7 +32,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     Logger.error(logFormat);
 
     response.status(status).json({
-      code: status,
+      code: exception.code,
       message: (exception as RuntimeException).message || 'Internal Error',
       data: null,
     });
