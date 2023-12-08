@@ -61,4 +61,4 @@ export class UserLikeOperateOutDto extends ResponseDto {
 - [ ] 用户发布资源，悬赏时校验email
 - [ ] 运行前时初始化admin账号密码（可配置）
 - [x] 签到功能
-- [ ] 自定义execption和业务code，便于前端处理
+- [x] 自定义execption和业务code，便于前端处理

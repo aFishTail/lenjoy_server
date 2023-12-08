@@ -3,22 +3,29 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  BadRequestException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { CustomExceptionEnum } from 'src/common/exceptions/customExceptionEnum';
+import { CustomRequestException } from 'src/common/exceptions/customRequest.execption';
 import { UserService } from 'src/modules/user/user.service';
 
 @Injectable()
 export class EmailVerifyInterceptor implements NestInterceptor {
   constructor(private userService: UserService) {}
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  async intercept(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Promise<Observable<any>> {
     const ctx = context.switchToHttp();
     const request = ctx.getRequest();
     const { user } = request;
-    const emailVerified = this.userService.verifyEmail(user.id);
+    const emailVerified = await this.userService.verifyEmail(user.id);
     if (!emailVerified) {
-      throw new BadRequestException('用户邮箱未认证');
+      throw new CustomRequestException(
+        CustomExceptionEnum.EmailNotVerifiedCode,
+        CustomExceptionEnum.EmailNotVerifiedMessage,
+      );
     }
     return next.handle();
   }
