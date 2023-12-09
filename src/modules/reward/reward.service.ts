@@ -59,7 +59,7 @@ export class RewardService {
     });
   }
 
-  async findAll(payload: QueryRewardListInputDto, userId?: string) {
+  async findAll(payload: QueryRewardListInputDto) {
     const { title, pageNum, pageSize } = payload;
     const qb = this.rewardRepository
       .createQueryBuilder('reward')
@@ -85,7 +85,7 @@ export class RewardService {
     return data;
   }
 
-  async findOne(id: string, userId?: string) {
+  async findOne(id: string) {
     const qb = this.rewardRepository
       .createQueryBuilder('reward')
       .leftJoinAndSelect('reward.category', 'category')

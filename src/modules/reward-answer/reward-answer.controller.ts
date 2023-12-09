@@ -6,10 +6,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PrimaryKeyDto, ResponseDto } from 'src/common/base.dto';
 import { QueryUser } from 'src/decorators/user.decorator';
-import {
-  QueryRewardAnswerDto,
-  QueryRewardListInputDto,
-} from './dto/query-reward-answer.dto';
+import { QueryRewardListInputDto } from './dto/query-reward-answer.dto';
 
 @Controller('rewardAnswer')
 export class RewardAnswerController {

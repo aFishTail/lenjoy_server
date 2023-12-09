@@ -89,14 +89,6 @@ export class UserService {
         username: `%${username}%`,
       });
     }
-    // if (otherParams) {
-    //   Object.keys(otherParams).forEach((key) => {
-    //     qb.andWhere(`user.${key} LIKE :${key}`).setParameter(
-    //       `${key}`,
-    //       `%${otherParams[key]}%`,
-    //     );
-    //   });
-    // }
     const [records, total] = await qb.getManyAndCount();
     return {
       records,
@@ -174,6 +166,12 @@ export class UserService {
     });
     return await this.userRepository.save(newUser);
   }
+  async getIsEmailVerified(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    return user.emailVerified;
+  }
   async setEmail(userId: string, email: string) {
     const existUserByEmail = await this.userRepository.findOne({
       where: { email },
@@ -182,8 +180,7 @@ export class UserService {
       if (existUserByEmail.id === userId) return null;
       throw new HttpException('邮箱已被使用', HttpStatus.BAD_REQUEST);
     }
-    await this.userRepository.update(userId, { email });
-    return null;
+    return this.userRepository.update(userId, { email });
   }
 
   async remove(userId: string) {
@@ -301,15 +298,16 @@ export class UserService {
     }
   }
 
-  async dailyCheck(userId: string) {
+  async dailySignIn(userId: string) {
     const userBehavior = await this.userBehaviorRepository
       .createQueryBuilder('userBehavior')
-      .where('userBehavior.userId =: userId', { userId })
+      .where('userBehavior.userId =:userId', { userId })
       .getOne();
     if (userBehavior.dailyCheckIn) {
       throw new BadRequestException('不可重复签到');
     }
     userBehavior.dailyCheckIn = true;
+    // TODO:score
     return this.userBehaviorRepository.save(userBehavior);
   }
 
@@ -322,10 +320,10 @@ export class UserService {
       .execute();
   }
 
-  async getDailyCheck(userId: string) {
+  async getDailySignIn(userId: string) {
     const userBehavior = await this.userBehaviorRepository
       .createQueryBuilder('userBehavior')
-      .where('userBehavior.userId =: userId', { userId })
+      .where('userBehavior.userId =:userId', { userId })
       .getOne();
     return userBehavior.dailyCheckIn;
   }

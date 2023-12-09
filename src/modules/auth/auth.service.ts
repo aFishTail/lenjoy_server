@@ -85,7 +85,14 @@ export class AuthService {
   }
 
   async userInfo(userId: string) {
-    return await this.userService.findById(userId);
+    const data = await this.userService.findById(userId);
+    const token = this.createToken({
+      id: data.id,
+      username: data.username,
+      email: data.email,
+      role: data.role,
+    });
+    return { ...data, token };
   }
 
   async getOrCreateByGithub(userInfo: ThirdAccountUserInfo): Promise<User> {

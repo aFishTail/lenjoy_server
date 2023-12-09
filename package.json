@@ -52,7 +52,7 @@
     "mysql2": "^3.6.1",
     "nest-winston": "^1.9.3",
     "nestjs-redis": "git+https://github.com/skunight/nestjs-redis.git",
-    "nodemailer": "^6.9.4",
+    "nodemailer": "^6.9.7",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "pug": "^3.0.2",

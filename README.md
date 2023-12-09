@@ -58,7 +58,9 @@ export class UserLikeOperateOutDto extends ResponseDto {
 - [ ] qiniu 域名映射
 - [ ] 敏感key，密钥隐藏
 - [ ] 消息模块功能
-- [ ] 用户发布资源，悬赏时校验email
+- [x] 用户发布资源，悬赏时校验email
 - [ ] 运行前时初始化admin账号密码（可配置）
 - [x] 签到功能
 - [x] 自定义execption和业务code，便于前端处理
+- [ ] 服务 url 统一
+- [ ] nest-cli.json 配置

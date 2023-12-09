@@ -5,6 +5,9 @@ import {
   UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Get,
+  Query,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,8 +22,8 @@ import { QueryUserDetailOutDto, QueryUserInputDto } from './dto/query-user.dto';
 import { PrimaryKeyDto } from 'src/common/base.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { QueryUser } from 'src/decorators/user.decorator';
-import { VerifyEmailDto } from './dto/user-email.dto';
 import { EmialService } from '../email/email.service';
+import { Response } from 'express';
 
 @ApiTags('用户管理')
 @Controller('user')
@@ -51,6 +54,13 @@ export class UserController {
     return this.userService.updatePassword({ ...payload, id });
   }
 
+  @ApiOperation({ summary: '查看邮箱是否已验证' })
+  @UseGuards(JwtAuthGuard)
+  @Post('getIsEmailVerified')
+  async getIsEmailVeriyied(@QueryUser('id') userId) {
+    return await this.userService.getIsEmailVerified(userId);
+  }
+
   @ApiOperation({ summary: '设置邮箱' })
   @ApiBody({ type: SetEmailDto })
   @UseGuards(JwtAuthGuard)
@@ -65,9 +75,28 @@ export class UserController {
    * @returns
    */
   @ApiOperation({ summary: '验证邮箱' })
-  @Post('/verifyEmail')
-  async verifyEmail(@Body() payload: VerifyEmailDto, @QueryUser('id') userId) {
-    return await this.emailService.verify(userId, payload.code);
+  @Get('/verifyEmail')
+  async verifyEmail(
+    @Query('code') code: string,
+    @Query('userId') userId,
+    @Res() res: Response,
+  ) {
+    await this.emailService.verify(userId, code);
+    res.status(200).send('<p>验证成功，请重新登录</p>');
+  }
+
+  @ApiOperation({ summary: '日常签到' })
+  @UseGuards(JwtAuthGuard)
+  @Post('dailySignIn')
+  dailyCheck(@QueryUser('id') userId: string) {
+    return this.userService.dailySignIn(userId);
+  }
+
+  @ApiOperation({ summary: '查询是否签到' })
+  @UseGuards(JwtAuthGuard)
+  @Post('getDailySignIn')
+  getDailySignIn(@QueryUser('id') userId: string) {
+    return this.userService.getDailySignIn(userId);
   }
 }
 
@@ -107,17 +136,5 @@ export class AdminUserController {
   @Post('detail')
   detail(@Body() param: PrimaryKeyDto) {
     return this.userService.findById(param.id);
-  }
-
-  @ApiOperation({ summary: '日常签到' })
-  @Post('dailySign')
-  dailyCheck(@QueryUser('id') userId: string) {
-    return this.userService.dailyCheck(userId);
-  }
-
-  @ApiOperation({ summary: '日常签到' })
-  @Post('getDailyCheck')
-  getDailyCheck(@QueryUser('id') userId: string) {
-    return this.userService.findById(userId);
   }
 }

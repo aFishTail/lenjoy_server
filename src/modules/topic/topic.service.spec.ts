@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Score } from '../score/entities/score.entity';
 import { TopicService } from './topic.service';
 import { Topic } from './entities/topic.entity';
-import { getConnection } from 'typeorm';
 import { CategoryService } from '../category/category.service';
 import { Category } from '../category/entities/category.entity';
 import { ScoreService } from '../score/score.service';

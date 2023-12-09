@@ -1,8 +1,9 @@
-import { Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
-import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { EmialService } from './email.service';
+import { QueryUser } from 'src/decorators/user.decorator';
+import { User } from '../user/entities/user.entity';
 
 @Controller('email')
 export class EmialController {
@@ -15,8 +16,7 @@ export class EmialController {
   @ApiOperation({ summary: '发送邮箱验证邮件给用户' })
   @UseGuards(JwtAuthGuard)
   @Post('/sendVerifyEmail')
-  async sendVerifyEmail(@Req() req: Request) {
-    const { user } = req as any;
+  async sendVerifyEmail(@QueryUser() user: User) {
     return await this.emailService.sendVerifyEmail(
       { userId: user.id, username: user.username, email: user.email },
       '请验证邮箱',

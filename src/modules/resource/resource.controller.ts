@@ -1,4 +1,11 @@
-import { Controller, Post, Body, UseGuards, Req, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Req,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ResourceService } from './resource.service';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { UpdateResourceDto } from './dto/update-resource.dto';
@@ -17,7 +24,7 @@ export class ResourceController {
   constructor(private readonly resourceService: ResourceService) {}
 
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(EmailVerifyInterceptor,FirstPostInterceptor)
+  @UseInterceptors(EmailVerifyInterceptor, FirstPostInterceptor)
   @Post('/create')
   create(
     @Body() createResourceDto: CreateResourceDto,
