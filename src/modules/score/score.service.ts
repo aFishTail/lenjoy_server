@@ -20,8 +20,8 @@ export class ScoreService {
   async operate(
     userId: string,
     typeOption: ScoreOperateType | ScoreOperateOption,
-    entityId: string,
-    entityType: EntityTypeEnum,
+    entityId?: string,
+    entityType?: EntityTypeEnum,
   ) {
     const { score, type, desc } = getOpScoreAndDesc(typeOption, entityType);
     await this.dataSource.transaction(async (manager) => {
@@ -51,8 +51,8 @@ export class ScoreService {
     manager: EntityManager,
     userId: string,
     typeOption: ScoreOperateType | ScoreOperateOption,
-    entityId: string,
-    entityType: EntityTypeEnum,
+    entityId?: string,
+    entityType?: EntityTypeEnum,
   ) {
     const { score, type, desc } = getOpScoreAndDesc(typeOption, entityType);
     const scoreEntity = await manager.getRepository(Score).create({

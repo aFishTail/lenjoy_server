@@ -82,7 +82,7 @@ export class UserController {
     @Res() res: Response,
   ) {
     await this.emailService.verify(userId, code);
-    res.status(200).send('<p>验证成功，请重新登录</p>');
+    res.status(200).send('<p>邮箱验证成功</p>');
   }
 
   @ApiOperation({ summary: '日常签到' })

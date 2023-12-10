@@ -13,7 +13,7 @@ import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Resource, User]),
+    TypeOrmModule.forFeature([Resource, User, UserLike]),
     CategoryModule,
     AuthModule,
     ScoreModule,

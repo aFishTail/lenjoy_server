@@ -64,3 +64,4 @@ export class UserLikeOperateOutDto extends ResponseDto {
 - [x] 自定义execption和业务code，便于前端处理
 - [ ] 服务 url 统一
 - [ ] nest-cli.json 配置
+- [ ] jwt secret 提取到配置文件

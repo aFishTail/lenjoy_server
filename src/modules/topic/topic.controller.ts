@@ -53,12 +53,29 @@ export class TopicController {
     return this.topicService.userList(userId, payload);
   }
 
+  @ApiOperation({ summary: '获取列表中的一个帖子' })
+  @ApiResponse({ status: 201, type: QueryTopicDetailOutDto })
+  @Post('/list/findOne')
+  async listOne(
+    @Body() {id}: PrimaryKeyDto,
+    @QueryUser('id') userId: string,
+  ) {
+    const topic = await this.topicService.findOne(id, userId);
+    if (!topic) {
+      throw new BadRequestException('帖子不存在');
+    }
+    return topic;
+  }
+
   @ApiOperation({ summary: '查看帖子详情' })
   @ApiResponse({ status: 201, type: QueryTopicDetailOutDto })
   @Post('/detail')
-  async getDetail(@Body() payload: PrimaryKeyDto) {
+  async getDetail(
+    @Body() payload: PrimaryKeyDto,
+    @QueryUser('id') userId: string,
+  ) {
     const { id } = payload;
-    const topic = await this.topicService.findOne(id);
+    const topic = await this.topicService.findOne(id, userId);
     if (!topic) {
       throw new BadRequestException('帖子不存在');
     }

@@ -15,7 +15,12 @@ import { EntityTypeEnum, ThirdAccountType } from 'src/common/constants';
 import { ThirdAccountUserInfo } from 'src/utils/github';
 import { UserBehavior } from './entities/user-behavior.entity';
 import { ScoreService } from '../score/score.service';
-import { ScoreConfig, ScoreDesc, ScoreOperateType } from '../score/score.type';
+import {
+  ScoreConfig,
+  ScoreDesc,
+  ScoreOperateType,
+  getSignInScore,
+} from '../score/score.type';
 import { Cron } from '@nestjs/schedule';
 
 @Injectable()
@@ -306,12 +311,23 @@ export class UserService {
     if (userBehavior.dailyCheckIn) {
       throw new BadRequestException('不可重复签到');
     }
-    userBehavior.dailyCheckIn = true;
-    // TODO:score
-    return this.userBehaviorRepository.save(userBehavior);
+    const score = getSignInScore();
+    await this.dataSource.manager.transaction(async (manager) => {
+      userBehavior.dailyCheckIn = true;
+      await manager.getRepository(UserBehavior).save(userBehavior);
+
+      await this.scoreService.operateWithTransaction(manager, userId, {
+        type: ScoreOperateType.INCREASE,
+        score,
+        desc: ScoreDesc.DailySignIn,
+      });
+    });
+    return {
+      score,
+    };
   }
 
-  @Cron('* * 9 * * *')
+  @Cron('* * 0 * * *')
   resetDailyCheck() {
     this.userBehaviorRepository
       .createQueryBuilder()

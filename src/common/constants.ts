@@ -13,10 +13,11 @@ export enum IUserSignType {
 }
 export const IEntityTypeList = ['topic', 'comment'];
 
-export enum EntityTypeEnum {
+export const enum EntityTypeEnum {
   Topic = 'topic',
   Resource = 'resource',
   Reward = 'reward',
+  SignIn = 'signIn',
 }
 
 export enum IMessageType {

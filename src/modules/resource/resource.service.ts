@@ -10,6 +10,21 @@ import { QueryResourceInputDto } from './dto/query-resource.dto';
 import { User } from '../user/entities/user.entity';
 import { ScoreConfig, ScoreOperateType } from '../score/score.type';
 import { EntityTypeEnum } from 'src/common/constants';
+import { UserLike } from '../user-like/entities/user-like.entity';
+
+const ResourceQueryFields = [
+  'resource.id',
+  'resource.name',
+  'resource.score',
+  'resource.isPublic',
+  'resource.accessible',
+  'resource.commentCount',
+  'resource.viewCount',
+  'resource.isPublic',
+  'resource.createAt',
+  'resource.userId',
+  'resource.likeCount',
+];
 
 @Injectable()
 export class ResourceService {
@@ -55,18 +70,7 @@ export class ResourceService {
       queryResourceDto;
     const qb = this.resourceRepository
       .createQueryBuilder('resource')
-      .select([
-        'resource.id',
-        'resource.name',
-        'resource.score',
-        'resource.isPublic',
-        'resource.accessible',
-        'resource.commentCount',
-        'resource.viewCount',
-        'resource.isPublic',
-        'resource.createAt',
-        'resource.userId',
-      ])
+      .select(ResourceQueryFields)
       .leftJoinAndSelect('resource.category', 'category')
       .leftJoinAndMapOne(
         'resource.user',
@@ -93,11 +97,43 @@ export class ResourceService {
     qb.orderBy('resource.createAt', 'DESC');
     qb.limit(pageSize).offset((pageNum - 1) * pageSize);
     const [records, total] = await qb.getManyAndCount();
+    const result = [];
+    for (let i = 0; i < records.length; i++) {
+      const n = { ...records[i], isLike: 0 };
+      // const like = await getConnection()
+      const like = await this.dataSource
+        .getRepository(UserLike)
+        .findOne({ where: { userId, entityId: n.id } });
+      if (like) {
+        n.isLike = like.status;
+      }
+      result.push(n);
+    }
     const data = {
-      records,
+      records: result,
       total,
     };
     return data;
+  }
+
+  // 查询一个实例，和queryPage区别只查询
+  async queryOne(id: string, userId: string) {
+    const resource = await this.resourceRepository
+      .createQueryBuilder('resource')
+      .select(ResourceQueryFields)
+      .leftJoinAndSelect('resource.category', 'category')
+      .leftJoinAndMapOne(
+        'resource.user',
+        'user',
+        'user',
+        'user.id = resource.userId',
+      )
+      .where('resource.id = :id', { id })
+      .getOne();
+    const like = await this.dataSource
+      .getRepository(UserLike)
+      .findOne({ where: { userId, entityId: resource.id } });
+    return { ...resource, isLike: like?.status ?? 0 };
   }
 
   async findOne(id: string, userId: string) {

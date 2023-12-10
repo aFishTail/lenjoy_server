@@ -43,10 +43,6 @@ async function bootstrap() {
   app.use(compression());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  // app.use(bodyParser.json({ limit: '1mb' }));
-  // app.use(bodyParser.urlencoded({ extended: true }));
-
-  // app.useLogger(app.get(Log4jsLogger));
   app.use(loggerMiddleware);
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalFilters(new AllExceptionFilter());

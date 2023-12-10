@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
 const passModule = PassportModule.register({ defaultStrategy: 'jwt' });
 const jwtModule = JwtModule.register({
   secret: 'lenjoy66',
-  signOptions: { expiresIn: '4h' },
+  signOptions: { expiresIn: '7d' },
 });
 
 @Global()

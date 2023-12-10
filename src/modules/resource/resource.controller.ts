@@ -41,6 +41,11 @@ export class ResourceController {
     return this.resourceService.queryPage(queryResourceDto, userId);
   }
 
+  @Post('query/findOne')
+  queryFindOne(@Body() { id }: PrimaryKeyDto, @QueryUser('id') userId) {
+    return this.resourceService.queryOne(id, userId);
+  }
+
   @UseGuards(JwtAuthGuard, EntityAuthGuard)
   @EntityAuth(Resource, 'id')
   @Post('/update')

@@ -119,7 +119,7 @@ export class TopicService {
     if (title) {
       qb.andWhere('topic.title LIKE :title', { title: `%${title}%` });
     }
-    if (userId) {
+    if (topicUserId) {
       qb.andWhere('topic.user_id = :userId', { userId: topicUserId });
     }
     if (categoryLabel) {
@@ -146,19 +146,22 @@ export class TopicService {
     return data;
   }
 
-  async findOne(id: string) {
-    const qb = this.topicRepository
+  async findOne(id: string, userId) {
+    const topic = await this.topicRepository
       .createQueryBuilder('topic')
+      .leftJoinAndSelect('topic.category', 'category')
       .leftJoinAndMapOne(
         'topic.user',
         'user',
         'user',
         'user.id = topic.user_id',
       )
-      .leftJoinAndSelect('topic.category', 'category')
-      .where({ id });
-    const topic = await qb.getOne();
-    return topic;
+      .where('topic.id = :id', { id })
+      .getOne();
+    const like = await this.dataSource
+      .getRepository(UserLike)
+      .findOne({ where: { userId, entityId: topic.id } });
+    return { ...topic, isLike: like?.status ?? 0 };
   }
 
   async update(p: UpdateTopicDto) {

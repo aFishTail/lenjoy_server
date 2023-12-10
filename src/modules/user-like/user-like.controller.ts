@@ -13,22 +13,19 @@ export class UserLikeController {
   @ApiOperation({ summary: '点赞/取消点赞帖子' })
   @ApiBody({ type: UserLikeOperateDto })
   @ApiResponse({ type: ResponseDto })
-  @Post('/topic')
+  @Post('/operate')
   operateTopic(@Body() payload: UserLikeOperateDto, @QueryUser('id') userId) {
-    return this.userLikeService.operate(userId, {
-      ...payload,
-      entityType: 'topic',
-    });
+    return this.userLikeService.operate(userId, payload);
   }
 
-  @ApiOperation({ summary: '点赞/取消点赞评论' })
-  @ApiBody({ type: UserLikeOperateDto })
-  @ApiResponse({ status: 200, type: ResponseDto })
-  @Post('/comment')
-  operateComment(@Body() payload: UserLikeOperateDto, @QueryUser('id') userId) {
-    return this.userLikeService.operate(userId, {
-      ...payload,
-      entityType: 'comment',
-    });
-  }
+  // @ApiOperation({ summary: '点赞/取消点赞评论' })
+  // @ApiBody({ type: UserLikeOperateDto })
+  // @ApiResponse({ status: 200, type: ResponseDto })
+  // @Post('/comment')
+  // operateComment(@Body() payload: UserLikeOperateDto, @QueryUser('id') userId) {
+  //   return this.userLikeService.operate(userId, {
+  //     ...payload,
+  //     entityType: 'comment',
+  //   });
+  // }
 }

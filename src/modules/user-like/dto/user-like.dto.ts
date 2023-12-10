@@ -4,6 +4,11 @@ import { IsIn, IsNumber, IsString } from 'class-validator';
 export class UserLikeOperateDto {
   @ApiProperty({ description: '实体类型' })
   @IsString()
+  @IsIn(['topic', 'resource', 'reward'])
+  entityType: string;
+
+  @ApiProperty({ description: '实体类型' })
+  @IsString()
   entityId: string;
 
   @ApiProperty({ description: '操作类型，0:取消点赞， 1:点赞' })

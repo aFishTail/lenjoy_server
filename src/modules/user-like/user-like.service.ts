@@ -11,22 +11,22 @@ export class UserLikeService {
     private userLikeRepository: Repository<UserLike>,
     private dataSource: DataSource,
   ) {}
-  async operate(userId, p: UserLikeOperateDto & { entityType: string }) {
+  async operate(userId, p: UserLikeOperateDto) {
     const { entityId, status, entityType } = p;
     const oldRecord = await this.userLikeRepository.findOne({
-      where: { userId },
+      where: { userId, entityId, entityType },
     });
 
     if (!oldRecord) {
-      await this.dataSource.transaction(async (manager) => {
-        const _repository = manager.getRepository(UserLike);
-        const newRecord = await _repository.create({
+      await this.dataSource.manager.transaction(async (manager) => {
+        const userLikeRepository = manager.getRepository(UserLike);
+        const newRecord = await userLikeRepository.create({
           userId,
           entityType,
           entityId,
           status: 1,
         });
-        await _repository.save(newRecord);
+        await userLikeRepository.save(newRecord);
 
         await manager.query(
           `update ${entityType} set like_count = like_count + 1 where id = '${entityId}'`,
@@ -42,12 +42,11 @@ export class UserLikeService {
       );
     }
 
-    await this.dataSource.transaction(async (manager) => {
-      await manager.getRepository(UserLike).update(entityId, { status });
-
+    await this.dataSource.manager.transaction(async (manager) => {
+      await manager.getRepository(UserLike).update({ userId }, { status });
       const op = status ? '+' : '-';
       await manager.query(
-        `update ${entityType} set like_count = like_count ${op} 1 where id = ${entityId}`,
+        `update ${entityType} set like_count = like_count ${op} 1 where id = '${entityId}'`,
       );
     });
     return null;
