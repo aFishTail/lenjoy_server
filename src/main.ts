@@ -38,6 +38,7 @@ async function bootstrap() {
     }),
     bufferLogs: true,
   });
+  // const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // app.use(helmet());
   app.use(compression());
