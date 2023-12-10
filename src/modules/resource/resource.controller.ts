@@ -3,7 +3,6 @@ import {
   Post,
   Body,
   UseGuards,
-  Req,
   UseInterceptors,
 } from '@nestjs/common';
 import { ResourceService } from './resource.service';
@@ -15,7 +14,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { EntityAuth, EntityAuthGuard } from '../auth/entity.guard';
 import { Resource } from './entities/resource.entity';
 import { QueryResourceInputDto } from './dto/query-resource.dto';
-import { Request } from 'express';
 import { FirstPostInterceptor } from 'src/interceptors/firstPost.interceptor';
 import { EmailVerifyInterceptor } from 'src/interceptors/emailVerify.interceptor';
 
@@ -54,13 +52,10 @@ export class ResourceController {
   }
 
   @Post('detail')
-  findOne(
-    @Body() payload: PrimaryKeyDto,
-    @QueryUser('id') userId: string,
-    @Req() req: Request,
-  ) {
-    console.log('req', req);
-    return this.resourceService.findOne(payload.id, userId);
+  async findOne(@Body() { id }: PrimaryKeyDto, @QueryUser('id') userId) {
+    const reward = await this.resourceService.findOne(id, userId);
+    await this.resourceService.incrViewCount(id);
+    return reward;
   }
 
   @UseGuards(JwtAuthGuard, EntityAuthGuard)

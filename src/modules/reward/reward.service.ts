@@ -14,6 +14,7 @@ import { ConfirmRewardAnswerDto } from './dto/confirm-reward-answer.dto';
 import { RewardAnswer } from '../reward-answer/entities/reward-answer.entity';
 import { floor } from 'lodash';
 import { CategoryService } from '../category/category.service';
+import { UserLike } from '../user-like/entities/user-like.entity';
 
 @Injectable()
 export class RewardService {
@@ -59,7 +60,7 @@ export class RewardService {
     });
   }
 
-  async findAll(payload: QueryRewardListInputDto) {
+  async findAll(payload: QueryRewardListInputDto, userId?: string) {
     const { title, pageNum, pageSize } = payload;
     const qb = this.rewardRepository
       .createQueryBuilder('reward')
@@ -78,26 +79,44 @@ export class RewardService {
     qb.andWhere('reward.status != :status', { status: 'cancel' });
     qb.limit(pageSize).offset((pageNum - 1) * pageSize);
     const [records, total] = await qb.getManyAndCount();
-    const data = {
-      records,
+    const result = [];
+    for (let i = 0; i < records.length; i++) {
+      const n = { ...records[i], isLike: 0 };
+      const like = await this.dataSource
+        .getRepository(UserLike)
+        .findOne({ where: { userId, entityId: n.id } });
+      if (like) {
+        n.isLike = like.status;
+      }
+      result.push(n);
+    }
+    return {
+      records: result,
       total,
     };
-    return data;
   }
 
-  async findOne(id: string) {
-    const qb = this.rewardRepository
+  async findOne(id: string, userId: string) {
+    const reward = await this.rewardRepository
       .createQueryBuilder('reward')
       .leftJoinAndSelect('reward.category', 'category')
       .leftJoinAndSelect('reward.user', 'user')
       .leftJoinAndSelect('reward.rewardUser', 'rewardUser')
+      .leftJoinAndSelect('reward.rewardAnswers', 'rewardAnswer')
       .leftJoinAndSelect(
         'reward.confirmedRewardAnswer',
         'confirmedRewardAnswer',
       )
-      .where({ id });
-    const reward = await qb.getOne();
-    return reward;
+      .where({ id })
+      .getOne();
+    const like = await this.dataSource.getRepository(UserLike).findOne({
+      where: {
+        userId,
+        entityId: reward.id,
+        entityType: EntityTypeEnum.Reward,
+      },
+    });
+    return { ...reward, isLike: like?.status ?? 0 };
   }
 
   // TODO: update score，积分变化
@@ -213,5 +232,16 @@ export class RewardService {
     );
     user.compeleteRate = compeleteRate;
     manager.getRepository(User).save(user);
+  }
+
+  async incrViewCount(id: string) {
+    return this.rewardRepository
+      .createQueryBuilder()
+      .update(Reward)
+      .set({
+        viewCount: () => 'view_count + 1',
+      })
+      .where('id = :id', { id })
+      .execute();
   }
 }

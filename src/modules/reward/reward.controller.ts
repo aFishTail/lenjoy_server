@@ -38,14 +38,22 @@ export class RewardController {
   @ApiBody({ type: QueryRewardListInputDto })
   @ApiResponse({ status: 201, type: QueryRewardListOutDto })
   @Post('/query')
-  findAll(@Body() payload: QueryRewardListInputDto) {
-    return this.rewardService.findAll(payload);
+  findAll(@Body() payload: QueryRewardListInputDto, @QueryUser('id') userId) {
+    return this.rewardService.findAll(payload, userId);
   }
+
+  @Post('query/findOne')
+  queryFindOne(@Body() { id }: PrimaryKeyDto, @QueryUser('id') userId) {
+    return this.rewardService.findOne(id, userId);
+  }
+
   @ApiOperation({ summary: '查看悬赏详情' })
   @ApiResponse({ status: 201, type: QueryRewardDetailOutDto })
   @Post('/detail')
-  findOne(@Body() { id }: PrimaryKeyDto) {
-    return this.rewardService.findOne(id);
+  async findOne(@Body() { id }: PrimaryKeyDto, @QueryUser('id') userId) {
+    const reward = await this.rewardService.findOne(id, userId);
+    await this.rewardService.incrViewCount(id);
+    return reward;
   }
   @ApiOperation({ summary: '修改悬赏帖' })
   @ApiResponse({ type: ResponseDto })

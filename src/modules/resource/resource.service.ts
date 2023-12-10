@@ -196,6 +196,17 @@ export class ResourceService {
     return;
   }
 
+  async incrViewCount(id: string) {
+    return this.resourceRepository
+      .createQueryBuilder()
+      .update(Resource)
+      .set({
+        viewCount: () => 'view_count + 1',
+      })
+      .where('id = :id', { id })
+      .execute();
+  }
+
   async pay(id: string, userId: string) {
     const resource = await this.resourceRepository
       .createQueryBuilder('resource')
