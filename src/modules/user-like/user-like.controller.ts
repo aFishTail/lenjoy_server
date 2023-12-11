@@ -1,9 +1,10 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { UserLikeService } from './user-like.service';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserLikeOperateDto } from './dto/user-like.dto';
 import { QueryUser } from 'src/decorators/user.decorator';
 import { ResponseDto } from 'src/common/base.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('用户点赞')
 @Controller('userLike')
@@ -13,6 +14,7 @@ export class UserLikeController {
   @ApiOperation({ summary: '点赞/取消点赞帖子' })
   @ApiBody({ type: UserLikeOperateDto })
   @ApiResponse({ type: ResponseDto })
+  @UseGuards(JwtAuthGuard)
   @Post('/operate')
   operateTopic(@Body() payload: UserLikeOperateDto, @QueryUser('id') userId) {
     return this.userLikeService.operate(userId, payload);

@@ -130,14 +130,15 @@ export class TopicService {
     const result = [];
     for (let i = 0; i < records.length; i++) {
       const n = { ...records[i], isLike: 0 };
-      // const like = await getConnection()
-      const like = await this.dataSource
-        .getRepository(UserLike)
-        .findOne({ where: { userId, entityId: n.id } });
+      let like;
+      if (userId) {
+        like = await this.dataSource
+          .getRepository(UserLike)
+          .findOne({ where: { userId, entityId: n.id } });
+      }
       if (like) {
         n.isLike = like.status;
       }
-      result.push(n);
     }
     const data = {
       records: result,
