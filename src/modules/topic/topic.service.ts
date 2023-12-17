@@ -139,6 +139,7 @@ export class TopicService {
       if (like) {
         n.isLike = like.status;
       }
+      result.push(n);
     }
     const data = {
       records: result,
