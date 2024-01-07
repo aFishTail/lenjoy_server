@@ -43,7 +43,9 @@ export class UserLikeService {
     }
 
     await this.dataSource.manager.transaction(async (manager) => {
-      await manager.getRepository(UserLike).update({ userId }, { status });
+      await manager
+        .getRepository(UserLike)
+        .update({ userId, entityType, entityId }, { status });
       const op = status ? '+' : '-';
       await manager.query(
         `update ${entityType} set like_count = like_count ${op} 1 where id = '${entityId}'`,
