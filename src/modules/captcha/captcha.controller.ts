@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { generateCaptcha } from 'src/utils/captcha';
 import { CaptchaService } from './captcha.service';
@@ -9,15 +10,18 @@ import { ResponseDto } from 'src/common/base.dto';
 @ApiTags('验证码')
 @Controller('captcha')
 export class CaptchaController {
-  constructor(private readonly captchaService: CaptchaService) {}
+  constructor(
+    private readonly captchaService: CaptchaService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @ApiOperation({ summary: '获取验证吗' })
   @ApiResponse({ status: 201, type: QueryCaptchaOutDto })
   @Post('get')
   findOne() {
     const id = uuidv4();
-    // const imgUrl = `http://81.69.252.155:6060/api/captcha/show?id=${id}`;
-    const imgUrl = `http://127.0.0.1:3000/api/captcha/show?id=${id}`;
+    const host = this.configService.get('host');
+    const imgUrl = `${host}/api/captcha/show?id=${id}`;
     return {
       id,
       imgUrl,
@@ -25,10 +29,8 @@ export class CaptchaController {
   }
 
   @ApiOperation({ summary: '展示验证码' })
-  // @ApiResponse({ status: 201, type:  })
   @Get('show')
   async show(@Res() res, @Query('id') id) {
-    // const svgCaptcha = generateCaptcha();
     const img = await this.captchaService.create(id);
     res.type('image/svg+xml'); //指定返回的类型
     res.send(img.data); //给页面返回一张图片
@@ -38,7 +40,6 @@ export class CaptchaController {
   @ApiResponse({ status: 201, type: ResponseDto })
   @Post('verify')
   async verify(@Body() payload) {
-    // const svgCaptcha = generateCaptcha();
     const { captchaId, value } = payload;
     const captchaValue = await this.captchaService.getCaptchaValue(captchaId);
     return {

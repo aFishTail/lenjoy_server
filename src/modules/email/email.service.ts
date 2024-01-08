@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { MailerService } from '@nestjs-modules/mailer';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
@@ -13,6 +14,7 @@ export class EmialService {
     @InjectRepository(EmailCode)
     private readonly emialCodeRepository: Repository<EmailCode>,
     private readonly dataSource: DataSource,
+    private readonly configService: ConfigService,
   ) {}
   async sendVerifyEmail(
     user: { userId: string; username: string; email: string },
@@ -34,7 +36,7 @@ export class EmialService {
     };
     await this.mailerService.sendMail({
       to: email,
-      from: 'lenjoy007@163.com',
+      from: this.configService.get('email.from'),
       subject,
       template: 'email',
       context,

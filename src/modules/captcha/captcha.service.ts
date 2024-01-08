@@ -1,8 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CacheService } from 'src/modules/cache/cache.service';
 import { generateCaptcha } from 'src/utils/captcha';
-import { CreateCaptchaDto } from './dto/create-captcha.dto';
-import { UpdateCaptchaDto } from './dto/update-captcha.dto';
 
 @Injectable()
 export class CaptchaService {
