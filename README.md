@@ -52,11 +52,11 @@ export class UserLikeOperateOutDto extends ResponseDto {
 - [x] 用户行为通过AOP编程实现
 - [x] resource 购买时积分操作
 - [x] 发布悬赏时校验当前socre是否满足需要
-- [ ] 邮件配置提取到配置文件中
-- [ ] 配置文件可以根据运行环境自动化
+- [x] 邮件配置提取到配置文件中
+- [x] 配置文件可以根据运行环境自动化
 - [ ] captcha生成的地址能够正常访问
-- [ ] qiniu 域名映射
-- [ ] 敏感key，密钥隐藏
+- [x] qiniu 域名映射
+- [x] 敏感key，密钥隐藏
 - [ ] 消息模块功能
 - [x] 用户发布资源，悬赏时校验email
 - [ ] 运行前时初始化admin账号密码（可配置）
@@ -64,4 +64,4 @@ export class UserLikeOperateOutDto extends ResponseDto {
 - [x] 自定义execption和业务code，便于前端处理
 - [ ] 服务 url 统一
 - [ ] nest-cli.json 配置
-- [ ] jwt secret 提取到配置文件
+- [x] jwt secret 提取到配置文件
