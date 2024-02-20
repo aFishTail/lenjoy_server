@@ -1,19 +1,19 @@
+host: "http://127.0.0.1:3000"
+
+jwtSecret: "lenjoy"
+
 mysql:
   host: "127.0.0.1"
   port: 3306
   database: "lenjoy"
   username: "root"
-  password: "123456"
+  password: "lenjoy123"
 
 redis:
   host: "127.0.0.1"
   port: 6379
   db: 0
-  password: "123456"
-
-jwtSecret: "lenjoy"
-
-host: "http://127.0.0.1:3000"
+  password: "lenjoy123"
 
 qiniu:
   ak: uzkvFPeBGf6Zuz2RfoQTfeDFOYTOxloHkcMK26Tb
