@@ -16,3 +16,10 @@ jwtSecret: "lenjoy"
 host: "http://127.0.0.1:3000"
 
 qiniu:
+  ak: uzkvFPeBGf6Zuz2RfoQTfeDFOYTOxloHkcMK26Tb
+  sk: 6Z4hR1RqQFd6IlN4-vc0CJ8ObJZFMWXTobyaOu34
+  bucket: lenjoy-dev
+  host: http://qiniu.lenjoy.top
+
+email:
+  from: "lenjoy007@163.com"
