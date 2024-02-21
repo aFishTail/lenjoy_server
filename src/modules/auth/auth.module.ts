@@ -7,18 +7,31 @@ import { CaptchaModule } from 'src/modules/captcha/captcha.module';
 import { UserModule } from 'src/modules/user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 const passModule = PassportModule.register({ defaultStrategy: 'jwt' });
-const jwtModule = JwtModule.register({
-  secret: 'lenjoy66',
-  signOptions: { expiresIn: '7d' },
-});
+
+// const jwtModule = JwtModule.register({
+//   secret: 'lenjoy66',
+//   signOptions: { expiresIn: '7d' },
+// });
 
 @Global()
 @Module({
-  imports: [UserModule, passModule, jwtModule, CacheModule, CaptchaModule],
+  imports: [
+    UserModule,
+    passModule,
+    JwtModule.registerAsync({
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('jwtSecret'),
+      }),
+      inject: [ConfigService],
+    }),
+    CacheModule,
+    CaptchaModule,
+  ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
-  exports: [passModule, jwtModule],
+  exports: [passModule, JwtModule],
 })
 export class AuthModule {}
