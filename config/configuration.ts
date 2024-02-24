@@ -2,7 +2,6 @@ import { readFileSync } from 'fs';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
 
-//TODO：环境变量获取不到
 const YAML_CONFIG_FILENAME =
   process.env.NODE_ENV === 'production'
     ? 'config.prod.yaml'
