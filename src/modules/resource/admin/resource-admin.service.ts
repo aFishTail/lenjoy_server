@@ -20,8 +20,14 @@ export class ResourceAdminService {
     const { name, pageNum, pageSize, isPublic, categoryId } = payload;
     const qb = this.resourceRepository
       .createQueryBuilder('resource')
-      .leftJoinAndSelect('resource.user', 'user')
+      .leftJoinAndSelect('resource.category', 'category')
       .leftJoinAndSelect('resource.withPermissionUsers', 'withPermissionUser')
+      .leftJoinAndMapOne(
+        'resource.user',
+        'user',
+        'user',
+        'user.id = resource.userId',
+      )
       .orderBy('resource.create_at', 'DESC');
     if (name) {
       qb.andWhere('resource.name LIKE :name', { name: `%${name}%` });

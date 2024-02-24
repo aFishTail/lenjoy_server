@@ -15,6 +15,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+// TODO: userid, User 重复？
 @Entity()
 export class Resource extends BaseEntity {
   @ApiProperty()

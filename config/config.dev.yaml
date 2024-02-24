@@ -3,14 +3,14 @@ host: "http://127.0.0.1:3000"
 jwtSecret: "lenjoy"
 
 mysql:
-  host: "127.0.0.1"
+  host: "81.69.252.155"
   port: 3306
   database: "lenjoy"
   username: "root"
   password: "lenjoy123"
 
 redis:
-  host: "127.0.0.1"
+  host: "81.69.252.155"
   port: 6379
   db: 0
   password: "lenjoy123"
