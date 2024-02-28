@@ -20,7 +20,13 @@ export class RewardAdminService {
     const qb = this.rewardRepository
       .createQueryBuilder('reward')
       .leftJoinAndSelect('reward.user', 'user')
-      .leftJoinAndSelect('reward.rewardUser', 'user')
+      .leftJoinAndSelect('reward.category', 'category')
+      .leftJoinAndSelect('reward.rewardUser', 'rewardUser')
+      .leftJoinAndSelect('reward.rewardAnswers', 'rewardAnswer')
+      .leftJoinAndSelect(
+        'reward.confirmedRewardAnswer',
+        'confirmedRewardAnswer',
+      )
       .orderBy('reward.create_at', 'DESC');
     if (title) {
       qb.andWhere('reward.title LIKE :title', { title: `%${title}%` });
@@ -47,7 +53,7 @@ export class RewardAdminService {
   async remove(id: string) {
     // TODO: 这里的事务并不完整， scoreService启动了另一个事务
     const reward = await this.rewardRepository.findOneBy({ id });
-    await this.rewardRepository.remove(reward);
+    await this.rewardRepository.softRemove(reward);
     await this.scoreService.operate(
       ADMIN_USER_ID,
       {

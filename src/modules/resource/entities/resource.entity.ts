@@ -42,7 +42,7 @@ export class Resource extends BaseEntity {
 
   @ApiProperty({ description: '是否可以访问' })
   @Column({ type: 'boolean', nullable: false, default: true })
-  accessible: boolean;
+  accessable: boolean;
 
   @ApiProperty({ description: '最后检查时间' })
   @Column({

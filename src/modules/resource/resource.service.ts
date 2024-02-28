@@ -17,7 +17,7 @@ const ResourceQueryFields = [
   'resource.name',
   'resource.score',
   'resource.isPublic',
-  'resource.accessible',
+  'resource.accessable',
   'resource.commentCount',
   'resource.viewCount',
   'resource.isPublic',

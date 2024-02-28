@@ -184,10 +184,7 @@ export class TopicService {
   }
 
   async delete(id: string) {
-    const data = await this.topicRepository.findOne({
-      where: { id },
-    });
-    await this.topicRepository.remove(data);
+    await this.topicRepository.softDelete({ id });
     return null;
   }
 
@@ -265,10 +262,7 @@ export class TopicService {
   }
 
   async adminDelete(id: string) {
-    const data = await this.topicRepository.findOne({
-      where: { id },
-    });
-    await this.topicRepository.remove(data);
+    await this.topicRepository.softDelete({ id });
     return null;
   }
 }
