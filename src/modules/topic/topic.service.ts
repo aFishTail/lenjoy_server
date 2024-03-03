@@ -13,6 +13,7 @@ export class TopicService {
   constructor(
     @InjectRepository(Topic)
     private readonly topicRepository: Repository<Topic>,
+    @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly categoryService: CategoryService,
     private readonly dataSource: DataSource,
