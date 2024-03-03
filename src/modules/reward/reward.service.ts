@@ -185,8 +185,9 @@ export class RewardService {
   ) {
     const { rewardId, rewardAnswerId } = confirmRewardAnswerDto;
     const reward = await this.rewardRepository.findOneBy({ id: rewardId });
-    const rewardAnswer = await this.rewardAnswerRepository.findOneBy({
-      id: rewardAnswerId,
+    const rewardAnswer = await this.rewardAnswerRepository.findOne({
+      where: { id: rewardAnswerId },
+      relations: ['user'],
     });
     if (!reward) {
       throw new BadRequestException('悬赏帖子不存在');
@@ -197,7 +198,7 @@ export class RewardService {
     if (reward.confirmedRewardAnswer) {
       throw new BadRequestException('该悬赏已确认答案');
     }
-    this.dataSource.manager.transaction(async (manager) => {
+    await this.dataSource.manager.transaction(async (manager) => {
       reward.confirmedRewardAnswer = rewardAnswer;
       reward.status = 'finish';
       reward.cancelType = 'admin';
@@ -208,10 +209,10 @@ export class RewardService {
       // TODO: 积分操作
       await this.scoreService.operateWithTransaction(
         manager,
-        userId,
+        rewardAnswer.user.id,
         {
           type: ScoreOperateType.INCREASE,
-          score: reward.score * ScoreConfig.PlatformChargeRatio,
+          score: reward.score * (1 - ScoreConfig.PlatformChargeRatio),
           desc: '被选为悬赏正确答案',
         },
         reward.id,
