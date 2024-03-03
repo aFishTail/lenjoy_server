@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   BaseEntity,
+  DeleteDateColumn,
 } from 'typeorm';
 import { Topic } from 'src/modules/topic/entities/topic.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -47,6 +48,9 @@ export class Category extends BaseEntity {
 
   @OneToMany(() => Resource, (resource) => resource.category)
   resources: Array<Resource>;
+
+  @DeleteDateColumn({ nullable: false })
+  deletedTime: Date;
 
   @CreateDateColumn({
     type: 'datetime',

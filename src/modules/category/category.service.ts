@@ -71,10 +71,7 @@ export class CategoryService {
   }
 
   async delete(id: string) {
-    const data = await this.categoryRepository.findOne({
-      where: { id },
-    });
-    this.categoryRepository.remove(data);
+    return this.categoryRepository.softDelete(id);
   }
 
   /**
