@@ -34,7 +34,7 @@ export class Comment extends BaseEntity {
   ip: string;
 
   @ApiProperty({ description: '评论用户id' })
-  @Column({ comment: '评论用户id', name: 'user_id' })
+  @Column({ comment: '评论用户id', name: 'userId' })
   userId: string; // 评论主体的ID
 
   @ApiProperty({ description: '评论主体帖子id' })

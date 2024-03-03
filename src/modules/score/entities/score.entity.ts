@@ -15,7 +15,7 @@ export class Score extends BaseEntity {
   id: string;
 
   @ApiProperty({ description: '用户id' })
-  @Column({ name: 'user_id' })
+  @Column({ name: 'userId' })
   userId: string;
 
   @ApiProperty({ description: '操作主体类型' })

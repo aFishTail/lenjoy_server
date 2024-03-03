@@ -41,6 +41,7 @@ export class ResourceService {
     const { name, url, code, isPublic, score, categoryId, content } =
       createResourceDto;
     const existCategory = await this.categoryService.findById(categoryId);
+    const user = await this.userRepository.findOneBy({ id: userId });
     if (!existCategory) {
       throw new BadRequestException('该主题不存在');
     }
@@ -56,7 +57,7 @@ export class ResourceService {
       score,
       category: existCategory,
       content,
-      userId,
+      user,
     });
     await this.resourceRepository.save(newResource);
     return newResource;
@@ -145,7 +146,7 @@ export class ResourceService {
         'resource.user',
         'user',
         'user',
-        'user.id = resource.user_id',
+        'user.id = resource.userId',
       )
       .leftJoinAndSelect('resource.category', 'category')
       .leftJoinAndSelect('resource.withPermissionUsers', 'withPermissionUser')
@@ -233,7 +234,7 @@ export class ResourceService {
       try {
         await this.scoreService.operateWithTransaction(
           manager,
-          resource.userId,
+          resource.user.id,
           {
             type: ScoreOperateType.INCREASE,
             score: resource.score * (1 - ScoreConfig.PlatformChargeRatio),
@@ -269,7 +270,7 @@ export class ResourceService {
     const withPermissionUsers = resource.withPermissionUsers;
     if (
       !withPermissionUsers.find((e) => e.id === userId) &&
-      resource.userId !== userId
+      resource.user.id !== userId
     ) {
       throw new BadRequestException('无权访问该资源');
     }

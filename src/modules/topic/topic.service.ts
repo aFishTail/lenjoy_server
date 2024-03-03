@@ -25,6 +25,7 @@ export class TopicService {
     categoryId: string,
   ) {
     const existCategory = await this.categoryService.findById(categoryId);
+    // const user = await this
     const newResource = await this.topicRepository.create({
       title,
       content,
@@ -70,12 +71,12 @@ export class TopicService {
         'topic.user',
         'user',
         'user',
-        'user.id = topic.user_id',
+        'user.id = topic.userId',
       );
 
     //TODO: 关联查询选取字段
     if (userId) {
-      qb.where('topic.user_id= :userId', { userId });
+      qb.where('topic.userId= :userId', { userId });
     }
     if (categoryLabel) {
       qb.andWhere('topic.categoryLabel = :categoryLabel', { categoryLabel });
@@ -108,19 +109,14 @@ export class TopicService {
     const qb = this.topicRepository
       .createQueryBuilder('topic')
       .leftJoinAndSelect('topic.category', 'category')
-      .leftJoinAndMapOne(
-        'topic.user',
-        'user',
-        'user',
-        'user.id = topic.user_id',
-      )
+      .leftJoinAndMapOne('topic.user', 'user', 'user', 'user.id = topic.userId')
       .orderBy('topic.create_at', 'DESC');
 
     if (title) {
       qb.andWhere('topic.title LIKE :title', { title: `%${title}%` });
     }
     if (topicUserId) {
-      qb.andWhere('topic.user_id = :userId', { userId: topicUserId });
+      qb.andWhere('topic.userId = :userId', { userId: topicUserId });
     }
     if (categoryLabel) {
       qb.andWhere('category.label = :label', { label: categoryLabel });
@@ -152,12 +148,7 @@ export class TopicService {
     const topic = await this.topicRepository
       .createQueryBuilder('topic')
       .leftJoinAndSelect('topic.category', 'category')
-      .leftJoinAndMapOne(
-        'topic.user',
-        'user',
-        'user',
-        'user.id = topic.user_id',
-      )
+      .leftJoinAndMapOne('topic.user', 'user', 'user', 'user.id = topic.userId')
       .where('topic.id = :id', { id })
       .getOne();
     const like = await this.dataSource
@@ -216,7 +207,7 @@ export class TopicService {
         'topic.user',
         'user',
         'user',
-        'user.id = topic.user_id',
+        'user.id = topic.userId',
       );
 
     if (categoryLabel) {
@@ -247,12 +238,7 @@ export class TopicService {
   async adminGetDetail(id: string) {
     const qb = this.topicRepository
       .createQueryBuilder('topic')
-      .leftJoinAndMapOne(
-        'topic.user',
-        'user',
-        'user',
-        'user.id = topic.user_id',
-      )
+      .leftJoinAndMapOne('topic.user', 'user', 'user', 'user.id = topic.userId')
       .where({ id });
     const topic = await qb.getOne();
     if (!topic) {

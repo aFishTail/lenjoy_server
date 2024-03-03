@@ -54,15 +54,6 @@ export class Resource extends BaseEntity {
   lastCheckTime: Date;
 
   @ApiProperty()
-  @Column({
-    type: 'uuid',
-    name: 'user_id',
-    comment: '所属用户',
-    nullable: false,
-  })
-  userId: string;
-
-  @ApiProperty()
   @Column({ type: 'boolean', nullable: false, default: true })
   isPublic: boolean;
 

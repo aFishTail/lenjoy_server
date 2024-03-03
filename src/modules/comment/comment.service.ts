@@ -88,7 +88,7 @@ export class CommentService {
         'comment.user',
         'user',
         'user',
-        'user.id = comment.user_id',
+        'user.id = comment.userId',
       )
       .andWhere('entity_id = :entityId', { entityId })
       .andWhere('entity_type = :entityType', { entityType })

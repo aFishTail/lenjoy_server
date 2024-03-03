@@ -79,7 +79,7 @@ export class Topic extends BaseEntity {
   category: Category;
 
   @ApiProperty()
-  @Column({ name: 'user_id' })
+  @Column({ name: 'userId' })
   userId: string;
 
   @DeleteDateColumn({ nullable: false })

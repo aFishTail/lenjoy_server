@@ -12,7 +12,7 @@ export class UserSign extends BaseEntity {
   id: string;
 
   @ApiProperty({ description: '用户id' })
-  @Column({ name: 'user_id' })
+  @Column({ name: 'userId' })
   userId: string;
 
   @ApiProperty({ description: '最后一次签到时间' })
@@ -50,10 +50,10 @@ export class UserSignLog {
   id: string;
 
   @ApiProperty({ description: '用户id' })
-  @Column({ name: 'user_id' })
+  @Column({ name: 'userId' })
   userId: string;
 
-  //   user_id	int	11	用户id
+  //   userId	int	11	用户id
   // sign_reward	text	0	签到奖励内容
   // sign_time	datetime	0	签到时间
   // sign_type

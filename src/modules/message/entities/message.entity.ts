@@ -16,7 +16,7 @@ export class Message extends BaseEntity {
   @Column({ name: 'from_user_id', comment: '消息发送人' })
   fromUserId: string;
 
-  @Column({ name: 'user_id', comment: '消息接收人' })
+  @Column({ name: 'userId', comment: '消息接收人' })
   userId: string;
 
   @Column({ length: 50, comment: '消息标题' })
