@@ -7,12 +7,14 @@ import { CategoryService } from 'src/modules/category/category.service';
 import { QueryTopicListInputDto } from './dto/query-topic.dto';
 import { UserLike } from '../user-like/entities/user-like.entity';
 import { ScoreService } from '../score/score.service';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class TopicService {
   constructor(
     @InjectRepository(Topic)
     private readonly topicRepository: Repository<Topic>,
+    private readonly userRepository: Repository<User>,
     private readonly categoryService: CategoryService,
     private readonly scoreService: ScoreService,
     private readonly dataSource: DataSource,
@@ -25,13 +27,15 @@ export class TopicService {
     categoryId: string,
   ) {
     const existCategory = await this.categoryService.findById(categoryId);
+    const user = await this.userRepository.findOneBy({ id: userId });
+
     // const user = await this
     const newResource = await this.topicRepository.create({
       title,
       content,
       summary,
       category: existCategory,
-      userId,
+      user,
     });
     await this.topicRepository.save(newResource);
     return newResource;

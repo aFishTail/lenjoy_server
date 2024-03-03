@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { Category } from 'src/modules/category/entities/category.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/modules/user/entities/user.entity';
 
 @Entity()
 export class Topic extends BaseEntity {
@@ -78,9 +79,9 @@ export class Topic extends BaseEntity {
   @JoinColumn()
   category: Category;
 
-  @ApiProperty()
-  @Column({ name: 'userId' })
-  userId: string;
+  @ApiProperty({ type: User })
+  @ManyToOne(() => User)
+  user: User;
 
   @DeleteDateColumn({ nullable: false })
   deletedTime: Date;

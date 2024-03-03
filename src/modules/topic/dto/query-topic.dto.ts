@@ -57,7 +57,7 @@ class UserVisitedTopicDto extends Topic {
   @ApiProperty({
     type: VisitedUser,
   })
-  user: string;
+  userId: string;
 }
 
 export class QueryTopicListOut extends QueryPagerOutDto<UserVisitedTopicDto> {
