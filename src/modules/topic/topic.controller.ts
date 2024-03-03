@@ -57,7 +57,7 @@ export class TopicController {
   @ApiResponse({ status: 201, type: QueryTopicDetailOutDto })
   @Post('/list/findOne')
   async listOne(
-    @Body() {id}: PrimaryKeyDto,
+    @Body() { id }: PrimaryKeyDto,
     @QueryUser('id') userId: string,
   ) {
     const topic = await this.topicService.findOne(id, userId);

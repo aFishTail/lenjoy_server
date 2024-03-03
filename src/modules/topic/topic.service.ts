@@ -6,7 +6,6 @@ import { Topic } from './entities/topic.entity';
 import { CategoryService } from 'src/modules/category/category.service';
 import { QueryTopicListInputDto } from './dto/query-topic.dto';
 import { UserLike } from '../user-like/entities/user-like.entity';
-import { ScoreService } from '../score/score.service';
 import { User } from '../user/entities/user.entity';
 
 @Injectable()
@@ -16,7 +15,6 @@ export class TopicService {
     private readonly topicRepository: Repository<Topic>,
     private readonly userRepository: Repository<User>,
     private readonly categoryService: CategoryService,
-    private readonly scoreService: ScoreService,
     private readonly dataSource: DataSource,
   ) {}
 
