@@ -264,6 +264,7 @@ export class ResourceService {
   async viewResourceUrl(id: string, userId: string) {
     const resource = await this.resourceRepository
       .createQueryBuilder('resource')
+      .leftJoinAndSelect('resource.user', 'user')
       .leftJoinAndSelect('resource.withPermissionUsers', 'withPermissionUser')
       .where('resource.id = :id', { id })
       .getOne();
