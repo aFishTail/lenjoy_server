@@ -19,6 +19,7 @@ export class TopicService {
     private readonly scoreService: ScoreService,
     private readonly dataSource: DataSource,
   ) {}
+
   async create(
     userId: string,
     title: string,
@@ -28,8 +29,6 @@ export class TopicService {
   ) {
     const existCategory = await this.categoryService.findById(categoryId);
     const user = await this.userRepository.findOneBy({ id: userId });
-
-    // const user = await this
     const newResource = await this.topicRepository.create({
       title,
       content,
@@ -40,6 +39,7 @@ export class TopicService {
     await this.topicRepository.save(newResource);
     return newResource;
   }
+
   async postTopic(
     userId: string,
     title: string,

@@ -7,10 +7,11 @@ import { CategoryModule } from 'src/modules/category/category.module';
 import { AuthModule } from '../auth/auth.module';
 import { ScoreModule } from '../score/score.module';
 import { UserModule } from '../user/user.module';
+import { User } from '../user/entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Topic]),
+    TypeOrmModule.forFeature([Topic, User]),
     CategoryModule,
     AuthModule,
     ScoreModule,
