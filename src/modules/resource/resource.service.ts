@@ -67,8 +67,14 @@ export class ResourceService {
     queryResourceDto: QueryResourceInputDto,
     userId: string | undefined,
   ) {
-    const { name, categoryId, isPublic, isWithPermission, pageNum, pageSize } =
-      queryResourceDto;
+    const {
+      name,
+      categoryLabel,
+      isPublic,
+      isWithPermission,
+      pageNum,
+      pageSize,
+    } = queryResourceDto;
     const qb = this.resourceRepository
       .createQueryBuilder('resource')
       .select(ResourceQueryFields)
@@ -83,8 +89,8 @@ export class ResourceService {
       qb.where('resource.name LIKE :name', { name: `%${name}%` });
     }
 
-    if (categoryId) {
-      qb.andWhere('resource.categoryId = :categoryId', { categoryId });
+    if (categoryLabel) {
+      qb.andWhere('category.label = :label', { label: categoryLabel });
     }
     if (isPublic != null) {
       qb.andWhere('resource.isPublic = :isPublic', { isPublic });
@@ -184,7 +190,7 @@ export class ResourceService {
     if (categoryId && categoryId !== oldResource.category.id) {
       newResource.category = await this.categoryService.findById(categoryId);
       if (!newResource.category) {
-        throw new BadRequestException('该主题不存在');
+        throw new BadRequestException('该分类不存在');
       }
     }
     const updatedTopic = this.resourceRepository.merge(

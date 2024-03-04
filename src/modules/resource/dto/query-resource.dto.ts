@@ -12,6 +12,11 @@ export class QueryResourceDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
+  categoryLabel?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   name?: string;
 
   @ApiProperty()

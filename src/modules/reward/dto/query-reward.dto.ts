@@ -11,6 +11,11 @@ export class QueryRewardDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
+  categoryLabel?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   title?: string;
 
   @ApiProperty()

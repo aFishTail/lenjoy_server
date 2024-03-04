@@ -61,7 +61,7 @@ export class RewardService {
   }
 
   async findAll(payload: QueryRewardListInputDto, userId?: string) {
-    const { title, pageNum, pageSize } = payload;
+    const { title, pageNum, pageSize, categoryLabel } = payload;
     const qb = this.rewardRepository
       .createQueryBuilder('reward')
       .leftJoinAndSelect('reward.category', 'category')
@@ -75,6 +75,9 @@ export class RewardService {
       .orderBy('reward.create_at', 'DESC');
     if (title) {
       qb.andWhere('reward.title LIKE :title', { title: `%${title}%` });
+    }
+    if (categoryLabel) {
+      qb.andWhere('category.label = :label', { label: categoryLabel });
     }
     qb.andWhere('reward.status != :status', { status: 'cancel' });
     qb.limit(pageSize).offset((pageNum - 1) * pageSize);
@@ -124,15 +127,22 @@ export class RewardService {
 
   // TODO: update score，积分变化
   async update(updateRewardDto: UpdateRewardDto, userId: string) {
-    const { id, title, content } = updateRewardDto;
+    const { id, title, content, categoryId } = updateRewardDto;
     const oldReward = await this.rewardRepository.findOne({
       where: { id },
+      relations: ['category'],
     });
     const newReward = {
       ...oldReward,
       title,
       content,
     };
+    if (categoryId && categoryId !== oldReward.category.id) {
+      newReward.category = await this.categoryService.findById(categoryId);
+      if (!newReward.category) {
+        throw new BadRequestException('该分类不存在');
+      }
+    }
     const updatedReward = this.rewardRepository.merge(oldReward, newReward);
     // TODO: 这里的事务并不完整， scoreService启动了另一个事务
     this.dataSource.transaction(async (manager) => {
