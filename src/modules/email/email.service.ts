@@ -27,7 +27,9 @@ export class EmialService {
     });
     await this.emialCodeRepository.save(emailCode);
     //TODO:url处理
-    const url = `http://127.0.0.1:3000/api/user/verifyEmail?code=${emailCode.id}&userId=${userId}`;
+    const url = `${this.configService.get('host')}/api/user/verifyEmail?code=${
+      emailCode.id
+    }&userId=${userId}`;
     const context = {
       username,
       url,
