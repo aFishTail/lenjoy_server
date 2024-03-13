@@ -83,7 +83,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         cli: {
           migrationsDir: 'migration',
         },
-        timezone: 'Z',
+        timezone: '+08:00',
       }),
     }),
     UserModule,
