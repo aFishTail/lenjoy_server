@@ -20,15 +20,38 @@ export const enum EntityTypeEnum {
   SignIn = 'signIn',
 }
 
-export enum IMessageType {
-  TypeTopicComment = 0, // 收到话题评论
-  TypeCommentReply = 1, // 收到他人回复
-  TypeTopicLike = 2, // 收到点赞
-  TypeTopicFavorite = 3, // 话题被收藏
-  TypeTopicRecommend = 4, // 话题被设为推荐
-  TypeTopicDelete = 5, // 话题被删除
-  TypeArticleComment = 6, // 收到文章评论
-}
+export const MessageTypeConstant = {
+  topicComment: { type: 'topicComment', message: '话题被评论' },
+  topicLike: { type: 'topicLike', message: '话题被点赞' },
+  topicFavorite: { type: 'topicFavorite', message: '话题被收藏' },
+  topicRecommend: { type: 'topicRecommend', message: '话题被推荐' },
+  topicDeleteFromAdmin: {
+    type: 'topicDeleteFromAdmin',
+    message: '话题被管理员删除',
+  },
+  resourceComment: { type: 'resourceComment', message: '资源被评论' },
+  resourceLike: { type: 'resourceLike', message: '资源被点赞' },
+  resourceFavorite: { type: 'resourceFavorite', message: '资源被收藏' },
+  resourceRecommend: { type: 'resourceRecommend', message: '资源被推荐' },
+  resourceDeleteFromAdmin: {
+    type: 'resourceDeleteFromAdmin',
+    message: '资源被管理员删除',
+  },
+  rewardComment: { type: 'rewardComment', message: '悬赏被评论' },
+  rewardLike: { type: 'rewardLike', message: '悬赏被点赞' },
+  rewardFavorite: { type: 'rewardFavorite', message: '悬赏被搜藏' },
+  rewardRecommend: { type: 'rewardRecommend', message: '悬赏被推荐' },
+  rewardDeleteFromAdmin: {
+    type: 'rewardDeleteFromAdmin',
+    message: '悬赏被管理员删除',
+  },
+  rewardAnswerBeConfirm: {
+    type: 'rewardAnswerBeConfirm',
+    message: '悬赏回答被确认为正常答案',
+  },
+  dailySignIn: { type: 'dailySignIn', message: '每日签到' },
+  firstPostResource: { type: 'firstPostResource', message: '第一次发布资源' },
+} as const;
 
 export enum ThirdAccountType {
   GITHUB = 0,
