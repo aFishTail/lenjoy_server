@@ -40,6 +40,7 @@ import { Reward } from './modules/reward/entities/reward.entity';
 import { RewardAnswer } from './modules/reward-answer/entities/reward-answer.entity';
 import { UserBehavior } from './modules/user/entities/user-behavior.entity';
 import { ScheduleModule } from '@nestjs/schedule';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -123,6 +124,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     RewardModule,
     RewardAnswerModule,
     ScheduleModule.forRoot(),
+    EventModule,
   ],
   controllers: [],
   providers: [Logger],

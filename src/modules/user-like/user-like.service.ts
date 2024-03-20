@@ -3,6 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { UserLikeOperateDto } from './dto/user-like.dto';
 import { UserLike } from './entities/user-like.entity';
+import { EntityMap } from 'src/common/entityMap';
+import { EventService } from '../event/event.service';
+import {
+  EntityTypeEnum,
+  EventFromTypeEnum,
+  EventTypeEnum,
+} from 'src/common/constants';
+import { OperateStatus } from 'src/common/types';
 
 @Injectable()
 export class UserLikeService {
@@ -10,6 +18,7 @@ export class UserLikeService {
     @InjectRepository(UserLike)
     private userLikeRepository: Repository<UserLike>,
     private dataSource: DataSource,
+    private readonly eventService: EventService,
   ) {}
   async operate(userId, p: UserLikeOperateDto) {
     const { entityId, status, entityType } = p;
@@ -52,5 +61,33 @@ export class UserLikeService {
       );
     });
     return null;
+  }
+
+  async sendOperateEvent(params: {
+    entityType: EntityTypeEnum;
+    entityId: string;
+    userId: string;
+    status: OperateStatus;
+  }) {
+    const { entityType, entityId, userId, status } = params;
+    const entity = await this.dataSource
+      .getRepository(EntityMap[entityType])
+      .createQueryBuilder(entityType)
+      .where(`${entityType}.id = : id`, { id: entityId })
+      .leftJoinAndSelect(`${entityType}.user`, 'user')
+      .getOne();
+    this.eventService.create({
+      fromType: EventFromTypeEnum.user,
+      type: EventTypeEnum.like,
+      entityId: entityId,
+      entityType: entityType,
+      fromUserId: userId,
+      content: this.eventService.generateUserEventContent(
+        status ? EventTypeEnum.like : EventTypeEnum.unLike,
+        entityType,
+        entityId,
+      ),
+      toUserId: entity.user?.id,
+    });
   }
 }
